@@ -51,7 +51,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Horizontal_Blend: 20
+    - _Horizontal_Blend: 50
     - _Power_Factor: 32
     - _QueueControl: 0
     - _QueueOffset: 0
