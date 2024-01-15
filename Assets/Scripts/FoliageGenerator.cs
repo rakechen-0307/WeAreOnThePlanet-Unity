@@ -55,6 +55,8 @@ public class FoliageGenerator : MonoBehaviour
         
         // start
         int[] triangles = surfaceMesh.triangles;
+        Vector3[] normals = surfaceMesh.normals;
+        Vector4[] tangents = surfaceMesh.tangents;
         TransformData = new Matrix4x4[triangles.Length-2];
 
         for (int i = 0; i < triangles.Length-2; i++)
@@ -63,6 +65,16 @@ public class FoliageGenerator : MonoBehaviour
             Vector3 v0 = transform.TransformPoint(vertices[triangles[i]]);
             Vector3 v1 = transform.TransformPoint(vertices[triangles[i + 1]]);
             Vector3 v2 = transform.TransformPoint(vertices[triangles[i + 2]]);
+
+            // Get the normals of the vertices
+            Vector3 normal0 = normals[triangles[i]];
+            Vector3 normal1 = normals[triangles[i + 1]];
+            Vector3 normal2 = normals[triangles[i + 2]];
+
+            // Get the tangents of the vertices
+            Vector4 tangent0 = tangents[triangles[i]];
+            Vector4 tangent1 = tangents[triangles[i + 1]];
+            Vector4 tangent2 = tangents[triangles[i + 2]];
 
             // Calculate random barycentric coordinates
             float rand1 = Random.value;
@@ -74,11 +86,16 @@ public class FoliageGenerator : MonoBehaviour
             }
 
             // Interpolate the vertex position within the triangle
-            Vector3 vertexWorldPosition = v0 + rand1 * (v1 - v0) + rand2 * (v2 - v0);
-            
-            Quaternion rotation = Quaternion.Euler(-90, Random.Range(0f, 360f), 0);
+            Vector3 Position = v0 + rand1 * (v1 - v0) + rand2 * (v2 - v0);
+
+            Vector3 Normal = normal0 + rand1 * (normal1 - normal0) + rand2 * (normal2 - normal0);
+
+            Vector4 Tangent = tangent0 + rand1 * (tangent1 - tangent0) + rand2 * (tangent2 - tangent0);
+
+            Quaternion rotation_norm = Quaternion.LookRotation(Normal, Tangent);
+            Quaternion rotation_rand = Quaternion.AngleAxis(Random.Range(0f, 360f), prefab.transform.up);
             // Instantiate the grass
-            TransformData[i] = Matrix4x4.TRS(vertexWorldPosition, rotation, new Vector3(1f, 1f, 1f));
+            TransformData[i] = Matrix4x4.TRS(Position, prefab.transform.rotation*rotation_norm*rotation_rand, new Vector3(1f, 1f, 1f));
         }
     }
     // DrawMesh
