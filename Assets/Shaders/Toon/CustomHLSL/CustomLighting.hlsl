@@ -1,12 +1,10 @@
 ﻿#ifndef CUSTOM_LIGHTING_INCLUDED
 #define CUSTOM_LIGHTING_INCLUDED
 
-#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-#pragma multi_compile _ _SHADOWS_SOFT
 #pragma multi_compile _ _ADDITIONAL_LIGHTS
 #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
 
+/*
 void MainLight_float(float3 WorldPos, out float3 Direction, out float3 Color, out float DistanceAtten, out float ShadowAtten)
 {
 #ifdef SHADERGRAPH_PREVIEW
@@ -33,8 +31,9 @@ void MainLight_float(float3 WorldPos, out float3 Direction, out float3 Color, ou
     #endif
 #endif
 }
+*/
 
-
+/*
 void DirectSpecular_float(float3 Specular, float Smoothness, float3 Direction, float3 Color, float3 WorldNormal, float3 WorldView, out float3 Out)
 {
 #ifdef SHADERGRAPH_PREVIEW
@@ -46,8 +45,23 @@ void DirectSpecular_float(float3 Specular, float Smoothness, float3 Direction, f
     Out = LightingSpecular(Color, Direction, WorldNormal, WorldView, float4(Specular, 0), Smoothness);
 #endif
 }
+*/
 
-void AdditionalLights_float(float3 SpecColor, float Smoothness, float3 WorldPosition, float3 WorldNormal, float3 WorldView, float Threshold, float3 ValueLow, float3 ValueHigh, out float3 Diffuse, out float3 Specular)
+float4 Grad(Gradient gradient, float Time)
+{
+    float3 color = gradient.colors[0].rgb;
+    [unroll]
+    for (int c = 1; c < 8; c++)
+    {
+        float colorPos = saturate((Time - gradient.colors[c - 1].w) / (gradient.colors[c].w - gradient.colors[c - 1].w)) * step(c, gradient.colorsLength - 1);
+        color = lerp(color, gradient.colors[c].rgb, lerp(colorPos, step(0.01, colorPos), gradient.type));
+    }
+    return float4(color, 1);
+}
+
+void AdditionalLights_float(float3 SpecColor, float Smoothness, float3 WorldPosition, float3 WorldNormal, 
+    float3 WorldView, Gradient gradient, float4 FresnelIntensity, float FresnelEffect, float FresnelAngle,
+    out float3 Diffuse, out float3 Specular)
 {
     float3 diffuseColor = 0;
     float3 specularColor = 0;
@@ -59,18 +73,25 @@ void AdditionalLights_float(float3 SpecColor, float Smoothness, float3 WorldPosi
     int pixelLightCount = GetAdditionalLightsCount();
     for (int i = 0; i < pixelLightCount; ++i)
     {
-        Light light = GetAdditionalLight(i, WorldPosition);
+        Light light = GetAdditionalLight(i, WorldPosition, 0);
         half3 attenuatedLightColor = light.color * (light.distanceAttenuation * light.shadowAttenuation);
         float3 color = LightingLambert(attenuatedLightColor, light.direction, WorldNormal);
         
-        if ((color[0] + color[1] + color[2]) / 3 < Threshold)
+        color = Grad(gradient, color);
+        
+        float fresnelDir = dot((-1) * normalize(WorldNormal) + normalize(WorldView), light.direction);
+        float remapFresnelDir = ((fresnelDir - (-1)) / 2) * (FresnelAngle - 1) + 1;
+        float4 fresnelEffect = step(0.1, (FresnelEffect * remapFresnelDir)) * FresnelIntensity;
+        
+        // get maximum
+        for (int i = 0; i < 3; i++)
         {
-            color = light.color * ValueLow[0];
+            if (fresnelEffect[i] > color[i])
+            {
+                color[i] = fresnelEffect[i];
+            }
         }
-        else
-        {
-            color = light.color * ValueHigh[0];
-        }
+        color *= light.color;
         
         for (int j = 0; j < 3; j++)
         {

@@ -23,9 +23,6 @@
 #ifndef CUSTOM_LIGHTING_INCLUDED
 #define CUSTOM_LIGHTING_INCLUDED
 
-#pragma multi_compile _ _MAIN_LIGHT_SHADOWS
-#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
-#pragma multi_compile _ _SHADOWS_SOFT
 #pragma multi_compile _ _ADDITIONAL_LIGHTS
 #pragma multi_compile _ _ADDITIONAL_LIGHT_SHADOWS
 
@@ -34,7 +31,6 @@
 // https://github.com/Cyanilux/URP_ShaderGraphCustomLighting
 // Licensed under the MIT License, Copyright (c) 2020 Cyanilux
 #ifndef SHADERGRAPH_PREVIEW
-    #include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
     #if (SHADERPASS != SHADERPASS_FORWARD)
         #undef REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR
     #endif
