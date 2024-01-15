@@ -51,11 +51,13 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Horizontal_Blend: 1
+    - _Horizontal_Blend: 20
+    - _Power_Factor: 32
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Sky_Blend: 1
+    - _Sky_Blend: 2.5
+    - _Star_Height: 2000
     m_Colors:
-    - _Horizontal_Color: {r: 0.58312577, g: 0.29803917, b: 1, a: 0}
-    - _SkyColor: {r: 0.18679237, g: 0.31991413, b: 1, a: 0}
+    - _Horizontal_Color: {r: 0.4692933, g: 0.103773475, b: 1, a: 0}
+    - _SkyColor: {r: 0.55923605, g: 0, b: 1, a: 1}
   m_BuildTextureStacks: []
