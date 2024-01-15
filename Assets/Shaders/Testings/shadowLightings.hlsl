@@ -51,6 +51,11 @@ struct CustomLightingData {
     float3 albedo;
     float smoothness;
     float ambientOcclusion;
+    
+    // Fresnel Effect
+    float4 fresnelIntensity;
+    float fresnelEffect;
+    float fresnelAngle;
 
     // Baked lighting
     float3 bakedGI;
@@ -89,6 +94,18 @@ float3 CustomLightHandling(CustomLightingData d, Light light) {
     float specular = pow(specularDot, GetSmoothnessPower(d.smoothness)) * diffuse;
 
     float3 color = d.albedo * radiance * (diffuse + specular);
+    
+    /* fresnel */
+    float fresnelDir = dot((-1) * normalize(d.normalWS) + normalize(d.viewDirectionWS), light.direction);
+    float remapFresnelDir = ((fresnelDir - (-1)) / 2) * (d.fresnelAngle - 1) + 1;
+    float4 fresnel = step(0.1, (d.fresnelEffect * remapFresnelDir)) * d.fresnelIntensity;
+    
+    // get maximum
+    for (int i = 0; i < 3; i++) {
+        if (fresnel[i] * light.color[i] > color[i]) {
+            color[i] = fresnel[i] * light.color[i];
+        }
+    }
 
     return color;
 }
@@ -128,7 +145,7 @@ float3 CalculateCustomLighting(CustomLightingData d) {
 
 void CalculateCustomLighting_float(float3 Position, float3 Normal, float3 ViewDirection,
     float3 Albedo, float Smoothness, float AmbientOcclusion,
-    float2 LightmapUV,
+    float2 LightmapUV, float4 FresnelIntensity, float FresnelEffect, float FresnelAngle,
     out float3 Color) {
 
     CustomLightingData d;
@@ -138,6 +155,9 @@ void CalculateCustomLighting_float(float3 Position, float3 Normal, float3 ViewDi
     d.albedo = Albedo;
     d.smoothness = Smoothness;
     d.ambientOcclusion = AmbientOcclusion;
+    d.fresnelIntensity = FresnelIntensity;
+    d.fresnelEffect = FresnelEffect;
+    d.fresnelAngle = FresnelAngle;
 
 #ifdef SHADERGRAPH_PREVIEW
     // In preview, there's no shadows or bakedGI
