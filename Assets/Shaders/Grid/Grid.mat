@@ -40,8 +40,11 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _Thickness: 0.1
     m_Colors:
     - _BaseColor: {r: 0.29236376, g: 0.6565025, b: 0.6886792, a: 0}
+    - _CellSize: {r: 1, g: 1, b: 0, a: 0}
+    - _DefaultSize: {r: 10, g: 10, b: 0, a: 0}
     - _GridColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &6985052479884483100
