@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ProjectConfigData
   m_EditorClassIdentifier: 
   projectID: 530d3a3f-8511-41ce-8849-afb4aea17030
-  chainID: 31337
-  chain: HardHat
-  network: Testnet
-  rpc: http://localhost:8545/
+  chainID: 80001
+  chain: polygon
+  network: mumbai
+  rpc: https://polygon-mumbai-pokt.nodies.app
