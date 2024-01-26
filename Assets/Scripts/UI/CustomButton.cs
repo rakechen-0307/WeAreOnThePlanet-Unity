@@ -6,7 +6,7 @@ public class CustomButton : MonoBehaviour
 {
     private Button button;
     
-    private void Start()
+    protected virtual void Start()
     {
         button = GetComponent<Button>();
         button.onClick.AddListener(OnClick);

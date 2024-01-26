@@ -15,7 +15,11 @@ public class VisualizeBlock : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        placementSystem.PlaceBlock(transform.position + Vector3.up);
+        if (eventData.button != PointerEventData.InputButton.Left)
+        {
+            return;
+        }
+        placementSystem.ClickBlock(transform.position, Vector3.up);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
