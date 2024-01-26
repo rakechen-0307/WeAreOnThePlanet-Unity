@@ -5,7 +5,7 @@ using UnityEditor;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(RectTransform))]
-public class ResponsiveUI : MonoBehaviour
+public class CustomUI : MonoBehaviour
 {
     // Properties
     [SerializeField]
@@ -21,9 +21,8 @@ public class ResponsiveUI : MonoBehaviour
     private SizeMode sizeMode = SizeMode.RelativeToParent;
 
     // References
-    private RectTransform rectTransform;
-    [SerializeField]
-    private RectTransform parentRectTransform;
+    public RectTransform rectTransform;
+    public RectTransform parentRectTransform;
 
     // Editor
     private SizeMode sizeMode_prev = SizeMode.RelativeToParent;
@@ -32,6 +31,7 @@ public class ResponsiveUI : MonoBehaviour
     {
         rectTransform = GetComponent<RectTransform>();
         parentRectTransform = transform.parent.GetComponent<RectTransform>();
+        Resize();
     }
     private void OnEnable()
     {
@@ -57,17 +57,11 @@ public class ResponsiveUI : MonoBehaviour
                 switchSizeMode(sizeMode_prev, sizeMode);
                 sizeMode_prev = sizeMode;
             }
-            UnityEditor.EditorApplication.delayCall += ResizeCallback;
+            UnityEditor.EditorApplication.delayCall += Resize;
         }
     }
-    private void ResizeCallback()
-    {
-        Resize();
-        UnityEditor.EditorApplication.delayCall -= ResizeCallback;
-    }
     #endif
-
-    protected virtual void Resize()
+    public void Resize()
     {
         switch (sizeMode)
         {
@@ -158,6 +152,10 @@ public class ResponsiveUI : MonoBehaviour
     public void setAnchor(Vector2 Anchor)
     {
         anchor = Anchor;
+    }
+    public void setAlignment(Alignment newAlignment)
+    {
+        alignment = newAlignment;
     }
 }
 public enum Alignment

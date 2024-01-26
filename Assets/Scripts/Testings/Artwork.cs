@@ -1,18 +1,20 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
 public class ArtWork : ScriptableObject
 {
-    public List<BlockData> blockDatas;  
+    public List<BlockData> blockDatas = new List<BlockData>();  
 }
 
+[Serializable]
 public class BlockData
 {
     [field: SerializeField]
-    private Vector3 position;
+    private Vector3 position = Vector3.zero;
     [field: SerializeField]
-    private Color color;
+    private Color color = Color.black;
     public BlockData()
     {
         position = Vector3.zero;

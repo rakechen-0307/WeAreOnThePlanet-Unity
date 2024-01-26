@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlacementSystem : MonoBehaviour
@@ -12,6 +13,9 @@ public class PlacementSystem : MonoBehaviour
 
     [SerializeField]
     private GameObject blockPrefab;
+
+    [SerializeField]
+    private ColorManager colorManager;
     
     public void PlaceBlock(Vector3 position)
     {
@@ -31,11 +35,13 @@ public class PlacementSystem : MonoBehaviour
         {
             // visualize
             GameObject newBlock = Instantiate(blockPrefab, position, Quaternion.identity, transform);
-            newBlock.GetComponent<VisualizeBlock>().placementSystem = this;
+            VisualizeBlock newBlockVisulize = newBlock.GetComponent<VisualizeBlock>();
+            newBlockVisulize.placementSystem = this;
+            newBlockVisulize.color = colorManager.getBrushColor();
             blockDB.Add(newBlock);
             // record
-            // BlockData newBlockData = new BlockData(position, Color.white);
-            // artWorkInProgress.blockDatas.Add(newBlockData);
+            BlockData newBlockData = new BlockData(position, colorManager.getBrushColor());
+            artWorkInProgress.blockDatas.Add(newBlockData);
         }
     }
 }
