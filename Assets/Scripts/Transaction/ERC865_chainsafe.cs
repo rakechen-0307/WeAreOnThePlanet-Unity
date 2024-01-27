@@ -222,11 +222,12 @@ public class ERC865_chainsafe : MonoBehaviour
         BigInteger value = 10000;
         BigInteger fee = 500;
 
+        
         var signer = new EthereumMessageSigner();
         var from = signer.EncodeUTF8AndEcRecover(_currentHash, _currentSignature);
         Debug.Log(_accountAddress);
         Debug.Log(from);
-
+        
         var provider = new JsonRpcProvider(ContractManager.RPC);
 
         try

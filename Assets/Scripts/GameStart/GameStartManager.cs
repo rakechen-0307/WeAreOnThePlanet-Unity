@@ -256,6 +256,7 @@ public class GameStartManager : Singleton<GameStartManager>
         // validate
         if (account.Length == 42 && expirationTime >= now)
         {
+            PlayerPrefs.SetString("Account", account);
             print("Account: " + account);
             StartPage.SetActive(false);
             HostPage.SetActive(true);
@@ -285,7 +286,8 @@ public class GameStartManager : Singleton<GameStartManager>
         if (account.Length == 42 && expirationTime >= now)
         {
             print("Account: " + account);
-            SceneManager.LoadScene("MainPlanet");
+            PlayerPrefs.SetString("Account", account);
+            SceneManager.LoadScene("MainPlanet2");
         }
         else
         {
