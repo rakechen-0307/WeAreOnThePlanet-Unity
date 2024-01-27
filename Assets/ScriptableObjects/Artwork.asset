@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb729c387495545419a8694c222521f8, type: 3}
   m_Name: Artwork
   m_EditorClassIdentifier: 
-  cubes: []
+  blockDatas: []

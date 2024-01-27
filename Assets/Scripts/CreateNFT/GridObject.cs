@@ -26,8 +26,12 @@ public class GridObject : MonoBehaviour, IPointerMoveHandler, IPointerEnterHandl
     }
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (eventData.button != PointerEventData.InputButton.Left)
+        {
+            return;
+        }
         indicator.transform.position = getCubePosition(eventData);
-        placementSystem.PlaceBlock(indicator.transform.position);
+        placementSystem.ClickBlock(indicator.transform.position);
     }
     private Vector3 getCubePosition(PointerEventData eventData)
     {
