@@ -5,15 +5,16 @@ public class PlayerMovement : MonoBehaviour
 {
     public Texture2D cursorTexture; // Assign your cursor image in the Unity Editor
 
-    [SerializeField] [Range(0.1f, 1f)]
-    private float speed = 0.3f;
+    [SerializeField] [Range(0.3f, 1f)]
+    private float speed = 0.5f;
 
-    [SerializeField] [Range(0.5f, 2f)]
-    private float rotateSensitivity = 1f;
+    [SerializeField] [Range(200f, 600f)]
+    private float rotateSensitivity = 400f;
 
     private Vector3 moveDirection = Vector3.zero;
     private Rigidbody rb;
     private Transform eyes;
+    private float verticalRoatation = 0f;
 
     void Start()
     {
@@ -21,7 +22,6 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
         rb.freezeRotation = true;
-        rb.drag = 3f;
         // eyes
         eyes = transform.GetChild(0);
         // cursor
@@ -31,8 +31,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        //calculate movement
         moveDirection.Set(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         moveDirection.Normalize();
+        // rotate character
+        transform.Rotate(Input.GetAxis("Mouse X") * Vector3.up * Time.deltaTime * rotateSensitivity);
+        verticalRoatation += Input.GetAxis("Mouse Y") * Time.deltaTime * rotateSensitivity;
+        verticalRoatation = Mathf.Clamp(verticalRoatation, -60, 60);
+        eyes.localEulerAngles = Vector3.left * verticalRoatation;
     }
 
     void FixedUpdate()
@@ -41,9 +47,6 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.AddForce(transform.right * moveDirection.x * speed + transform.forward * moveDirection.z * speed, ForceMode.Impulse);
         }
-        // rotate character
-        transform.Rotate(Input.GetAxis("Mouse X") * Vector3.up * rotateSensitivity);
-        eyes.Rotate(Input.GetAxis("Mouse Y") * Vector3.forward * rotateSensitivity);
     }
 
     void OnGUI()

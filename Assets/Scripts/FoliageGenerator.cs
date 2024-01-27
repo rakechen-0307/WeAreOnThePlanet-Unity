@@ -33,7 +33,7 @@ public class FoliageGenerator : MonoBehaviour
     private void Update()
     {
         #if UNITY_EDITOR
-        if (!EditorApplication.isPlaying&&preview)
+        if ((!EditorApplication.isPlaying && preview) || EditorApplication.isPlaying)
         {
             DrawMesh();
             return;

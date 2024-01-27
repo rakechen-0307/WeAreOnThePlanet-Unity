@@ -16,6 +16,6 @@ public class GravityObject : MonoBehaviour
         // gravity
         rb.AddForce(rb.mass * source.g * g_direction, ForceMode.Force); // Fg = mg*g_hat 
         // adjust pose
-        rb.rotation = g_rotation * transform.rotation; // rotate by g_rotation
+        transform.rotation = g_rotation * transform.rotation; // rotate by g_rotation
     }
 }
