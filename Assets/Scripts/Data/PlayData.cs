@@ -9,13 +9,17 @@ public partial class Auction : IRealmObject
     [PrimaryKey]
     public int Id { get; set; }
 
+#nullable enable
     public NFTInfo? NFTID { get; set; }
+#nullable disable
 
     [MapTo("endTime")]
     public DateTimeOffset? EndTime { get; set; }
 
     [MapTo("ownerID")]
+#nullable enable
     public PlayerData? OwnerID { get; set; }
+#nullable disable
 
     [MapTo("startPrice")]
     public int StartPrice { get; set; }
@@ -64,7 +68,9 @@ public partial class NFTInfo : IRealmObject
     public string Name { get; set; }
 
     [MapTo("ownerID")]
+#nullable enable
     public PlayerData? OwnerID { get; set; }
+#nullable disable
 }
 
 public partial class PlayerData : IRealmObject
@@ -93,7 +99,9 @@ public partial class PlayerData : IRealmObject
     public string Password { get; set; }
 
     [MapTo("position")]
+#nullable enable
     public PlayerPosition? Position { get; set; }
+#nullable disable
 
     [MapTo("taskProgress")]
     public IList<double> TaskProgress { get; }
