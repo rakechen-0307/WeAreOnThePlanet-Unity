@@ -10,7 +10,9 @@ using Nethereum.Signer;
 using Nethereum.Util;
 using Web3Unity.Scripts.Library.Web3Wallet;
 using System.Text;
-using System.Threading.Tasks;
+using Realms;
+using Realms.Sync;
+using System.Linq;
 
 public class GameStartManager : Singleton<GameStartManager>
 {
@@ -30,6 +32,7 @@ public class GameStartManager : Singleton<GameStartManager>
     public Button LogInButton;
 
     public TMP_InputField JoinCodeInput;
+    public TMP_InputField EmailInput;
     public TMP_InputField UserNameInput;
     public TMP_InputField PasswordInput;
 
@@ -39,6 +42,12 @@ public class GameStartManager : Singleton<GameStartManager>
     public TMP_Text LogInErrorText;
 
     ProjectConfigScriptableObject projectConfigSO = null;
+
+    private Realm _realm;
+    private App _realmApp;
+    private User _realmUser;
+    private string _realmAppID = "weareontheplanet-rymdg";
+
 
     private void Awake()
     {
@@ -80,6 +89,7 @@ public class GameStartManager : Singleton<GameStartManager>
 
         PlayerButton.onClick.AddListener(() =>
         {
+            RealmSetup();
             StartPage.SetActive(false);
             PlayerPage.SetActive(true);
             PlayerJoin.SetActive(true);
@@ -109,40 +119,95 @@ public class GameStartManager : Singleton<GameStartManager>
             }
         });
 
-        SignUpButton.onClick.AddListener(() =>
+        SignUpButton.onClick.AddListener(async () =>
         {
             if (string.IsNullOrEmpty(UserNameInput.text) || string.IsNullOrEmpty(PasswordInput.text))
             {
                 LogInErrorText.enabled = true;
                 LogInErrorText.text = "Please Enter Your Username and Password";
+                return;
             }
-            else
+
+            // subscription
+            var playerQuery = _realm.All<PlayerData>();
+            await playerQuery.SubscribeAsync();
+
+            // Check if user is already existed and store user information
+            PlayerData findPlayer = _realm.All<PlayerData>().Where(user => user.Email == EmailInput.text).FirstOrDefault();
+
+            if (findPlayer != null)
             {
-                // Check if user is already existed and store user information
-
-                //
-
-                // Player Connect Wallet
-                PlayerConnectWallet();
+                LogInErrorText.enabled = true;
+                LogInErrorText.text = "User Has Already Existed";
+                return;
             }
+
+            var totalPlayer = playerQuery.ToArray().Length;
+            await _realm.WriteAsync(() =>
+            {
+                findPlayer = _realm.Add(new PlayerData()
+                {
+                    Id = totalPlayer + 1,
+                    Email = EmailInput.text,
+                    UserName = UserNameInput.text,
+                    Password = PasswordInput.text,
+                    Position = new PlayerPosition()
+                    {
+                        PlayerID = totalPlayer + 1,
+                        PosX = 0,
+                        PosY = 0,
+                        PosZ = 0,
+                        RotX = 0,
+                        RotY = 0,
+                        RotZ = 0,
+                    }   
+                });
+            });
+
+            // Player Connect Wallet
+            PlayerConnectWallet();
         });
 
-        LogInButton.onClick.AddListener(() =>
+        LogInButton.onClick.AddListener(async () =>
         {
             if (string.IsNullOrEmpty(UserNameInput.text) || string.IsNullOrEmpty(PasswordInput.text))
             {
                 LogInErrorText.enabled = true;
                 LogInErrorText.text = "Please Enter Your Username and Password";
+                return;
             }
-            else
+
+            // subscription
+            var playerQuery = _realm.All<PlayerData>();
+            await playerQuery.SubscribeAsync();
+
+            // Check if user information is correct
+            PlayerData findPlayer = _realm.All<PlayerData>().Where(user => user.Email == EmailInput.text).FirstOrDefault();
+
+            if (findPlayer == null)
             {
-                // Check if user information is correct
-
-                //
-
-                // Player Connect Wallet
-                PlayerConnectWallet();
+                LogInErrorText.enabled = true;
+                LogInErrorText.text = "User Does Not Exist";
+                return;
             }
+
+            if (findPlayer.Password !=  PasswordInput.text)
+            {
+                LogInErrorText.enabled = true;
+                LogInErrorText.text = "Password Is Wrong";
+                return;
+            }
+
+            if (findPlayer.UserName != UserNameInput.text)
+            {
+                await _realm.WriteAsync(() =>
+                {
+                    findPlayer.UserName = UserNameInput.text;
+                });
+            }
+
+            // Player Connect Wallet
+            PlayerConnectWallet();
         });
     }
 
@@ -222,9 +287,24 @@ public class GameStartManager : Singleton<GameStartManager>
         return key.GetPublicAddress();
     }
 
-    // Update is called once per frame
-    void Update()
+    public async void RealmSetup()
     {
-        
+        // setup Realm
+        if (_realm == null)
+        {
+            _realmApp = App.Create(new AppConfiguration(_realmAppID));
+            if (_realmApp.CurrentUser == null)
+            {
+                _realmUser = await _realmApp.LogInAsync(Credentials.Anonymous());
+                Debug.Log("user created");
+                _realm = await Realm.GetInstanceAsync(new FlexibleSyncConfiguration(_realmUser));
+            }
+            else
+            {
+                _realmUser = _realmApp.CurrentUser;
+                Debug.Log("user remain");
+                _realm = Realm.GetInstance(new FlexibleSyncConfiguration(_realmUser));
+            }
+        }
     }
 }
