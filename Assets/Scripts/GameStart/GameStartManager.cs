@@ -50,6 +50,10 @@ public class GameStartManager : Singleton<GameStartManager>
     private User _realmUser;
     private string _realmAppID = "weareontheplanet-hhbzr";
 
+    public string _email;
+    public string _username;
+    public string _password;
+
 
     private void Awake()
     {
@@ -177,6 +181,23 @@ public class GameStartManager : Singleton<GameStartManager>
                 }
             });
 
+            if (totalPlayer >= 1)
+            {
+                var players = playerQuery.ToArray();
+                for (int i=0;  i < players.Length-1; i++)
+                {
+                    await _realm.WriteAsync(() =>
+                    {
+                        players[i].Friends.Add(findPlayer);
+                        findPlayer.Friends.Add(players[i]);
+                    });
+                }
+            }
+
+            _email = EmailInput.text;
+            _username = UserNameInput.text;
+            _password = PasswordInput.text;
+
             // Player Connect Wallet
             PlayerConnectWallet();
         });
@@ -221,6 +242,10 @@ public class GameStartManager : Singleton<GameStartManager>
                     findPlayer.Username = UserNameInput.text;
                 });
             }
+
+            _email = EmailInput.text;
+            _username = UserNameInput.text;
+            _password = PasswordInput.text;
 
             // Player Connect Wallet
             PlayerConnectWallet();
@@ -285,7 +310,7 @@ public class GameStartManager : Singleton<GameStartManager>
         if (account.Length == 42 && expirationTime >= now)
         {
             print("Account: " + account);
-            SceneManager.LoadScene("MainPlanet");
+            SceneManager.LoadScene("CrystalMessengerTest");
         }
         else
         {
@@ -306,7 +331,6 @@ public class GameStartManager : Singleton<GameStartManager>
     public async void RealmSetup()
     {
         // setup Realm
-        Debug.Log(_realm == null);
         if (_realm == null)
         {
             _realmApp = App.Create(new AppConfiguration(_realmAppID));
@@ -323,5 +347,10 @@ public class GameStartManager : Singleton<GameStartManager>
                 _realm = Realm.GetInstance(new FlexibleSyncConfiguration(_realmUser));
             }
         }
+    }
+
+    public string GetEmail()
+    {
+        return _email;
     }
 }
