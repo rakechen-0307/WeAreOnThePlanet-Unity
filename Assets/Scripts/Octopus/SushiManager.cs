@@ -96,7 +96,7 @@ public class SushiManager : MonoBehaviour
             sushiComponent.Author = nftInfo.Author;
             sushiComponent.CreateTime = nftInfo.CreateTime;
             sushiComponent.IsMinted = nftInfo.IsMinted;
-            sushiComponent.OwnerID = nftInfo.OwnerID;
+            // sushiComponent.OwnerID = nftInfo.OwnerID;
             sushiComponent.viewMode = viewMode;
 
             sushiInstances.Add(sushiInstance);

@@ -12,7 +12,7 @@ public class Sushi : MonoBehaviour
     public bool IsMinted;
     public int Id;
     public string Name;
-    public int OwnerID;
+    public int? OwnerID;
     // Content
 
     public string viewMode;

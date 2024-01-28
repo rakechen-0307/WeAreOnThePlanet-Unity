@@ -3,13 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-<<<<<<< HEAD
-  - sushi
-  - DialogText
-=======
-  - Climbable
->>>>>>> 4efe9058fe7e413eee9fc82ed63ed7bc848431fb
+  tags: []
   layers:
   - Default
   - TransparentFX
