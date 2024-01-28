@@ -1114,7 +1114,7 @@ PrefabInstance:
     - target: {fileID: -9198607926513001576, guid: f511bde298aee954bb30e1b66957a286,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.02
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8958445580263383915, guid: f511bde298aee954bb30e1b66957a286,
         type: 3}
@@ -1204,7 +1204,7 @@ PrefabInstance:
     - target: {fileID: -6958020443369261279, guid: f511bde298aee954bb30e1b66957a286,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.38
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -6516969865631660346, guid: f511bde298aee954bb30e1b66957a286,
         type: 3}
@@ -1449,7 +1449,7 @@ PrefabInstance:
     - target: {fileID: 5445620003352283410, guid: f511bde298aee954bb30e1b66957a286,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.51
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5600340529914759747, guid: f511bde298aee954bb30e1b66957a286,
         type: 3}
@@ -1479,7 +1479,7 @@ PrefabInstance:
     - target: {fileID: 7181617306617485602, guid: f511bde298aee954bb30e1b66957a286,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.19
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7581044518376930436, guid: f511bde298aee954bb30e1b66957a286,
         type: 3}
@@ -1797,7 +1797,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   climbThreshold: 0.3
   climbSpeed: 2
-  indicator: {fileID: 550494175}
 --- !u!1 &1453174330 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3437975674848237809, guid: f511bde298aee954bb30e1b66957a286,
