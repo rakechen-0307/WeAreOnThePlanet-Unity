@@ -15,6 +15,9 @@ using Realms.Sync;
 using System.Linq;
 using System;
 using UnityEditor;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using Unity.Services.Vivox;
 
 public class GameStartManager : Singleton<GameStartManager>
 {
@@ -55,7 +58,7 @@ public class GameStartManager : Singleton<GameStartManager>
     public string _password;
 
 
-    private void Awake()
+    private async void Awake()
     {
         StartPage.SetActive(true);
         HostPage.SetActive(false);
@@ -66,6 +69,13 @@ public class GameStartManager : Singleton<GameStartManager>
 
         // setup ChainSafe
         ChainSafeSetup();
+
+        // Initialize Vivox
+        await UnityServices.InitializeAsync();
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+        await VivoxService.Instance.InitializeAsync();
+        Debug.Log("Vivox Initialized");
     }
 
     // Start is called before the first frame update
@@ -82,7 +92,11 @@ public class GameStartManager : Singleton<GameStartManager>
 
             if (NetworkManager.Singleton.StartHost())
             {
-                Debug.Log("Host Started...");            
+                Debug.Log("Host Started...");
+
+                // Vivox Sign In
+                VivoxSignIn("host");
+
                 // Host Connect Wallet
                 HostConnectWallet();
             }
@@ -198,6 +212,9 @@ public class GameStartManager : Singleton<GameStartManager>
             _username = UserNameInput.text;
             _password = PasswordInput.text;
 
+            // Vivox Sign In
+            VivoxSignIn(findPlayer.Id.ToString());
+
             // Player Connect Wallet
             PlayerConnectWallet();
         });
@@ -247,6 +264,9 @@ public class GameStartManager : Singleton<GameStartManager>
             _username = UserNameInput.text;
             _password = PasswordInput.text;
 
+            // Vivox Sign In
+            VivoxSignIn(findPlayer.Id.ToString());
+
             // Player Connect Wallet
             PlayerConnectWallet();
         });
@@ -295,15 +315,10 @@ public class GameStartManager : Singleton<GameStartManager>
 
     private async void PlayerConnectWallet()
     {
-        // get current timestamp
         var timestamp = (int)System.DateTime.UtcNow.Subtract(new System.DateTime(1970, 1, 1)).TotalSeconds;
-        // set expiration time
         var expirationTime = timestamp + 60;
-        // set message
         var message = expirationTime.ToString();
-        // sign message
         var signature = await Web3Wallet.Sign(message);
-        // verify account
         var account = SignVerifySignature(signature, message);
         var now = (int)System.DateTime.UtcNow.Subtract(new System.DateTime(1970, 1, 1)).TotalSeconds;
         // validate
@@ -349,8 +364,14 @@ public class GameStartManager : Singleton<GameStartManager>
         }
     }
 
-    public string GetEmail()
+    async void VivoxSignIn(string displayName)
     {
-        return _email;
+        var loginOption = new LoginOptions
+        {
+            DisplayName = displayName,
+            EnableTTS = false
+        };
+        await VivoxService.Instance.LoginAsync(loginOption);
+        Debug.Log("Log in");
     }
 }

@@ -157,7 +157,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 300}
+  m_AnchoredPosition: {x: 0, y: 300.00003}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &49114221
@@ -234,7 +234,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 330.00003}
+  m_AnchoredPosition: {x: 0, y: 330}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &158882030
@@ -581,7 +581,6 @@ GameObject:
   - component: {fileID: 505218291}
   - component: {fileID: 505218290}
   - component: {fileID: 505218289}
-  - component: {fileID: 505218293}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -676,28 +675,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &505218293
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 505218288}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08fac4499f10c7a43923100b7cc3b4c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  friendListObj: {fileID: 583583233370739687, guid: 4e41cf82eeabf734c999ca88fbd5518a,
-    type: 3}
-  myTextObj: {fileID: 3341432951224549241, guid: fb43f1bb9b511f847b157febd7338a8a,
-    type: 3}
-  comingTextObj: {fileID: 8011082872068033782, guid: 320102fcbf19c144590b8cf158a8164e,
-    type: 3}
-  channelObj: {fileID: 158882028}
-  chatRoomObj: {fileID: 49114218}
-  sendButton: {fileID: 913494595}
-  textInput: {fileID: 1398950477}
 --- !u!1 &549010946
 GameObject:
   m_ObjectHideFlags: 0
@@ -1982,6 +1959,60 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1398950475}
   m_CullTransparentMesh: 1
+--- !u!1 &1464620173
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1464620175}
+  - component: {fileID: 1464620176}
+  m_Layer: 0
+  m_Name: MessengerManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1464620175
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464620173}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -174, y: 91, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1464620176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464620173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73c2ea69bcd63854da33d016680d442a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  friendListObj: {fileID: 2563949276106738699, guid: 4e41cf82eeabf734c999ca88fbd5518a,
+    type: 3}
+  myTextObj: {fileID: 3341432951224549241, guid: fb43f1bb9b511f847b157febd7338a8a,
+    type: 3}
+  comingTextObj: {fileID: 8011082872068033782, guid: 320102fcbf19c144590b8cf158a8164e,
+    type: 3}
+  channelObj: {fileID: 158882028}
+  chatRoomObj: {fileID: 49114218}
+  sendButton: {fileID: 913494595}
+  textInput: {fileID: 1398950477}
 --- !u!1 &1486071171
 GameObject:
   m_ObjectHideFlags: 0
@@ -2926,3 +2957,4 @@ SceneRoots:
   - {fileID: 1500849529}
   - {fileID: 1566282464}
   - {fileID: 505218292}
+  - {fileID: 1464620175}
