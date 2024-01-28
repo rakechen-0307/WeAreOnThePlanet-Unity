@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] [Range(0.5f, 2f)]
     private float runSpeed = 1.4f;
 
-    [SerializeField] [Range(200f, 600f)]
+    [SerializeField] [Range(100f, 600f)]
     private float rotateSensitivity = 400f;
 
     private Vector3 moveDirection = Vector3.zero;

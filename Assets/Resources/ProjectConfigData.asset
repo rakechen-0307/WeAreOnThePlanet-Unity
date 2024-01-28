@@ -12,8 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06e300208fa3ee04a99d031a99308441, type: 3}
   m_Name: ProjectConfigData
   m_EditorClassIdentifier: 
-  projectID: 530d3a3f-8511-41ce-8849-afb4aea17030
+<<<<<<< HEAD
+  projectID: 934df7b1-af34-41c3-9141-75637179dfac
   chainID: 80001
   chain: polygon
   network: mumbai
   rpc: https://polygon-mumbai-pokt.nodies.app
+=======
+  projectID: 530d3a3f-8511-41ce-8849-afb4aea17030
+  chainID: 31337
+  chain: HardHat
+  network: Testnet
+  rpc: http://localhost:8545/
+>>>>>>> 4efe9058fe7e413eee9fc82ed63ed7bc848431fb
