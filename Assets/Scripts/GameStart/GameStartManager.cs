@@ -15,6 +15,7 @@ using Realms.Sync;
 using System.Linq;
 using System;
 using UnityEditor;
+using Unity.Services.Relay;
 
 public class GameStartManager : Singleton<GameStartManager>
 {
@@ -49,6 +50,7 @@ public class GameStartManager : Singleton<GameStartManager>
     private App _realmApp;
     private User _realmUser;
     private string _realmAppID = "weareontheplanet-hhbzr";
+    private static int TASKNUM = 1;
 
 
     private void Awake()
@@ -170,6 +172,7 @@ public class GameStartManager : Singleton<GameStartManager>
 
                 // initialize task progress
                 var totalTask = taskQuery.ToArray().Length;
+                Debug.Log("Total task:");
                 Debug.Log(totalTask);
                 for (int i = 0; i < totalTask; i++)
                 {
@@ -287,7 +290,7 @@ public class GameStartManager : Singleton<GameStartManager>
         {
             print("Account: " + account);
             PlayerPrefs.SetString("Account", account);
-            SceneManager.LoadScene("MainPlanet2");
+            SceneManager.LoadScene("MainPlanet");
         }
         else
         {
@@ -325,5 +328,25 @@ public class GameStartManager : Singleton<GameStartManager>
                 _realm = Realm.GetInstance(new FlexibleSyncConfiguration(_realmUser));
             }
         }
+        await _realm.WriteAsync(() =>
+        {
+            var taskQuery = _realm.All<Task>();
+            var totalTask = taskQuery.ToArray().Length;
+            Debug.Log("Initial task number:");
+            Debug.Log(totalTask);
+            if(totalTask != TASKNUM)
+            {
+                Task findTask = _realm.All<Task>().Where(task => task.Id == 0).FirstOrDefault();
+                if (findTask == null)
+                {
+                    findTask = _realm.Add(new Task()
+                    {
+                        Id = 0,
+                        Description = "Click the button",
+                        Prize = 30000,
+                    });
+                }
+            }
+        });
     }
 }

@@ -43,6 +43,7 @@ public class ERC865_chainsafe : MonoBehaviour
     private string _currentHash;
     SysRandom rnd = new SysRandom(Guid.NewGuid().GetHashCode());
     private BigInteger _nonce = 1;
+    private BigInteger _currentNonce;
     //private string _NFTContractAddress;
     private string _NFTContractSignature;
     private string _NFTContractHash;
@@ -210,19 +211,22 @@ public class ERC865_chainsafe : MonoBehaviour
         
         Debug.Log(_currentSignature);
         Debug.Log(_currentHash);
+
+        _currentNonce = _nonce;
         _nonce = rnd.Next();
-
     }
-
+    
     private async void Transfer()
     {
+        // Send { from, to, value, fee, nonce, hash, signature } to host 
         var method = "transferPreSigned";
+        var checkMethod = "getTransferFromPreSignedHash";
 
         string receiver = "0xaE3CdFe3C638288E4CA5Db25A08133C36229ddB3";
         BigInteger value = 10000;
         BigInteger fee = 500;
 
-        
+        //Check if the signer is same as the account
         var signer = new EthereumMessageSigner();
         var from = signer.EncodeUTF8AndEcRecover(_currentHash, _currentSignature);
         Debug.Log(_accountAddress);
@@ -233,6 +237,20 @@ public class ERC865_chainsafe : MonoBehaviour
         try
         {
             Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
+            //Check hash (information is correct)
+            var checkData = await contract.Call(checkMethod, new object[]
+            {
+                from,
+                from,
+                receiver,
+                value.ToString(),
+                fee.ToString(),
+                _currentNonce.ToString()
+            });
+            var result_hash = BitConverter.ToString((byte[])checkData[0]).Replace("-", string.Empty).ToLower();
+            Debug.Log(result_hash);
+            Debug.Log(_currentHash);
+
             var data = contract.Calldata(method, new object[]
             {
                 from,
@@ -251,7 +269,6 @@ public class ERC865_chainsafe : MonoBehaviour
         {
             print("Error with the transaction");
         }
-
         _nonce = rnd.Next();
 
     }
@@ -289,7 +306,7 @@ public class ERC865_chainsafe : MonoBehaviour
     {
         string method = "getTransferPreSignedHash";
 
-        string receiver = "0xaE3CdFe3C638288E4CA5Db25A08133C36229ddB3";
+        string receiver = "0xF6Ba2c6Ae09690187ee515332253fd9BeFAe83db";
         BigInteger tokenId = 8;
         Debug.Log(_accountAddress);
 
@@ -323,14 +340,17 @@ public class ERC865_chainsafe : MonoBehaviour
             Debug.Log("Fail to fetch hash.");
         }
 
+        _currentNonce = _nonce;
         _nonce = rnd.Next();
     }
 
     private async void NFTTransfer()
     {
+        // Send { from, to, tokenId, nonce, hash, signature } to host 
         var method = "transferPreSigned";
+        string checkMethod = "getTransferPreSignedHash";
 
-        var receiver = "0xaE3CdFe3C638288E4CA5Db25A08133C36229ddB3";
+        var receiver = "0xF6Ba2c6Ae09690187ee515332253fd9BeFAe83db";
         BigInteger tokenId = 8;
 
         var signer = new EthereumMessageSigner();
@@ -343,6 +363,19 @@ public class ERC865_chainsafe : MonoBehaviour
         try
         {
             Contract contract = new Contract(ContractManager.NFTABI, ContractManager.NFTContract, provider);
+
+            //Check hash (information is correct)
+            var checkData = await contract.Call(checkMethod, new object[]
+            {
+                from,
+                receiver,
+                tokenId.ToString(),
+                _currentNonce.ToString()
+            });
+            var result_hash = BitConverter.ToString((byte[])checkData[0]).Replace("-", string.Empty).ToLower();
+            Debug.Log("Calculated hash: " + result_hash);
+            Debug.Log("Correct hash: " + _NFTContractHash);
+         
             var data = contract.Calldata(method, new object[]
             {
                 from,
