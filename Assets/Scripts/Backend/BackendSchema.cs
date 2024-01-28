@@ -2,6 +2,7 @@ using Realms;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public partial class Auction : IRealmObject
 {
@@ -9,23 +10,29 @@ public partial class Auction : IRealmObject
     [PrimaryKey]
     public int Id { get; set; }
 
-#nullable enable
-    public NFTInfo? NFTID { get; set; }
-#nullable disable
-
-    [MapTo("endTime")]
-    public DateTimeOffset? EndTime { get; set; }
-
     [MapTo("ownerID")]
 #nullable enable
     public PlayerData? OwnerID { get; set; }
+
+    public NFTInfo? NFTID { get; set; }
 #nullable disable
+
+    [MapTo("startTime")]
+    public DateTimeOffset StartTime { get; set; }
+
+    [MapTo("endTime")]
+    public DateTimeOffset EndTime { get; set; }
 
     [MapTo("startPrice")]
     public int StartPrice { get; set; }
 
-    [MapTo("startTime")]
-    public DateTimeOffset StartTime { get; set; }
+    [MapTo("bidPlayerID")]
+#nullable enable
+    public PlayerData? BidPlayerID { get; set; }
+#nullable disable
+
+    [MapTo("bidPrice")]
+    public int BidPrice { get; set; }
 }
 
 public partial class NFTContent : IEmbeddedObject
@@ -50,12 +57,18 @@ public partial class NFTInfo : IRealmObject
     [PrimaryKey]
     public int Id { get; set; }
 
+    [MapTo("ownerID")]
+#nullable enable
+    public PlayerData? OwnerID { get; set; }
+#nullable disable
+
+    [MapTo("name")]
+    [Required]
+    public string Name { get; set; }
+
     [MapTo("author")]
     [Required]
     public string Author { get; set; }
-
-    [MapTo("contents")]
-    public IList<NFTContent> Contents { get; }
 
     [MapTo("createTime")]
     public DateTimeOffset CreateTime { get; set; }
@@ -63,14 +76,8 @@ public partial class NFTInfo : IRealmObject
     [MapTo("isMinted")]
     public bool IsMinted { get; set; }
 
-    [MapTo("name")]
-    [Required]
-    public string Name { get; set; }
-
-    [MapTo("ownerID")]
-#nullable enable
-    public PlayerData? OwnerID { get; set; }
-#nullable disable
+    [MapTo("contents")]
+    public IList<NFTContent> Contents { get; }
 }
 
 public partial class PlayerData : IRealmObject
@@ -79,36 +86,61 @@ public partial class PlayerData : IRealmObject
     [PrimaryKey]
     public int Id { get; set; }
 
-    public IList<NFTInfo> NFTs { get; }
-
     [MapTo("email")]
     [Required]
     public string Email { get; set; }
 
-    [MapTo("friends")]
-    public IList<PlayerData> Friends { get; }
-
-    [MapTo("isOnline")]
-    public bool IsOnline { get; set; }
-
-    [MapTo("likedAuction")]
-    public IList<Auction> LikedAuction { get; }
+    [MapTo("username")]
+    [Required]
+    public string Username { get; set; }
 
     [MapTo("password")]
     [Required]
     public string Password { get; set; }
+
+    [MapTo("exp")]
+    public int Exp { get; set; }
 
     [MapTo("position")]
 #nullable enable
     public PlayerPosition? Position { get; set; }
 #nullable disable
 
-    [MapTo("taskProgress")]
-    public IList<double> TaskProgress { get; }
+    [MapTo("friends")]
+    public IList<PlayerData> Friends { get; }
 
-    [MapTo("username")]
-    [Required]
-    public string Username { get; set; }
+    public IList<NFTInfo> NFTs { get; }
+
+    [MapTo("taskProgress")]
+    public IList<PlayerTask> TaskProgress { get; }
+
+    [MapTo("bidAuction")]
+    public IList<PlayerBidAuction> BidAuction { get; }
+}
+
+public partial class PlayerBidAuction : IEmbeddedObject
+{
+    [MapTo("auctionID")]
+#nullable enable
+    public Auction? AuctionID { get; set; }
+#nullable disable
+
+    [MapTo("checkTime")]
+    public DateTimeOffset CheckTime { get; set; }
+}
+
+public partial class PlayerTask : IEmbeddedObject
+{
+    [MapTo("taskID")]
+#nullable enable
+    public Task? TaskID { get; set; }
+#nullable disable
+
+    [MapTo("progress")]
+    public int Progress { get; set; }
+
+    [MapTo("achieved")]
+    public bool Achieved { get; set; }
 }
 
 public partial class PlayerPosition : IEmbeddedObject
@@ -138,28 +170,17 @@ public partial class Task : IRealmObject
     [PrimaryKey]
     public int Id { get; set; }
 
+    [MapTo("name")]
+    [Required]
+    public string Name { get; set; }
+
     [MapTo("description")]
     [Required]
     public string Description { get; set; }
 
+    [MapTo("maxProgress")]
+    public int MaxProgress { get; set; }
+
     [MapTo("prize")]
     public int Prize { get; set; }
-}
-
-
-public partial class PlayerDataOld : IRealmObject
-{
-    [MapTo("_id")]
-    [PrimaryKey]
-    public int Id { get; set; }
-    [Required]
-    public string Email { get; set; }
-    public IList<PlayerData> Friends { get; }
-    public IList<Auction> LikedAuction { get; }
-    public IList<NFTInfo> NFTs { get; }
-    [Required]
-    public string Password { get; set; }
-    public PlayerPosition? Position { get; set; }
-    [Required]
-    public string UserName { get; set; }
 }

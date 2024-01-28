@@ -174,7 +174,6 @@ public class GameStartManager : Singleton<GameStartManager>
                     Email = EmailInput.text,
                     Username = UserNameInput.text,
                     Password = PasswordInput.text,
-                    IsOnline = true,
                     Position = new PlayerPosition()
                     {
                         PosX = 0,
@@ -185,14 +184,6 @@ public class GameStartManager : Singleton<GameStartManager>
                         RotZ = 0,
                     }
                 });
-
-                // initialize task progress
-                var totalTask = taskQuery.ToArray().Length;
-                Debug.Log(totalTask);
-                for (int i = 0; i < totalTask; i++)
-                {
-                    findPlayer.TaskProgress.Add(0);
-                }
             });
 
             if (totalPlayer >= 1)
