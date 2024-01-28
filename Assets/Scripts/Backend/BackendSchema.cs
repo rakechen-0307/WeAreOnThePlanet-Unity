@@ -145,6 +145,9 @@ public partial class PlayerTask : IEmbeddedObject
 
 public partial class PlayerPosition : IEmbeddedObject
 {
+    [MapTo("planetID")]
+    public int PlanetID { get; set; }
+
     [MapTo("posX")]
     public double PosX { get; set; }
 
