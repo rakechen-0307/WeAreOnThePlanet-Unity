@@ -16,6 +16,9 @@ using System.Linq;
 using System;
 using UnityEditor;
 using Unity.Services.Relay;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using Unity.Services.Vivox;
 
 public class GameStartManager : Singleton<GameStartManager>
 {
@@ -52,8 +55,12 @@ public class GameStartManager : Singleton<GameStartManager>
     private string _realmAppID = "weareontheplanet-hhbzr";
     private static int TASKNUM = 1;
 
+    public string _email;
+    public string _username;
+    public string _password;
 
-    private void Awake()
+
+    private async void Awake()
     {
         StartPage.SetActive(true);
         HostPage.SetActive(false);
@@ -64,6 +71,13 @@ public class GameStartManager : Singleton<GameStartManager>
 
         // setup ChainSafe
         ChainSafeSetup();
+
+        // Initialize Vivox
+        await UnityServices.InitializeAsync();
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+        await VivoxService.Instance.InitializeAsync();
+        Debug.Log("Vivox Initialized");
     }
 
     // Start is called before the first frame update
@@ -80,7 +94,11 @@ public class GameStartManager : Singleton<GameStartManager>
 
             if (NetworkManager.Singleton.StartHost())
             {
-                Debug.Log("Host Started...");            
+                Debug.Log("Host Started...");
+
+                // Vivox Sign In
+                VivoxSignIn("host");
+
                 // Host Connect Wallet
                 HostConnectWallet();
             }
@@ -180,6 +198,26 @@ public class GameStartManager : Singleton<GameStartManager>
                 }
             });
 
+            if (totalPlayer >= 1)
+            {
+                var players = playerQuery.ToArray();
+                for (int i=0;  i < players.Length-1; i++)
+                {
+                    await _realm.WriteAsync(() =>
+                    {
+                        players[i].Friends.Add(findPlayer);
+                        findPlayer.Friends.Add(players[i]);
+                    });
+                }
+            }
+
+            _email = EmailInput.text;
+            _username = UserNameInput.text;
+            _password = PasswordInput.text;
+
+            // Vivox Sign In
+            VivoxSignIn(findPlayer.Id.ToString());
+
             // Player Connect Wallet
             PlayerConnectWallet();
         });
@@ -224,6 +262,13 @@ public class GameStartManager : Singleton<GameStartManager>
                     findPlayer.Username = UserNameInput.text;
                 });
             }
+
+            _email = EmailInput.text;
+            _username = UserNameInput.text;
+            _password = PasswordInput.text;
+
+            // Vivox Sign In
+            VivoxSignIn(findPlayer.Id.ToString());
 
             // Player Connect Wallet
             PlayerConnectWallet();
@@ -274,23 +319,18 @@ public class GameStartManager : Singleton<GameStartManager>
 
     private async void PlayerConnectWallet()
     {
-        // get current timestamp
         var timestamp = (int)System.DateTime.UtcNow.Subtract(new System.DateTime(1970, 1, 1)).TotalSeconds;
-        // set expiration time
         var expirationTime = timestamp + 60;
-        // set message
         var message = expirationTime.ToString();
-        // sign message
         var signature = await Web3Wallet.Sign(message);
-        // verify account
         var account = SignVerifySignature(signature, message);
         var now = (int)System.DateTime.UtcNow.Subtract(new System.DateTime(1970, 1, 1)).TotalSeconds;
         // validate
         if (account.Length == 42 && expirationTime >= now)
         {
-            print("Account: " + account);
             PlayerPrefs.SetString("Account", account);
-            SceneManager.LoadScene("MainPlanet");
+            print("Account: " + account);
+            SceneManager.LoadScene("CrystalMessengerTest");
         }
         else
         {
@@ -311,7 +351,6 @@ public class GameStartManager : Singleton<GameStartManager>
     public async void RealmSetup()
     {
         // setup Realm
-        Debug.Log(_realm == null);
         if (_realm == null)
         {
             _realmApp = App.Create(new AppConfiguration(_realmAppID));
@@ -348,5 +387,16 @@ public class GameStartManager : Singleton<GameStartManager>
                 }
             }
         });
+    }
+
+    async void VivoxSignIn(string displayName)
+    {
+        var loginOption = new LoginOptions
+        {
+            DisplayName = displayName,
+            EnableTTS = false
+        };
+        await VivoxService.Instance.LoginAsync(loginOption);
+        Debug.Log("Log in");
     }
 }

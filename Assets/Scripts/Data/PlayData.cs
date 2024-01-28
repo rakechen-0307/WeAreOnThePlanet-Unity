@@ -145,3 +145,21 @@ public partial class Task : IRealmObject
     [MapTo("prize")]
     public int Prize { get; set; }
 }
+
+
+public partial class PlayerDataOld : IRealmObject
+{
+    [MapTo("_id")]
+    [PrimaryKey]
+    public int Id { get; set; }
+    [Required]
+    public string Email { get; set; }
+    public IList<PlayerData> Friends { get; }
+    public IList<Auction> LikedAuction { get; }
+    public IList<NFTInfo> NFTs { get; }
+    [Required]
+    public string Password { get; set; }
+    public PlayerPosition? Position { get; set; }
+    [Required]
+    public string UserName { get; set; }
+}
