@@ -10,7 +10,7 @@ public class Sushi : MonoBehaviour
     public string Author;
     public DateTimeOffset CreateTime;
     public bool IsMinted;
-    public int NFTID;
+    public int Id;
     public string Name;
     public int OwnerID;
     // Content
@@ -20,11 +20,11 @@ public class Sushi : MonoBehaviour
     void OnMouseDown()
     {
         say("Sushi clicked!");
-        say(NFTID.ToString());
+        say(Id.ToString());
         if(viewMode == "mint"){
             UIManager.Instance.UpdateText("Would you like to mint this NFT?\n" +
                 "Name: " + Name + "\n" +
-                "ID: " + NFTID + "\n" +
+                "ID: " + Id + "\n" +
                 "Author: " + Author + "\n" +
                 "Time of creation: " + CreateTime + "\n"
             );

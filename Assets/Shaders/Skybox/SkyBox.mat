@@ -54,7 +54,7 @@ Material:
     - _Brightness: 0.5
     - _HorizontalBrightness: 200
     - _Horizontal_Blend: 50
-    - _Power_Factor: 32
+    - _Power_Factor: 1000
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Sky_Blend: 3.4

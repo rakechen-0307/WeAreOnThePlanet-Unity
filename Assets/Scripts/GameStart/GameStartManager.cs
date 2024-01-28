@@ -13,6 +13,8 @@ using System.Text;
 using Realms;
 using Realms.Sync;
 using System.Linq;
+using System;
+using UnityEditor;
 
 public class GameStartManager : Singleton<GameStartManager>
 {
@@ -46,7 +48,11 @@ public class GameStartManager : Singleton<GameStartManager>
     private Realm _realm;
     private App _realmApp;
     private User _realmUser;
-    private string _realmAppID = "weareontheplanet-rymdg";
+    private string _realmAppID = "weareontheplanet-hhbzr";
+
+    public string _email;
+    public string _username;
+    public string _password;
 
 
     private void Awake()
@@ -132,6 +138,9 @@ public class GameStartManager : Singleton<GameStartManager>
             var playerQuery = _realm.All<PlayerData>();
             await playerQuery.SubscribeAsync();
 
+            var taskQuery = _realm.All<Task>();
+            await taskQuery.SubscribeAsync();
+
             // Check if user is already existed and store user information
             PlayerData findPlayer = _realm.All<PlayerData>().Where(user => user.Email == EmailInput.text).FirstOrDefault();
 
@@ -149,20 +158,45 @@ public class GameStartManager : Singleton<GameStartManager>
                 {
                     Id = totalPlayer + 1,
                     Email = EmailInput.text,
-                    UserName = UserNameInput.text,
+                    Username = UserNameInput.text,
                     Password = PasswordInput.text,
+                    IsOnline = true,
                     Position = new PlayerPosition()
                     {
-                        PlayerID = totalPlayer + 1,
                         PosX = 0,
                         PosY = 0,
                         PosZ = 0,
                         RotX = 0,
                         RotY = 0,
                         RotZ = 0,
-                    }   
+                    }
                 });
+
+                // initialize task progress
+                var totalTask = taskQuery.ToArray().Length;
+                Debug.Log(totalTask);
+                for (int i = 0; i < totalTask; i++)
+                {
+                    findPlayer.TaskProgress.Add(0);
+                }
             });
+
+            if (totalPlayer >= 1)
+            {
+                var players = playerQuery.ToArray();
+                for (int i=0;  i < players.Length-1; i++)
+                {
+                    await _realm.WriteAsync(() =>
+                    {
+                        players[i].Friends.Add(findPlayer);
+                        findPlayer.Friends.Add(players[i]);
+                    });
+                }
+            }
+
+            _email = EmailInput.text;
+            _username = UserNameInput.text;
+            _password = PasswordInput.text;
 
             // Player Connect Wallet
             PlayerConnectWallet();
@@ -181,6 +215,9 @@ public class GameStartManager : Singleton<GameStartManager>
             var playerQuery = _realm.All<PlayerData>();
             await playerQuery.SubscribeAsync();
 
+            var taskQuery = _realm.All<Task>();
+            await taskQuery.SubscribeAsync();
+
             // Check if user information is correct
             PlayerData findPlayer = _realm.All<PlayerData>().Where(user => user.Email == EmailInput.text).FirstOrDefault();
 
@@ -198,13 +235,17 @@ public class GameStartManager : Singleton<GameStartManager>
                 return;
             }
 
-            if (findPlayer.UserName != UserNameInput.text)
+            if (findPlayer.Username != UserNameInput.text)
             {
                 await _realm.WriteAsync(() =>
                 {
-                    findPlayer.UserName = UserNameInput.text;
+                    findPlayer.Username = UserNameInput.text;
                 });
             }
+
+            _email = EmailInput.text;
+            _username = UserNameInput.text;
+            _password = PasswordInput.text;
 
             // Player Connect Wallet
             PlayerConnectWallet();
@@ -269,7 +310,7 @@ public class GameStartManager : Singleton<GameStartManager>
         if (account.Length == 42 && expirationTime >= now)
         {
             print("Account: " + account);
-            SceneManager.LoadScene("MainPlanet");
+            SceneManager.LoadScene("CrystalMessengerTest");
         }
         else
         {
@@ -306,5 +347,10 @@ public class GameStartManager : Singleton<GameStartManager>
                 _realm = Realm.GetInstance(new FlexibleSyncConfiguration(_realmUser));
             }
         }
+    }
+
+    public string GetEmail()
+    {
+        return _email;
     }
 }

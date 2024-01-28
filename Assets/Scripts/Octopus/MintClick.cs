@@ -21,19 +21,19 @@ public class MintClick : MonoBehaviour
     List<NFTInfo> Test = new List<NFTInfo>
     {
         new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, NFTID = 1, Name="NFT1", OwnerID = 1,
+            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 1, Name="NFT1", OwnerID = 1,
         },
         new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, NFTID = 2, Name="NFT2", OwnerID = 1,
+            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 2, Name="NFT2", OwnerID = 1,
         },
         new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, NFTID = 3, Name="NFT3", OwnerID = 1,
+            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 3, Name="NFT3", OwnerID = 1,
         },
         new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, NFTID = 4, Name="NFT4", OwnerID = 1,
+            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 4, Name="NFT4", OwnerID = 1,
         },
         new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, NFTID = 5, Name="NFT5", OwnerID = 1,
+            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 5, Name="NFT5", OwnerID = 1,
         },
     };
 
@@ -44,7 +44,7 @@ public class MintClick : MonoBehaviour
         Debug.Log("Mint NFT clicked");
 
         // Load NFTs the player have
-        StartCoroutine(LoadMintNFTOperation());
+        // StartCoroutine(LoadMintNFTOperation());
         sushiManager.SetMint(Test); // set to the result of DB
 
         // Show unminted NFTs
@@ -80,7 +80,7 @@ public class MintClick : MonoBehaviour
 
     async void YourAsyncOperation(System.Action<PlayerData> onCompleted)
     {
-        
+        /*
         // subscription
         var playerQuery = _realm.All<PlayerData>();
         await playerQuery.SubscribeAsync();
@@ -99,7 +99,7 @@ public class MintClick : MonoBehaviour
             return;
         }
         Debug.Log(findPlayer.NFTs[0].Author);
-        
+        */
 
         // Once done, call the callback
         onCompleted?.Invoke(null);

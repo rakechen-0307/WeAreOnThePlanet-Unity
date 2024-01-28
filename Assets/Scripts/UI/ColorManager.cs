@@ -45,7 +45,9 @@ public class ColorManager : MonoBehaviour
         childUI.setAlignment(Alignment.MIDDLE_BOTTOM);
         childUI.setSize(buttonSize);
         childUI.setAnchor(new Vector2(0.5f, (float)buttonIndex / (float)(childNumber)));
+#if UNITY_EDITOR
         UnityEditor.EditorApplication.delayCall += childUI.Resize;
+#endif
     }
     private void ControlAspectRatioMode()
     {

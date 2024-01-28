@@ -91,7 +91,7 @@ public class SushiManager : MonoBehaviour
             sushiInstance.tag = "sushi";
             Sushi sushiComponent = sushiInstance.GetComponent<Sushi>();
             NFTInfo nftInfo = Displayed[i];
-            sushiComponent.NFTID = nftInfo.NFTID;
+            sushiComponent.Id = nftInfo.Id;
             sushiComponent.Name = nftInfo.Name;
             sushiComponent.Author = nftInfo.Author;
             sushiComponent.CreateTime = nftInfo.CreateTime;
@@ -112,7 +112,7 @@ public class SushiManager : MonoBehaviour
     }
     
     private void rsay(){
-            for(int i=0; i<Displayed.Count;i++)Debug.Log("Display " + i + " " + Displayed[i].NFTID);
+            for(int i=0; i<Displayed.Count;i++)Debug.Log("Display " + i + " " + Displayed[i].Id);
             Debug.Log(sushiInstances.Count);
             Debug.Log(viewNumber);
         }
