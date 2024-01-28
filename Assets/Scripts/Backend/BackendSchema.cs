@@ -35,20 +35,33 @@ public partial class Auction : IRealmObject
     public int BidPrice { get; set; }
 }
 
+public partial class RGBColor : IEmbeddedObject
+{
+    [MapTo("r")]
+    public double R { get; set; }
+
+    [MapTo("g")]
+    public double G { get; set; }
+
+    [MapTo("b")]
+    public double B { get; set; }
+}
+
 public partial class NFTContent : IEmbeddedObject
 {
     [MapTo("color")]
-    [Required]
-    public string Color { get; set; }
+#nullable enable
+    public RGBColor? Color { get; set; }
+#nullable disable
 
     [MapTo("posX")]
-    public int PosX { get; set; }
+    public double PosX { get; set; }
 
     [MapTo("posY")]
-    public int PosY { get; set; }
+    public double PosY { get; set; }
 
     [MapTo("posZ")]
-    public int PosZ { get; set; }
+    public double PosZ { get; set; }
 }
 
 public partial class NFTInfo : IRealmObject
@@ -137,7 +150,7 @@ public partial class PlayerTask : IEmbeddedObject
 #nullable disable
 
     [MapTo("progress")]
-    public int Progress { get; set; }
+    public double Progress { get; set; }
 
     [MapTo("achieved")]
     public bool Achieved { get; set; }
@@ -182,7 +195,7 @@ public partial class Task : IRealmObject
     public string Description { get; set; }
 
     [MapTo("maxProgress")]
-    public int MaxProgress { get; set; }
+    public double MaxProgress { get; set; }
 
     [MapTo("prize")]
     public int Prize { get; set; }
