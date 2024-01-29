@@ -146,4 +146,16 @@ public class BackendManager : MonoBehaviour
             loadedData.NFTs.Add(nft);
         }
     }
+
+    public void saveNFT(int nftID, ArtWork NFT)
+    {
+        string NFTName = NFT.artName;
+        bool isShown = NFT.isShown;
+        List<BlockData> blockDatas = NFT.blockDatas;
+    }
+
+    public void createNFT(LoadedData loadedData)
+    {
+        
+    }
 }
