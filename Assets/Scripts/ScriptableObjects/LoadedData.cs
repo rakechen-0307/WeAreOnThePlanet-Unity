@@ -77,3 +77,33 @@ public class PlanetData
         experience = exp;
     }
 }
+
+[Serializable]
+public class ArtWork
+{
+    public int id;
+    public string artName;
+    public string author;
+    public DateTimeOffset createdTime;
+    public int ownerID;
+    public bool isMinted;
+    public bool isShown;
+    public List<BlockData> blockDatas = new List<BlockData>();
+}   
+
+[Serializable]
+public class BlockData
+{
+    public Vector3 position = Vector3.zero;
+    public Color color = Color.black;
+    public BlockData()
+    {
+        position = Vector3.zero;
+        color = Color.white;
+    }
+    public BlockData(Vector3 Position, Color Color)
+    {
+        position = Position;
+        color = Color;
+    }
+}

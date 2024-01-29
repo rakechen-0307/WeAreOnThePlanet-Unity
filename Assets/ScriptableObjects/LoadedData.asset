@@ -17,14 +17,29 @@ MonoBehaviour:
   mainPlayer:
     lastPosition: {x: 0, y: 50.7, z: 0}
     lastEuler: {x: 0, y: 0, z: 0}
-    lastPlanetId: 0
+    lastPlanetId: 1
   NFTs:
-  - {fileID: 11400000, guid: ec0c2ce915903fa45904ecea95fcb543, type: 2}
+  - id: 0
+    artName: 
+    author: 
+    ownerID: 0
+    isMinted: 0
+    isShown: 0
+    blockDatas: []
   friendIds: 
   bidAuctions: []
   achievements: []
   experience: 0
   currentPlanet:
-    ownerId: 0
-    NFTs: []
+    ownerId: 1
+    NFTs:
+    - id: 0
+      artName: 
+      author: 
+      ownerID: 0
+      isMinted: 1
+      isShown: 0
+      blockDatas:
+      - position: {x: 0, y: 0, z: 0}
+        color: {r: 0, g: 0, b: 0, a: 0}
     experience: 0

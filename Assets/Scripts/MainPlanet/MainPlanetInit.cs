@@ -24,8 +24,8 @@ public class MainPlanetInit : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("OnSceneLoaded: " + scene.name);
         // TODO: call backend manager to load planet
+        BackendManager.instance.loadPlanetData(loadedData.mainPlayer.lastPlanetId, loadedData);
         // TODO end
         initPlayer();
         initNFTDisplay();
@@ -41,12 +41,12 @@ public class MainPlanetInit : MonoBehaviour
     {
         int NFTidx = 0;
         int displayedNFTCount = 0;
-        while (displayedNFTCount < NFTDisplaySlots.Count && NFTidx < loadedData.NFTs.Count)
+        while (displayedNFTCount < NFTDisplaySlots.Count && NFTidx < loadedData.currentPlanet.NFTs.Count)
         {
-            if (loadedData.NFTs[NFTidx].isShown)
+            if (loadedData.currentPlanet.NFTs[NFTidx].isShown)
             {
                 // TODO: show NFT
-                ShowNFT(NFTDisplaySlots[displayedNFTCount], loadedData.NFTs[NFTidx]);
+                ShowNFT(NFTDisplaySlots[displayedNFTCount], loadedData.currentPlanet.NFTs[NFTidx]);
                 displayedNFTCount++;
             }
             NFTidx++;

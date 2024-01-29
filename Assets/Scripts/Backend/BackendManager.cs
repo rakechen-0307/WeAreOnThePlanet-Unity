@@ -1,26 +1,33 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BackendManager : MonoBehaviour
 {
-    [SerializeField]
-    private LoadedData loadedData;
-
-    BackendCommunicator backendCommunicator;
+    public static BackendManager instance;
 
     private void Awake()
     {
-        backendCommunicator = GameObject.Find("BackendCommunicator").GetComponent<BackendCommunicator>();
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    public int loadMainPlayerData(int playerId)
+    public int loadMainPlayerData(int playerId, LoadedData loadedData)
     {
-        PlayerData playerData = backendCommunicator.FindOnePlayerById(playerId);
+        PlayerData playerData = BackendCommunicator.instance.FindOnePlayerById(playerId);
 
         // load general data
         loadedData.playerId = playerData.Id;
         loadedData.playerName = playerData.Username;
         loadedData.experience = playerData.Exp;
+        loadedData.friendIds = new List<int>();
         for (int i = 0; i < playerData.Friends.Count; i++)
         {
             loadedData.friendIds.Add(playerData.Friends[i].Id);
@@ -39,6 +46,7 @@ public class BackendManager : MonoBehaviour
         loadedData.mainPlayer = new Player(pos, euler, planetId);
 
         // achivements
+        loadedData.achievements = new List<Achievement>();
         foreach (PlayerTask playerTask in playerData.TaskProgress)
         {
             int taskId= playerTask.Task.Id;
@@ -50,6 +58,7 @@ public class BackendManager : MonoBehaviour
         }
 
         // bid auctions
+        loadedData.bidAuctions = new List<SubscribedAuction>();
         foreach (PlayerBidAuction playerBidAuction in playerData.BidAuction)
         {
             int auctionID = playerBidAuction.Auction.Id;
@@ -59,13 +68,19 @@ public class BackendManager : MonoBehaviour
 
         return planetId;
     }
-    public void loadPlanetData(int playerId)
+    public void loadPlanetData(int playerId, LoadedData loadedData)
     {
-        PlayerData playerData = backendCommunicator.FindOnePlayerById(playerId);
+        PlayerData playerData = BackendCommunicator.instance.FindOnePlayerById(playerId);
+        if (playerData == null)
+        {
+            Debug.LogError("didn't get player data");
+            return;
+        }
 
         loadedData.currentPlanet.ownerId = playerId;
         loadedData.currentPlanet.experience = playerData.Exp;
         // loadNFTs
+        loadedData.currentPlanet.NFTs = new List<ArtWork>();
         foreach (NFTInfo nftInfo in playerData.NFTs)
         {
             ArtWork nft = new ArtWork();
@@ -89,7 +104,18 @@ public class BackendManager : MonoBehaviour
                 Color color = new Color(r, g, b);
                 nft.blockDatas.Add(new BlockData(pos, color));
             }
-            loadedData.NFTs.Add(nft);
+            loadedData.currentPlanet.NFTs.Add(nft);
         }
+    }
+
+    public void saveMainPlayerData(int playerId, Player player)
+    {
+        float posX = player.lastPosition.x;
+        float posY = player.lastPosition.y;
+        float posZ = player.lastPosition.z;
+        float rotX = player.lastEuler.x;
+        float rotY = player.lastEuler.y;
+        float rotZ = player.lastEuler.z;
+        int planetID = player.lastPlanetId;
     }
 }

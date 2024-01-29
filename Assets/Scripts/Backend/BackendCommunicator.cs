@@ -7,6 +7,7 @@ using System.Linq;
 
 public class BackendCommunicator : MonoBehaviour
 {
+    public static BackendCommunicator instance;
     private Realm _realm;
     private App _realmApp;
     private User _realmUser;
@@ -14,8 +15,16 @@ public class BackendCommunicator : MonoBehaviour
 
     private void Awake()
     {
-        // Realm Setup
-        RealmSetup();
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+            RealmSetup();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }        
     }
 
     /*
