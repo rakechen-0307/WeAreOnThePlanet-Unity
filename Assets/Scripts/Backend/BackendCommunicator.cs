@@ -46,8 +46,10 @@ public class BackendCommunicator : MonoBehaviour
         return playerData;
     }
 
-    public async void UpdatePlayerPosition(PlayerData player, int planetId, Vector3 pos, Vector3 rot)
+    public async void UpdatePlayerPosition(int playerId, int planetId, Vector3 pos, Vector3 rot)
     {
+        PlayerData player = FindOnePlayerById(playerId);
+
         await _realm.WriteAsync(() =>
         {
             player.Position.PlanetID = planetId;
