@@ -154,8 +154,13 @@ public class BackendManager : MonoBehaviour
         List<BlockData> blockDatas = NFT.blockDatas;
     }
 
-    public void createNFT(LoadedData loadedData)
+    public void newNFT(string nftName, LoadedData loadedData)
     {
-        
+        int ownerId = loadedData.playerId;
+        string author = loadedData.playerName;
+        DateTimeOffset createTime = DateTimeOffset.Now;
+        bool isMinted = false;
+        bool isShown = false;
+        List<BlockData> blockDatas = new List<BlockData>();
     }
 }
