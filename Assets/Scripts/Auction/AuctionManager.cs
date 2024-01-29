@@ -71,8 +71,8 @@ public class AuctionManager : MonoBehaviour
             var auction = _realm.Add(new Auction()
             {
                 Id = auctionsCount + 1,
-                OwnerID = findPlayer,
-                NFTID = nft,
+                Owner = findPlayer,
+                NFT = nft,
                 StartTime = startTime,
                 EndTime = endTime,
                 StartPrice = startPrice,
@@ -97,7 +97,7 @@ public class AuctionManager : MonoBehaviour
             PlayerData player = _realm.All<PlayerData>().Where(user => user.Email == PlayerPrefs.GetString("Email")).FirstOrDefault();
             await _realm.WriteAsync(() =>
             {
-                auction.BidPlayerID = player;
+                auction.BidPlayer = player;
                 auction.BidPrice = bidPrice;
             });
         }
