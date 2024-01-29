@@ -5,11 +5,17 @@ public class BackendManager : MonoBehaviour
 {
     [SerializeField]
     private LoadedData loadedData;
+
+    BackendCommunicator backendCommunicator;
+
+    private void Awake()
+    {
+        backendCommunicator = GameObject.Find("BackendCommunicator").GetComponent<BackendCommunicator>();
+    }
+
     public int loadMainPlayerData(int playerId)
     {
-        // fetch data
-        PlayerData playerData = new PlayerData();
-        // end TODO
+        PlayerData playerData = backendCommunicator.FindOnePlayerById(playerId);
 
         // load general data
         loadedData.playerId = playerData.Id;
@@ -55,9 +61,7 @@ public class BackendManager : MonoBehaviour
     }
     public void loadPlanetData(int playerId)
     {
-        // TODO: fetch data
-        PlayerData playerData = new PlayerData();
-        // end TODO
+        PlayerData playerData = backendCommunicator.FindOnePlayerById(playerId);
 
         loadedData.currentPlanet.ownerId = playerId;
         loadedData.currentPlanet.experience = playerData.Exp;

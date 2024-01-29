@@ -3,6 +3,7 @@ using Realms;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class BackendCommunicator : MonoBehaviour
 {
@@ -24,6 +25,18 @@ public class BackendCommunicator : MonoBehaviour
     }
     */
 
+    public PlayerData FindOnePlayerByEmail(string email)
+    {
+        PlayerData playerData = _realm.All<PlayerData>().Where(user => user.Email == email).FirstOrDefault();
+        return playerData;
+    }
+
+    public PlayerData FindOnePlayerById(int playerId)
+    {
+        PlayerData playerData = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault();
+        return playerData;
+    }
+
     private async void RealmSetup()
     {
         if (_realm == null)
@@ -42,5 +55,18 @@ public class BackendCommunicator : MonoBehaviour
                 _realm = Realm.GetInstance(new FlexibleSyncConfiguration(_realmUser));
             }
         }
+
+        // Subscription
+        var playerQuery = _realm.All<PlayerData>();
+        await playerQuery.SubscribeAsync();
+
+        var NFTQuery = _realm.All<NFTInfo>();
+        await NFTQuery.SubscribeAsync();
+
+        var auctionQuery = _realm.All<Auction>();
+        await auctionQuery.SubscribeAsync();
+
+        var taskQuery = _realm.All<Task>();
+        await taskQuery.SubscribeAsync();
     }
 }
