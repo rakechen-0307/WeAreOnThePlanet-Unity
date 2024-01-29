@@ -110,12 +110,9 @@ public class BackendManager : MonoBehaviour
 
     public void saveMainPlayerData(int playerId, Player player)
     {
-        float posX = player.lastPosition.x;
-        float posY = player.lastPosition.y;
-        float posZ = player.lastPosition.z;
-        float rotX = player.lastEuler.x;
-        float rotY = player.lastEuler.y;
-        float rotZ = player.lastEuler.z;
-        int planetID = player.lastPlanetId;
+        Vector3 pos = player.lastPosition;
+        Vector3 rot = player.lastEuler;
+        int planetId = player.lastPlanetId;
+        BackendCommunicator.instance.UpdatePlayerPosition(playerId, planetId, pos, rot);
     }
 }
