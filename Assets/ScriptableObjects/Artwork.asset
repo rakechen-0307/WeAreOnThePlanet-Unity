@@ -12,4 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb729c387495545419a8694c222521f8, type: 3}
   m_Name: Artwork
   m_EditorClassIdentifier: 
-  blockDatas: []
+  id: 0
+  artName: test001
+  author: 
+  ownerID: 0
+  isMinted: 0
+  isShown: 1
+  blockDatas:
+  - position: {x: 0, y: 0, z: 0}
+    color: {r: 0, g: 1, b: 0.96936965, a: 0}
+  - position: {x: 0, y: 1, z: 0}
+    color: {r: 1, g: 1, b: 1, a: 0}
