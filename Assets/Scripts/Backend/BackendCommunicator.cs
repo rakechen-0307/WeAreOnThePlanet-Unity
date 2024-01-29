@@ -107,7 +107,7 @@ public class BackendCommunicator : MonoBehaviour
 
         await _realm.WriteAsync(() =>
         {
-            _realm.Add(new NFTInfo()
+            NFTInfo newNFT = _realm.Add(new NFTInfo()
             {
                 Id = NFTsCount + 1,
                 Owner = owner,
@@ -117,6 +117,8 @@ public class BackendCommunicator : MonoBehaviour
                 IsMinted = isMinted,
                 IsShown = isShown
             });
+
+            owner.NFTs.Add(newNFT);
         });
 
         return NFTsCount + 1;
