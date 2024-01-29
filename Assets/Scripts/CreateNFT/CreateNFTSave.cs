@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CreateNFTSave : MonoBehaviour
 {
@@ -24,10 +25,19 @@ public class CreateNFTSave : MonoBehaviour
         NFT.isMinted = false;
         NFT.isShown = false;
         BackendManager.instance.newNFT(NFT);
+        loadedData.NFTs.Add(NFT);
     }
 
-    private void SaveNFTData(ArtWork NFT)
+    private void SaveNFTData(ArtWork newNFTData)
     {
-        BackendManager.instance.saveNFT(NFT);
+        BackendManager.instance.saveNFT(newNFTData);
+
+        for (int i = 0; i < loadedData.NFTs.Count; i++)
+        {
+            if (loadedData.NFTs[i].id == newNFTData.id)
+            {
+                loadedData.NFTs[i] = newNFTData;
+            }
+        }
     }
 }
