@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class CreateNFTSave : MonoBehaviour
@@ -9,12 +10,24 @@ public class CreateNFTSave : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            SaveNFTData();
+            SaveNFTData(loadedData.NFTs[0]);
         }
     }
 
-    private void SaveNFTData()
+    private void NewNFT(string NFTName)
     {
-        // loadedData.NFTs => back
+        ArtWork NFT = new ArtWork();
+        NFT.artName = NFTName;
+        NFT.ownerID = loadedData.playerId;
+        NFT.author = loadedData.playerName;
+        NFT.createdTime = DateTimeOffset.Now;
+        NFT.isMinted = false;
+        NFT.isShown = false;
+        BackendManager.instance.newNFT(NFT);
+    }
+
+    private void SaveNFTData(ArtWork NFT)
+    {
+        BackendManager.instance.saveNFT(NFT);
     }
 }

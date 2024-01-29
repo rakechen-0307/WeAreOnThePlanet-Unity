@@ -147,20 +147,22 @@ public class BackendManager : MonoBehaviour
         }
     }
 
-    public void saveNFT(int nftID, ArtWork NFT)
+    public void saveNFT(ArtWork NFT)
     {
+        int nftID = NFT.id;
         string NFTName = NFT.artName;
         bool isShown = NFT.isShown;
         List<BlockData> blockDatas = NFT.blockDatas;
     }
 
-    public void newNFT(string nftName, LoadedData loadedData)
+    public void newNFT(ArtWork NFT)
     {
-        int ownerId = loadedData.playerId;
-        string author = loadedData.playerName;
-        DateTimeOffset createTime = DateTimeOffset.Now;
-        bool isMinted = false;
-        bool isShown = false;
-        List<BlockData> blockDatas = new List<BlockData>();
+        string NFTName = NFT.artName;
+        int ownerId = NFT.ownerID;
+        string author = NFT.author;
+        DateTimeOffset createTime = NFT.createdTime;
+        bool isMinted = NFT.isMinted;
+        bool isShown = NFT.isShown;
+        List<BlockData> blockDatas = NFT.blockDatas;
     }
 }

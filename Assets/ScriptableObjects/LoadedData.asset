@@ -18,14 +18,7 @@ MonoBehaviour:
     lastPosition: {x: 0, y: 50.7, z: 0}
     lastEuler: {x: 0, y: 0, z: 0}
     lastPlanetId: 1
-  NFTs:
-  - id: 0
-    artName: 
-    author: 
-    ownerID: 0
-    isMinted: 0
-    isShown: 0
-    blockDatas: []
+  NFTs: []
   friendIds: 
   bidAuctions: []
   achievements: []
