@@ -36,7 +36,7 @@ public class SushiManager : MonoBehaviour
     private Realm _realm;
     private App _realmApp;
     private User _realmUser;
-    private string _realmAppID = "weareontheplanet-hhbzr";
+    private string _realmAppID = "weareontheplanet-ouawh";
 
     public static BigInteger price = 100;
 

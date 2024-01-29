@@ -19,7 +19,7 @@ public class AuctionManager : MonoBehaviour
     private Realm _realm;
     private App _realmApp;
     private User _realmUser;
-    private string _realmAppID = "weareontheplanet-hhbzr";
+    private string _realmAppID = "weareontheplanet-ouawh";
 
     // Start is called before the first frame update
     void Start()
