@@ -1,16 +1,31 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CreateNFTinit : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private LoadedData loadedData;
+    
+    [SerializeField]
+    private GameObject UIPannel;
+
+    private void OnEnable()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        UIPannel.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        BackendManager.instance.loadOwnedNFT(loadedData.playerId, loadedData);
         
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnDisable()
     {
-        
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
+
 }
