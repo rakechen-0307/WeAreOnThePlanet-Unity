@@ -4,94 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public partial class Auction : IRealmObject
-{
-    [MapTo("_id")]
-    [PrimaryKey]
-    public int Id { get; set; }
-
-    [MapTo("ownerID")]
-#nullable enable
-    public PlayerData? OwnerID { get; set; }
-
-    public NFTInfo? NFTID { get; set; }
-#nullable disable
-
-    [MapTo("startTime")]
-    public DateTimeOffset StartTime { get; set; }
-
-    [MapTo("endTime")]
-    public DateTimeOffset EndTime { get; set; }
-
-    [MapTo("startPrice")]
-    public int StartPrice { get; set; }
-
-    [MapTo("bidPlayerID")]
-#nullable enable
-    public PlayerData? BidPlayerID { get; set; }
-#nullable disable
-
-    [MapTo("bidPrice")]
-    public int BidPrice { get; set; }
-}
-
-public partial class RGBColor : IEmbeddedObject
-{
-    [MapTo("r")]
-    public double R { get; set; }
-
-    [MapTo("g")]
-    public double G { get; set; }
-
-    [MapTo("b")]
-    public double B { get; set; }
-}
-
-public partial class NFTContent : IEmbeddedObject
-{
-    [MapTo("color")]
-#nullable enable
-    public RGBColor? Color { get; set; }
-#nullable disable
-
-    [MapTo("posX")]
-    public double PosX { get; set; }
-
-    [MapTo("posY")]
-    public double PosY { get; set; }
-
-    [MapTo("posZ")]
-    public double PosZ { get; set; }
-}
-
-public partial class NFTInfo : IRealmObject
-{
-    [MapTo("_id")]
-    [PrimaryKey]
-    public int Id { get; set; }
-
-    [MapTo("ownerID")]
-#nullable enable
-    public PlayerData? OwnerID { get; set; }
-#nullable disable
-
-    [MapTo("name")]
-    [Required]
-    public string Name { get; set; }
-
-    [MapTo("author")]
-    [Required]
-    public string Author { get; set; }
-
-    [MapTo("createTime")]
-    public DateTimeOffset CreateTime { get; set; }
-
-    [MapTo("isMinted")]
-    public bool IsMinted { get; set; }
-
-    [MapTo("contents")]
-    public IList<NFTContent> Contents { get; }
-}
 
 public partial class PlayerData : IRealmObject
 {
@@ -114,8 +26,8 @@ public partial class PlayerData : IRealmObject
     [MapTo("exp")]
     public int Exp { get; set; }
 
-    [MapTo("position")]
 #nullable enable
+    [MapTo("position")]
     public PlayerPosition? Position { get; set; }
 #nullable disable
 
@@ -124,36 +36,22 @@ public partial class PlayerData : IRealmObject
 
     public IList<NFTInfo> NFTs { get; }
 
-    [MapTo("taskProgress")]
-    public IList<PlayerTask> TaskProgress { get; }
-
     [MapTo("bidAuction")]
     public IList<PlayerBidAuction> BidAuction { get; }
+
+    [MapTo("taskProgress")]
+    public IList<PlayerTask> TaskProgress { get; }
 }
 
 public partial class PlayerBidAuction : IEmbeddedObject
 {
-    [MapTo("auctionID")]
 #nullable enable
-    public Auction? AuctionID { get; set; }
+    [MapTo("auction")]
+    public Auction? Auction { get; set; }
 #nullable disable
 
     [MapTo("checkTime")]
     public DateTimeOffset CheckTime { get; set; }
-}
-
-public partial class PlayerTask : IEmbeddedObject
-{
-    [MapTo("taskID")]
-#nullable enable
-    public Task? TaskID { get; set; }
-#nullable disable
-
-    [MapTo("progress")]
-    public double Progress { get; set; }
-
-    [MapTo("achieved")]
-    public bool Achieved { get; set; }
 }
 
 public partial class PlayerPosition : IEmbeddedObject
@@ -178,6 +76,114 @@ public partial class PlayerPosition : IEmbeddedObject
 
     [MapTo("rotZ")]
     public double RotZ { get; set; }
+}
+
+public partial class PlayerTask : IEmbeddedObject
+{
+#nullable enable
+    [MapTo("task")]
+    public Task? Task { get; set; }
+#nullable disable
+
+    [MapTo("progress")]
+    public double Progress { get; set; }
+
+    [MapTo("achieved")]
+    public bool Achieved { get; set; }
+}
+
+public partial class Auction : IRealmObject
+{
+    [MapTo("_id")]
+    [PrimaryKey]
+    public int Id { get; set; }
+
+#nullable enable
+    [MapTo("owner")]
+    public PlayerData? Owner { get; set; }
+#nullable disable
+
+#nullable enable
+    public NFTInfo? NFT { get; set; }
+#nullable disable
+
+    [MapTo("startTime")]
+    public DateTimeOffset StartTime { get; set; }
+
+    [MapTo("endTime")]
+    public DateTimeOffset EndTime { get; set; }
+
+    [MapTo("startPrice")]
+    public int StartPrice { get; set; }
+
+#nullable enable
+    [MapTo("bidPlayer")]
+    public PlayerData? BidPlayer { get; set; }
+#nullable disable
+
+    [MapTo("bidPrice")]
+    public int BidPrice { get; set; }
+}
+
+public partial class NFTInfo : IRealmObject
+{
+    [MapTo("_id")]
+    [PrimaryKey]
+    public int Id { get; set; }
+
+#nullable enable
+    [MapTo("owner")]
+    public PlayerData? Owner { get; set; }
+#nullable disable
+
+    [MapTo("name")]
+    [Required]
+    public string Name { get; set; }
+
+    [MapTo("author")]
+    [Required]
+    public string Author { get; set; }
+
+    [MapTo("createTime")]
+    public DateTimeOffset CreateTime { get; set; }
+
+    [MapTo("isMinted")]
+    public bool IsMinted { get; set; }
+
+    [MapTo("isShown")]
+    public bool IsShown { get; set; }
+
+    [MapTo("contents")]
+    public IList<NFTContent> Contents { get; }
+}
+
+public partial class NFTContent : IEmbeddedObject
+{
+#nullable enable
+    [MapTo("color")]
+    public RGBColor? Color { get; set; }
+#nullable disable
+
+    [MapTo("posX")]
+    public double PosX { get; set; }
+
+    [MapTo("posY")]
+    public double PosY { get; set; }
+
+    [MapTo("posZ")]
+    public double PosZ { get; set; }
+}
+
+public partial class RGBColor : IEmbeddedObject
+{
+    [MapTo("r")]
+    public double R { get; set; }
+
+    [MapTo("g")]
+    public double G { get; set; }
+
+    [MapTo("b")]
+    public double B { get; set; }
 }
 
 public partial class Task : IRealmObject

@@ -66,14 +66,42 @@ public class SubscribedAuction
 [Serializable]
 public class PlanetData
 {
-    public int ownerId;
     public List<ArtWork> NFTs;
     public int experience;
 
     public PlanetData(int Id, List<ArtWork> nfts, int exp)
     {
-        ownerId = Id;
         NFTs = nfts;
         experience = exp;
+    }
+}
+
+[Serializable]
+public class ArtWork
+{
+    public int id;
+    public string artName;
+    public string author;
+    public DateTimeOffset createdTime;
+    public int ownerID;
+    public bool isMinted;
+    public bool isShown;
+    public List<BlockData> blockDatas = new List<BlockData>();
+}   
+
+[Serializable]
+public class BlockData
+{
+    public Vector3 position = Vector3.zero;
+    public Color color = Color.black;
+    public BlockData()
+    {
+        position = Vector3.zero;
+        color = Color.white;
+    }
+    public BlockData(Vector3 Position, Color Color)
+    {
+        position = Position;
+        color = Color;
     }
 }

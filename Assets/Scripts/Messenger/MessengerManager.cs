@@ -22,7 +22,7 @@ public class MessengerManager : MonoBehaviour
     private Realm _realm;
     private App _realmApp;
     private User _realmUser;
-    private string _realmAppID = "weareontheplanet-hhbzr";
+    private string _realmAppID = "weareontheplanet-ouawh";
 
     private string _currentChannel;
 
