@@ -11,6 +11,7 @@ public class ArtWork : ScriptableObject
     public DateTimeOffset createdTime;
     public int ownerID;
     public bool isMinted;
+    public bool isShown;
     public List<BlockData> blockDatas = new List<BlockData>();
 }   
 

@@ -35,10 +35,10 @@ public class BackendManager : MonoBehaviour
         // achivements
         foreach (PlayerTask playerTask in playerData.TaskProgress)
         {
-            int taskId= playerTask.TaskID.Id;
-            string taskName = playerTask.TaskID.Name;
+            int taskId= playerTask.Task.Id;
+            string taskName = playerTask.Task.Name;
             float progress = (float) playerTask.Progress;
-            float maxProgress = (float) playerTask.TaskID.MaxProgress;
+            float maxProgress = (float) playerTask.Task.MaxProgress;
             bool isCompleted = playerTask.Achieved;
             loadedData.achievements.Add(new Achievement(taskId, taskName, progress, maxProgress, isCompleted));  
         }
@@ -46,7 +46,7 @@ public class BackendManager : MonoBehaviour
         // bid auctions
         foreach (PlayerBidAuction playerBidAuction in playerData.BidAuction)
         {
-            int auctionID = playerBidAuction.AuctionID.Id;
+            int auctionID = playerBidAuction.Auction.Id;
             DateTimeOffset checkTime = playerBidAuction.CheckTime;
             loadedData.bidAuctions.Add(new SubscribedAuction(auctionID, checkTime));
         }
@@ -69,8 +69,9 @@ public class BackendManager : MonoBehaviour
             nft.artName = nftInfo.Name;
             nft.author = nftInfo.Author;
             nft.createdTime = nftInfo.CreateTime;
-            nft.ownerID = nftInfo.OwnerID.Id;
+            nft.ownerID = nftInfo.Owner.Id;
             nft.isMinted = nftInfo.IsMinted;
+            nft.isShown = nftInfo.IsShown;
             foreach (NFTContent nftContent in nftInfo.Contents)
             {
                 float posX = (float) nftContent.PosX;

@@ -51,7 +51,7 @@ public class GameStartManager : Singleton<GameStartManager>
     private Realm _realm;
     private App _realmApp;
     private User _realmUser;
-    private string _realmAppID = "weareontheplanet-hhbzr";
+    private string _realmAppID = "weareontheplanet-ouawh";
 
     public string _email;
     public string _username;
@@ -337,8 +337,10 @@ public class GameStartManager : Singleton<GameStartManager>
     public async void RealmSetup()
     {
         // setup Realm
+        Debug.Log(_realm == null);
         if (_realm == null)
         {
+            Debug.Log(_realmAppID);
             _realmApp = App.Create(new AppConfiguration(_realmAppID));
             if (_realmApp.CurrentUser == null)
             {
