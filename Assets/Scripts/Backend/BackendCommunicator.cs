@@ -62,9 +62,9 @@ public class BackendCommunicator : MonoBehaviour
         });
     }
 
-    public List<NFTInfo> GetNFTsById(int playerId)
+    public IList<NFTInfo> GetNFTsById(int playerId)
     {
-        List<NFTInfo> nftInfos = _realm.All<NFTInfo>().Where(nft => nft.Owner.Id == playerId).ToList();
+        IList<NFTInfo> nftInfos = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault().NFTs;
         return nftInfos;
     }
 

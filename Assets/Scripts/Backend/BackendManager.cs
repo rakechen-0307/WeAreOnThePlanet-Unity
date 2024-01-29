@@ -117,7 +117,7 @@ public class BackendManager : MonoBehaviour
 
     public void loadOwnedNFT(int playerId, LoadedData loadedData)
     {
-        List<NFTInfo> nftInfos = BackendCommunicator.instance.GetNFTsById(playerId);
+        IList<NFTInfo> nftInfos = BackendCommunicator.instance.GetNFTsById(playerId);
 
         loadedData.NFTs = new List<ArtWork>();
         foreach (NFTInfo nftInfo in nftInfos)
