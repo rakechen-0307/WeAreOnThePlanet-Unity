@@ -59,7 +59,6 @@ public class MainPlanetInit : MonoBehaviour
 
     private void ShowNFT(Transform NFTtransform, ArtWork NFT)
     {
-        Debug.Log("new");
         GameObject NFTDisplay = new GameObject(NFT.artName);
         NFTDisplay.transform.position = NFTtransform.position;
         NFTDisplay.transform.rotation = NFTtransform.rotation;
