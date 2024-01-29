@@ -2,19 +2,23 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
+[CreateAssetMenu(fileName = "Artwork", menuName = "SaveData/ArtWork", order = 1)]
 public class ArtWork : ScriptableObject
 {
-    public List<BlockData> blockDatas = new List<BlockData>();  
-}
+    public int id;
+    public string artName;
+    public string author;
+    public DateTimeOffset createdTime;
+    public int ownerID;
+    public bool isMinted;
+    public List<BlockData> blockDatas = new List<BlockData>();
+}   
 
 [Serializable]
 public class BlockData
 {
-    [field: SerializeField]
-    private Vector3 position = Vector3.zero;
-    [field: SerializeField]
-    private Color color = Color.black;
+    public Vector3 position = Vector3.zero;
+    public Color color = Color.black;
     public BlockData()
     {
         position = Vector3.zero;
