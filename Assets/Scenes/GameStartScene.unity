@@ -2814,7 +2814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601ebd74f6d0b1548bfb57bcaba0c539, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isHost: 0
+  isHost: 1
   StartPage: {fileID: 1795392867}
   StartHostButton: {fileID: 1660266976}
   StartGameButton: {fileID: 415898583}
@@ -2842,7 +2842,7 @@ MonoBehaviour:
   SignInPassword: {fileID: 2027099922}
   SignInPasswordInput: {fileID: 201624955}
   SignInErrorText: {fileID: 1022265038}
-  _loadedData: {fileID: 0}
+  _loadedData: {fileID: 11400000, guid: 8c7085d898f4aa941b63d8b50e52d4dc, type: 2}
 --- !u!1 &676665555
 GameObject:
   m_ObjectHideFlags: 0
