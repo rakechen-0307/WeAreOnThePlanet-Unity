@@ -297,7 +297,7 @@ public class GameStartManager : Singleton<GameStartManager>
             
             if (isNew)
             {
-                _playerId = await BackendCommunicator.instance.CreateOnePlayer(email, username, password);
+                _playerId = await BackendCommunicator.instance.CreateOnePlayer(email, username, password, account);
             }
             VivoxSignIn(_playerId.ToString());
             int planetId = BackendManager.instance.loadMainPlayerData(_playerId, _loadedData);

@@ -23,6 +23,10 @@ public partial class PlayerData : IRealmObject
     [Required]
     public string Password { get; set; }
 
+    [MapTo("account")]
+    [Required]
+    public string Account { get; set; }
+
     [MapTo("exp")]
     public int Exp { get; set; }
 
