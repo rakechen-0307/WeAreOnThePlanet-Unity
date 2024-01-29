@@ -12,8 +12,6 @@ public class Climb : MonoBehaviour
     private Collider playerCollider;
     private Rigidbody rb;
 
-    public Transform indicator;
-
     private void Start()
     {
         playerCollider = GetComponent<Collider>();
@@ -27,13 +25,13 @@ public class Climb : MonoBehaviour
             ClimbStep(collision);
         }        
     }
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Climbable"))
-        {
-            ClimbStair(collision);
-        }
-    }
+    // private void OnCollisionStay(Collision collision)
+    // {
+    //     if (collision.gameObject.CompareTag("Climbable"))
+    //     {
+    //         ClimbStair(collision);
+    //     }
+    // }
     private void ClimbStep(Collision collision)
     {
         // calculate player lowest position
@@ -48,8 +46,6 @@ public class Climb : MonoBehaviour
         {
             averageContactPoint += contact.point;
             totalContacts++;
-            Vector3 vector3 = contact.point - playerFeetPosition;
-            Debug.Log(Vector3.Dot(vector3, transform.up));
         }
         averageContactPoint /= totalContacts;
 
@@ -57,8 +53,6 @@ public class Climb : MonoBehaviour
         Vector3 difference = averageContactPoint - playerFeetPosition;
         float heightDifference = Vector3.Dot(difference, transform.up); // (a dot b) / (b^2)
 
-        Debug.Log(heightDifference);
-        indicator.position = averageContactPoint;
         // Check if the height difference is below the threshold
         if (heightDifference < climbThreshold * colliderHeight)
         {
@@ -90,8 +84,6 @@ public class Climb : MonoBehaviour
         Vector3 difference = averageContactPoint - playerFeetPosition;
         float heightDifference = Vector3.Dot(difference, transform.up); // (a dot b) / (b^2)
 
-        Debug.Log(heightDifference);
-        indicator.position = averageContactPoint;
         // Check if the height difference is below the threshold
         if (heightDifference < climbThreshold * colliderHeight && heightDifference > 0.2f * colliderHeight)
         {

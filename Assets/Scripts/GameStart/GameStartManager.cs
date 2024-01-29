@@ -10,245 +10,236 @@ using Nethereum.Signer;
 using Nethereum.Util;
 using Web3Unity.Scripts.Library.Web3Wallet;
 using System.Text;
-using Realms;
-using Realms.Sync;
-using System.Linq;
 using System;
 using UnityEditor;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using Unity.Services.Vivox;
 
 public class GameStartManager : Singleton<GameStartManager>
 {
+    [SerializeField] bool isHost;
+
+    /* Start Page */
     public GameObject StartPage;
+    public Button StartHostButton;
+    public Button StartGameButton;
+    public TMP_Text StartErrorText;
+
+    /* Host Page */
     public GameObject HostPage;
-    public GameObject HostMainPage;
-    public GameObject PlayerPage;
-    public GameObject PlayerJoin;
-    public GameObject PlayerLogIn;
-
-    public Button HostButton;
-    public Button PlayerButton;
-    public Button HostWalletDisconnect;
-    public Button ViewRequest;
-    public Button JoinButton;
-    public Button SignUpButton;
-    public Button LogInButton;
-
-    public TMP_InputField JoinCodeInput;
-    public TMP_InputField EmailInput;
-    public TMP_InputField UserNameInput;
-    public TMP_InputField PasswordInput;
-
     public TMP_Text JoinCodeText;
-    public TMP_Text HostErrorText;
-    public TMP_Text JoinErrorText;
-    public TMP_Text LogInErrorText;
+
+    /* Player Page */
+    public GameObject PlayerPage;
+    // Email Page
+    public GameObject EmailPage;
+    public Button CreateAccountButton;
+    public Button SignInButton;
+    public GameObject Email;
+    public TMP_InputField EmailInput;
+    public GameObject JoinCode;
+    public TMP_InputField JoinCodeInput;
+    public TMP_Text EmailErrorText;
+    // Create Account Page
+    public GameObject CreateAccountPage;
+    public Button JoinButton;
+    public GameObject CreateAccountUsername;
+    public TMP_InputField CreateAccountUsernameInput;
+    public GameObject CreateAccountPassword;
+    public TMP_InputField CreateAccountPasswordInput;
+    public TMP_Text CreateAccountErrorText;
+    // Sign In Page
+    public GameObject SigninPage;
+    public Button StartPlayButton;
+    public GameObject SignInPassword;
+    public TMP_InputField SignInPasswordInput;
+    public TMP_Text SignInErrorText;
+
+    private string _email;
+    private string _joinCode;
+    private string _username;
+    private string _password;
+    private int _playerId;
+    private PlayerData _player;
+    public LoadedData _loadedData;
 
     ProjectConfigScriptableObject projectConfigSO = null;
-
-    private Realm _realm;
-    private App _realmApp;
-    private User _realmUser;
-    private string _realmAppID = "weareontheplanet-hhbzr";
-
-    public string _email;
-    public string _username;
-    public string _password;
-
 
     private void Awake()
     {
         StartPage.SetActive(true);
         HostPage.SetActive(false);
         PlayerPage.SetActive(false);
-        HostErrorText.enabled = false;
-        JoinErrorText.enabled = false;
-        LogInErrorText.enabled = false;
+        StartErrorText.gameObject.SetActive(true);
+        EmailErrorText.gameObject.SetActive(false);
+        CreateAccountErrorText.gameObject.SetActive(false);
+        SignInErrorText.gameObject.SetActive(false);
 
-        // setup ChainSafe
-        ChainSafeSetup();
+        if (isHost)
+        {
+            StartHostButton.gameObject.SetActive(true);
+            StartGameButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            StartGameButton.gameObject.SetActive(true);
+            StartHostButton.gameObject.SetActive(false);
+        }
+
+        ChainSafeSetup();  // setup ChainSafe
+        VivoxInitialize();  // Initialize Vivox
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        HostButton.onClick.AddListener(async() =>
+        StartHostButton.onClick.AddListener(async () =>
         {
-            // Start Host
             if (RelayManager.Instance.isRelayEnabled)
             {
                 RelayHostData HostData = await RelayManager.Instance.SetupRelay();
+                JoinCodeText.gameObject.SetActive(true);
+                JoinCodeText.enabled = true;
                 JoinCodeText.text = "Join Code : " + HostData.JoinCode;
             }
 
             if (NetworkManager.Singleton.StartHost())
             {
-                Debug.Log("Host Started...");            
-                // Host Connect Wallet
-                HostConnectWallet();
+                HostConnect();
             }
             else
             {
-                HostErrorText.enabled = true;
-                HostErrorText.text = "Start Host Failed...";
+                StartErrorText.enabled = true;
+                StartErrorText.text = "Start Host Failed...";
             }
         });
 
-        PlayerButton.onClick.AddListener(() =>
+        StartGameButton.onClick.AddListener(() =>
         {
-            RealmSetup();
             StartPage.SetActive(false);
             PlayerPage.SetActive(true);
-            PlayerJoin.SetActive(true);
+            EmailPage.SetActive(true);
+            EmailErrorText.gameObject.SetActive(true);
         });
 
-        JoinButton.onClick.AddListener(async() =>
+        CreateAccountButton.onClick.AddListener(async () =>
         {
-            // Start Client
-            JoinErrorText.enabled = true;
-            JoinErrorText.text = "Waiting For Correct Join...";
-            if (RelayManager.Instance.isRelayEnabled && !string.IsNullOrEmpty(JoinCodeInput.text))
+            _email = EmailInput.text;
+            _joinCode = JoinCodeInput.text;
+            if (string.IsNullOrEmpty(_email) || string.IsNullOrEmpty(_joinCode))
             {
-                RelayJoinData JoinData = await RelayManager.Instance.JoinRelay(JoinCodeInput.text);
-            }
-
-            JoinErrorText.enabled = false;
-            if (NetworkManager.Singleton.StartClient())
-            {
-                Debug.Log("Client Started...");
-                PlayerJoin.SetActive(false);
-                PlayerLogIn.SetActive(true);
+                EmailErrorText.enabled = true;
+                EmailErrorText.text = "Please Fill In Your Email & Join Code";
             }
             else
             {
-                JoinErrorText.enabled = true;
-                JoinErrorText.text = "Unable to Join...";
-            }
-        });
-
-        SignUpButton.onClick.AddListener(async () =>
-        {
-            if (string.IsNullOrEmpty(UserNameInput.text) || string.IsNullOrEmpty(PasswordInput.text))
-            {
-                LogInErrorText.enabled = true;
-                LogInErrorText.text = "Please Enter Your Username and Password";
-                return;
-            }
-
-            // subscription
-            var playerQuery = _realm.All<PlayerData>();
-            await playerQuery.SubscribeAsync();
-
-            var taskQuery = _realm.All<Task>();
-            await taskQuery.SubscribeAsync();
-
-            // Check if user is already existed and store user information
-            PlayerData findPlayer = _realm.All<PlayerData>().Where(user => user.Email == EmailInput.text).FirstOrDefault();
-
-            if (findPlayer != null)
-            {
-                LogInErrorText.enabled = true;
-                LogInErrorText.text = "User Has Already Existed";
-                return;
-            }
-
-            var totalPlayer = playerQuery.ToArray().Length;
-            await _realm.WriteAsync(() =>
-            {
-                findPlayer = _realm.Add(new PlayerData()
+                PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByEmail(_email);
+                if (findPlayer == null)
                 {
-                    Id = totalPlayer + 1,
-                    Email = EmailInput.text,
-                    Username = UserNameInput.text,
-                    Password = PasswordInput.text,
-                    IsOnline = true,
-                    Position = new PlayerPosition()
+                    EmailErrorText.enabled = true;
+                    EmailErrorText.text = "Waiting For Correct Join...";
+                    if (RelayManager.Instance.isRelayEnabled)
                     {
-                        PosX = 0,
-                        PosY = 0,
-                        PosZ = 0,
-                        RotX = 0,
-                        RotY = 0,
-                        RotZ = 0,
+                        RelayJoinData JoinData = await RelayManager.Instance.JoinRelay(_joinCode);
                     }
-                });
 
-                // initialize task progress
-                var totalTask = taskQuery.ToArray().Length;
-                Debug.Log(totalTask);
-                for (int i = 0; i < totalTask; i++)
-                {
-                    findPlayer.TaskProgress.Add(0);
-                }
-            });
-
-            if (totalPlayer >= 1)
-            {
-                var players = playerQuery.ToArray();
-                for (int i=0;  i < players.Length-1; i++)
-                {
-                    await _realm.WriteAsync(() =>
+                    EmailErrorText.text = "";
+                    if (NetworkManager.Singleton.StartClient())
                     {
-                        players[i].Friends.Add(findPlayer);
-                        findPlayer.Friends.Add(players[i]);
-                    });
+                        EmailPage.SetActive(false);
+                        CreateAccountPage.SetActive(true);
+                    }
+                    else
+                    {
+                        EmailErrorText.text = "Unable to Join...";
+                    }
+                }
+                else
+                {
+                    EmailErrorText.enabled = true;
+                    EmailErrorText.text = "User Has Already Existed";
                 }
             }
-
-            _email = EmailInput.text;
-            _username = UserNameInput.text;
-            _password = PasswordInput.text;
-
-            // Player Connect Wallet
-            PlayerConnectWallet();
         });
 
-        LogInButton.onClick.AddListener(async () =>
+        SignInButton.onClick.AddListener(async () =>
         {
-            if (string.IsNullOrEmpty(UserNameInput.text) || string.IsNullOrEmpty(PasswordInput.text))
-            {
-                LogInErrorText.enabled = true;
-                LogInErrorText.text = "Please Enter Your Username and Password";
-                return;
-            }
-
-            // subscription
-            var playerQuery = _realm.All<PlayerData>();
-            await playerQuery.SubscribeAsync();
-
-            var taskQuery = _realm.All<Task>();
-            await taskQuery.SubscribeAsync();
-
-            // Check if user information is correct
-            PlayerData findPlayer = _realm.All<PlayerData>().Where(user => user.Email == EmailInput.text).FirstOrDefault();
-
-            if (findPlayer == null)
-            {
-                LogInErrorText.enabled = true;
-                LogInErrorText.text = "User Does Not Exist";
-                return;
-            }
-
-            if (findPlayer.Password !=  PasswordInput.text)
-            {
-                LogInErrorText.enabled = true;
-                LogInErrorText.text = "Password Is Wrong";
-                return;
-            }
-
-            if (findPlayer.Username != UserNameInput.text)
-            {
-                await _realm.WriteAsync(() =>
-                {
-                    findPlayer.Username = UserNameInput.text;
-                });
-            }
-
             _email = EmailInput.text;
-            _username = UserNameInput.text;
-            _password = PasswordInput.text;
+            _joinCode = JoinCodeInput.text;
+            if (string.IsNullOrEmpty(_email) || string.IsNullOrEmpty(_joinCode))
+            {
+                EmailErrorText.enabled = true;
+                EmailErrorText.text = "Please Fill In Your Email & Join Code";
+            }
+            else
+            {
+                PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByEmail(_email);
+                if (findPlayer != null)
+                {
+                    _player = findPlayer;
+                    EmailErrorText.enabled = true;
+                    EmailErrorText.text = "Waiting For Correct Join...";
+                    if (RelayManager.Instance.isRelayEnabled)
+                    {
+                        RelayJoinData JoinData = await RelayManager.Instance.JoinRelay(_joinCode);
+                    }
 
-            // Player Connect Wallet
-            PlayerConnectWallet();
+                    EmailErrorText.text = "";
+                    if (NetworkManager.Singleton.StartClient())
+                    {
+                        EmailPage.SetActive(false);
+                        SigninPage.SetActive(true);
+                    }
+                    else
+                    {
+                        EmailErrorText.text = "Unable to Join...";
+                    }
+                }
+                else
+                {
+                    EmailErrorText.enabled = true;
+                    EmailErrorText.text = "User Doesn't Exist";
+                }
+            }
+        });
+
+        JoinButton.onClick.AddListener(() =>
+        {
+            _username = CreateAccountUsernameInput.text;
+            _password = CreateAccountPasswordInput.text;
+            if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password))
+            {
+                CreateAccountErrorText.enabled = true;
+                CreateAccountErrorText.text = "Please Fill In Your Username & Password";
+            }
+            else
+            {
+                PlayerConnect(true, _email, _username, _password);
+            }
+        });
+
+        StartPlayButton.onClick.AddListener(() =>
+        {
+            _password = SignInPasswordInput.text;
+            if (string.IsNullOrEmpty(_password))
+            {
+                CreateAccountErrorText.enabled = true;
+                CreateAccountErrorText.text = "Please Fill In Your Password";
+            }
+            else
+            {
+                if (_password != _player.Password)
+                {
+                    CreateAccountErrorText.enabled = true;
+                    CreateAccountErrorText.text = "Password Is Wrong";
+                }
+                else
+                {
+                    _playerId = _player.Id;
+                    PlayerConnect(false, _email, _username, _password);
+                }
+            }
         });
     }
 
@@ -265,57 +256,67 @@ public class GameStartManager : Singleton<GameStartManager>
         PlayerPrefs.SetString("RPC", projectConfigSO.RPC);
     } 
 
-    private async void HostConnectWallet()
+    private async void HostConnect()
     {
-        // get current timestamp
         var timestamp = (int)System.DateTime.UtcNow.Subtract(new System.DateTime(1970, 1, 1)).TotalSeconds;
-        // set expiration time
         var expirationTime = timestamp + 60;
-        // set message
         var message = expirationTime.ToString();
-        // sign message
         var signature = await Web3Wallet.Sign(message);
-        // verify account
         var account = SignVerifySignature(signature, message);
         var now = (int)System.DateTime.UtcNow.Subtract(new System.DateTime(1970, 1, 1)).TotalSeconds;
+
         // validate
         if (account.Length == 42 && expirationTime >= now)
         {
             print("Account: " + account);
+            VivoxSignIn("host");
             StartPage.SetActive(false);
             HostPage.SetActive(true);
-            HostMainPage.SetActive(true);
         }
         else
         {
-            HostErrorText.enabled = true;
-            HostErrorText.text = "Connect Wallet Failed...";
+            StartErrorText.enabled = true;
+            StartErrorText.text = "Wallet Connect Failed...";
         }
     }
 
-    private async void PlayerConnectWallet()
+    private async void PlayerConnect(bool isNew, string email, string username, string password)
     {
-        // get current timestamp
         var timestamp = (int)System.DateTime.UtcNow.Subtract(new System.DateTime(1970, 1, 1)).TotalSeconds;
-        // set expiration time
         var expirationTime = timestamp + 60;
-        // set message
         var message = expirationTime.ToString();
-        // sign message
         var signature = await Web3Wallet.Sign(message);
-        // verify account
         var account = SignVerifySignature(signature, message);
         var now = (int)System.DateTime.UtcNow.Subtract(new System.DateTime(1970, 1, 1)).TotalSeconds;
         // validate
         if (account.Length == 42 && expirationTime >= now)
         {
             print("Account: " + account);
-            SceneManager.LoadScene("CrystalMessengerTest");
+            
+            if (isNew)
+            {
+                _playerId = await BackendCommunicator.instance.CreateOnePlayer(email, username, password);
+            }
+            VivoxSignIn(_playerId.ToString());
+            int planetId = BackendManager.instance.loadMainPlayerData(_playerId, _loadedData);
+            Debug.Log(planetId);
+            if (planetId == -1)  // NFT Workshop 
+            {
+                SceneManager.LoadScene("CreateNFT");
+            }
+            else if (planetId == -2)  // Octopus
+            {
+                SceneManager.LoadScene("Octopus");
+            }
+            else
+            {
+                SceneManager.LoadScene("MainPlanet");
+            }
         }
         else
         {
-            LogInErrorText.enabled = true;
-            LogInErrorText.text = "Connect Wallet Failed...";
+            SignInErrorText.enabled = true;
+            SignInErrorText.text = "Wallet Connect Failed...";
         }
     }
 
@@ -328,29 +329,23 @@ public class GameStartManager : Singleton<GameStartManager>
         return key.GetPublicAddress();
     }
 
-    public async void RealmSetup()
+    private async void VivoxInitialize()
     {
-        // setup Realm
-        if (_realm == null)
-        {
-            _realmApp = App.Create(new AppConfiguration(_realmAppID));
-            if (_realmApp.CurrentUser == null)
-            {
-                _realmUser = await _realmApp.LogInAsync(Credentials.Anonymous());
-                Debug.Log("user created");
-                _realm = await Realm.GetInstanceAsync(new FlexibleSyncConfiguration(_realmUser));
-            }
-            else
-            {
-                _realmUser = _realmApp.CurrentUser;
-                Debug.Log("user remain");
-                _realm = Realm.GetInstance(new FlexibleSyncConfiguration(_realmUser));
-            }
-        }
+        await UnityServices.InitializeAsync();
+        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+        await VivoxService.Instance.InitializeAsync();
+        Debug.Log("Vivox Initialized");
     }
 
-    public string GetEmail()
+    private async void VivoxSignIn(string displayName)
     {
-        return _email;
+        var loginOption = new LoginOptions
+        {
+            DisplayName = displayName,
+            EnableTTS = false
+        };
+        await VivoxService.Instance.LoginAsync(loginOption);
+        Debug.Log("Log in");
     }
 }

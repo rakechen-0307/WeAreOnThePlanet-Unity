@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class FriendListObject : MonoBehaviour
 {
 
+    public Button SelectButton;
     public TMP_Text Username;
 
 }
