@@ -68,6 +68,36 @@ public class BackendCommunicator : MonoBehaviour
         return nftInfos;
     }
 
+    public async void UpdateOneNFT(int nftId, string name, bool isShown, List<BlockData> blockData)
+    {
+        NFTInfo updateNFT = _realm.All<NFTInfo>().Where(nft => nft.Id == nftId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            updateNFT.Name = name;
+            updateNFT.IsShown = isShown;
+            for (int i = 0; i < blockData.Count; i++)
+            {
+                Vector3 pos = blockData[i].position;
+                Color color = blockData[i].color;
+                RGBColor rgbColor = new RGBColor()
+                {
+                    R = color.r,
+                    G = color.g,
+                    B = color.b,
+                };
+                NFTContent nftContent = new NFTContent()
+                {
+                    PosX = pos.x,
+                    PosY = pos.y,
+                    PosZ = pos.z,
+                    Color = rgbColor
+                };
+                updateNFT.Contents.Add(nftContent);
+            }
+        });
+    }
+
     private async void RealmSetup()
     {
         if (_realm == null)
