@@ -4,8 +4,14 @@ public class EventTrigger : MonoBehaviour
 {
     [SerializeField]
     private bool visible = false;
+
     [SerializeField]
-    private GameObject UICanvas;
+    private GameObject noticeUI;
+
+    [SerializeField]
+    private MainPlanetTravel mainPlanetTravel;
+
+    private bool triggerActive = false;
 
     private Renderer rd;
     
@@ -17,16 +23,25 @@ public class EventTrigger : MonoBehaviour
             rd.enabled = visible;
         }
 
-        UICanvas.SetActive(false);
+        noticeUI.SetActive(false);
     }
     private void OnTriggerEnter()
     {
-        Debug.Log("Trigger");
-        UICanvas.SetActive(true);
+        noticeUI.SetActive(true);
+        triggerActive = true;
     }
     private void OnTriggerExit()
     {
-        Debug.Log("Exit");
-        UICanvas.SetActive(false);
+        noticeUI.SetActive(false);
+        triggerActive = false;
     }
+
+    private void Update()
+    {
+        if (triggerActive && Input.GetKeyDown(KeyCode.Return))
+        {
+            mainPlanetTravel.TravelPlanet(-1);
+        }
+    }
+
 }

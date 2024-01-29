@@ -66,13 +66,11 @@ public class SubscribedAuction
 [Serializable]
 public class PlanetData
 {
-    public int ownerId;
     public List<ArtWork> NFTs;
     public int experience;
 
     public PlanetData(int Id, List<ArtWork> nfts, int exp)
     {
-        ownerId = Id;
         NFTs = nfts;
         experience = exp;
     }

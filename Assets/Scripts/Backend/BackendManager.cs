@@ -68,6 +68,14 @@ public class BackendManager : MonoBehaviour
 
         return planetId;
     }
+    public void saveMainPlayerData(int playerId, Player player)
+    {
+        Vector3 pos = player.lastPosition;
+        Vector3 rot = player.lastEuler;
+        int planetId = player.lastPlanetId;
+        BackendCommunicator.instance.UpdatePlayerPosition(playerId, planetId, pos, rot);
+    }
+
     public void loadPlanetData(int playerId, LoadedData loadedData)
     {
         PlayerData playerData = BackendCommunicator.instance.FindOnePlayerById(playerId);
@@ -77,7 +85,6 @@ public class BackendManager : MonoBehaviour
             return;
         }
 
-        loadedData.currentPlanet.ownerId = playerId;
         loadedData.currentPlanet.experience = playerData.Exp;
         // loadNFTs
         loadedData.currentPlanet.NFTs = new List<ArtWork>();
@@ -108,11 +115,36 @@ public class BackendManager : MonoBehaviour
         }
     }
 
-    public void saveMainPlayerData(int playerId, Player player)
+    public void loadOwnedNFT(int playerId, LoadedData loadedData)
     {
-        Vector3 pos = player.lastPosition;
-        Vector3 rot = player.lastEuler;
-        int planetId = player.lastPlanetId;
-        BackendCommunicator.instance.UpdatePlayerPosition(playerId, planetId, pos, rot);
+        // TODO
+        List<NFTInfo> nftInfos = new List<NFTInfo>();
+        // TODO end
+        loadedData.NFTs = new List<ArtWork>();
+        foreach (NFTInfo nftInfo in nftInfos)
+        {
+            ArtWork nft = new ArtWork();
+            nft.id = nftInfo.Id;
+            nft.artName = nftInfo.Name;
+            nft.author = nftInfo.Author;
+            nft.createdTime = nftInfo.CreateTime;
+            nft.ownerID = nftInfo.Owner.Id;
+            nft.isMinted = nftInfo.IsMinted;
+            nft.isShown = nftInfo.IsShown;
+            foreach (NFTContent nftContent in nftInfo.Contents)
+            {
+                float posX = (float) nftContent.PosX;
+                float posY = (float) nftContent.PosY;
+                float posZ = (float) nftContent.PosZ;
+                float r = (float) nftContent.Color.R;
+                float g = (float) nftContent.Color.G;
+                float b = (float) nftContent.Color.B;
+                
+                Vector3 pos = new Vector3(posX, posY, posZ);
+                Color color = new Color(r, g, b);
+                nft.blockDatas.Add(new BlockData(pos, color));
+            }
+            loadedData.NFTs.Add(nft);
+        }
     }
 }

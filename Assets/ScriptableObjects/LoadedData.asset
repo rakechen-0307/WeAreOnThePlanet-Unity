@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LoadedData
   m_EditorClassIdentifier: 
   playerName: 
-  playerId: 0
+  playerId: 1
   mainPlayer:
     lastPosition: {x: 0, y: 50.7, z: 0}
     lastEuler: {x: 0, y: 0, z: 0}
@@ -31,15 +31,5 @@ MonoBehaviour:
   achievements: []
   experience: 0
   currentPlanet:
-    ownerId: 1
-    NFTs:
-    - id: 0
-      artName: 
-      author: 
-      ownerID: 0
-      isMinted: 1
-      isShown: 0
-      blockDatas:
-      - position: {x: 0, y: 0, z: 0}
-        color: {r: 0, g: 0, b: 0, a: 0}
-    experience: 0
+    NFTs: []
+    experience: 200

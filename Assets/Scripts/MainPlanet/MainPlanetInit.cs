@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class MainPlanetInit : MonoBehaviour
 {
@@ -24,9 +23,7 @@ public class MainPlanetInit : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // TODO: call backend manager to load planet
         BackendManager.instance.loadPlanetData(loadedData.mainPlayer.lastPlanetId, loadedData);
-        // TODO end
         initPlayer();
         initNFTDisplay();
         initGarden();
@@ -69,5 +66,9 @@ public class MainPlanetInit : MonoBehaviour
             newBlock.transform.localPosition = blockData.position;
             newBlock.GetComponent<Renderer>().material.color = blockData.color;
         }
+    }
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
