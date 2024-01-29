@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
+using System.Threading.Tasks;
 
 public class BackendCommunicator : MonoBehaviour
 {
@@ -96,6 +98,28 @@ public class BackendCommunicator : MonoBehaviour
                 updateNFT.Contents.Add(nftContent);
             }
         });
+    }
+
+    public async Task<int> CreateOneNFT(string name, int ownerId, string author, DateTimeOffset createTime, bool isMinted, bool isShown)
+    {
+        int NFTsCount = _realm.All<NFTInfo>().ToArray().Length;
+        PlayerData owner = _realm.All<PlayerData>().Where(user => user.Id == ownerId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            _realm.Add(new NFTInfo()
+            {
+                Id = NFTsCount + 1,
+                Owner = owner,
+                Name = name,
+                Author = author,
+                CreateTime = createTime,
+                IsMinted = isMinted,
+                IsShown = isShown
+            });
+        });
+
+        return NFTsCount + 1;
     }
 
     private async void RealmSetup()
