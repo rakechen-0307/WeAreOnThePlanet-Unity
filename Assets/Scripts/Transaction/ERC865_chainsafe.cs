@@ -14,6 +14,7 @@ using SysRandom = System.Random;
 using Nethereum.Util;
 using System.Text;
 using Unity.Collections;
+using Web3Unity.Scripts.Library.ETHEREUEM.EIP;
 //using UnityEditor.VersionControl;
 //using ERC865.ContractDefinition;
 //using ERC721.ContractDefinition;
@@ -107,7 +108,7 @@ public class ERC865_chainsafe : MonoBehaviour
         // NFT Transfer Signature
         _NFTSign.onClick.AddListener(() =>
         {
-            NFTSign();
+            CheckBalanceAndSign();
         });
 
         _NFTTransfer.onClick.AddListener(() =>
@@ -202,7 +203,7 @@ public class ERC865_chainsafe : MonoBehaviour
 
 
         var result_hash = BitConverter.ToString((byte[])data[0]).Replace("-", string.Empty).ToLower();
-
+        Debug.Log(result_hash);
         var signer = new EthereumMessageSigner();
         var signature1 = signer.EncodeUTF8AndSign(result_hash, new EthECKey(_PrivateKey.text));
 
@@ -301,7 +302,41 @@ public class ERC865_chainsafe : MonoBehaviour
             print("Error with the transaction");
         }
     }
-   
+
+    private async void CheckBalanceAndSign()
+    {
+        string method = "balanceOf";
+
+        var provider = new JsonRpcProvider(ContractManager.RPC);
+
+        Debug.Log(_accountAddress);
+        Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
+        var data = await contract.Call(method, new object[]
+        {
+            _accountAddress,
+        });
+
+
+        BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
+        BigInteger price = 100 * (BigInteger)1000000000000000000;
+        Debug.Log("Balance Of: " + balanceOf);
+        Debug.Log("Price:" + price);
+        if (balanceOf < 100)
+        {
+            Debug.Log("Your balance is NOT enough!");
+        }
+        else
+        {
+            string uri = "0"; // To be determined later
+            string[] preJsonData = { "safeMint", PlayerPrefs.GetString("Account"), uri };
+            string jsonData = JsonConvert.SerializeObject(preJsonData);
+            string signature = await Web3Wallet.Sign(jsonData);
+            string[] messageObj = { jsonData, signature };
+            string message = JsonConvert.SerializeObject(messageObj);
+            Debug.Log(message);
+            // SendMessageRequest(message);
+        }
+    }
     private async void NFTSign()
     {
         string method = "getTransferPreSignedHash";

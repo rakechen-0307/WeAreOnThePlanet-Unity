@@ -321,6 +321,7 @@ public class GameStartManager : Singleton<GameStartManager>
             PlayerPrefs.SetString("Account", account);
             print("Account: " + account);
             SceneManager.LoadScene("CrystalMessengerTest");
+            PlayerPrefs.SetString("Email", _email);
         }
         else
         {
