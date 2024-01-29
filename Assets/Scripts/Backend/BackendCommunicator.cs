@@ -46,6 +46,20 @@ public class BackendCommunicator : MonoBehaviour
         return playerData;
     }
 
+    public async void UpdatePlayerPosition(PlayerData player, int planetId, Vector3 pos, Vector3 rot)
+    {
+        await _realm.WriteAsync(() =>
+        {
+            player.Position.PlanetID = planetId;
+            player.Position.PosX = (double)pos.x;
+            player.Position.PosY = (double)pos.y;
+            player.Position.PosZ = (double)pos.z;
+            player.Position.RotX = (double)rot.x;
+            player.Position.RotY = (double)rot.y;
+            player.Position.RotZ = (double)rot.z;
+        });
+    }
+
     private async void RealmSetup()
     {
         if (_realm == null)
