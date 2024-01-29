@@ -182,7 +182,7 @@ public class GameStartManager : Singleton<GameStartManager>
                     EmailErrorText.text = "Waiting For Correct Join...";
                     if (RelayManager.Instance.isRelayEnabled)
                     {
-                        RelayJoinData JoinData = await RelayManager.Instance.JoinRelay(_joinCode);
+                        RelayJoinData JoinData = await RelayManager.Instance.JoinRelay(_joinCode.Substring(0, 6));
                     }
 
                     EmailErrorText.text = "";
