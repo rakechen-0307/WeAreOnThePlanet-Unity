@@ -124,6 +124,18 @@ public class NFTMenu : MonoBehaviour
             displayNFT(displayIndex);
         }
     }
+
+    private void NFTSlotOnClick(int offset)
+    {
+        int index = displayIndex + offset;
+        if (index >= loadedData.NFTs.Count)
+        {
+            Debug.LogError("Warning: NFT index out of range!, something is wrong with displayIndex or the loadData");
+            return;
+        }
+        ArtWork NFT = loadedData.NFTs[index];
+        
+    }
     // Menus
     private void showBuildMenu()
     {
