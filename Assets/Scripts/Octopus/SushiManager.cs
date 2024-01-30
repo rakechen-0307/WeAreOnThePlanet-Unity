@@ -10,7 +10,9 @@ using Newtonsoft.Json;
 using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 using System;
+#if UNITY_EDITOR
 using UnityEditor.VersionControl;
+#endif
 using Web3Unity.Scripts.Library.Web3Wallet;
 using System.Threading.Tasks;
 using Web3Unity.Scripts.Library.Ethers.Providers;
@@ -23,6 +25,7 @@ public class SushiManager : MonoBehaviour
 {
     
     public GameObject sushiPrefab;
+    public DialogButton dialogButton;
 
     public string viewMode = "none";
     public int viewNumber = 0;
@@ -45,6 +48,7 @@ public class SushiManager : MonoBehaviour
 
     public static BigInteger price = 100;
     public static BigInteger fee = 5;
+    public static int selected = 0;
 
     SysRandom rnd = new SysRandom(Guid.NewGuid().GetHashCode());
     public void SetDisplayed(int num, string mode)
@@ -138,7 +142,7 @@ public class SushiManager : MonoBehaviour
             sushiComponent.Id = nftInfo.Id;
             sushiComponent.Name = nftInfo.Name;
             sushiComponent.Author = nftInfo.Author;
-            sushiComponent.CreateTime = nftInfo.CreateTime;
+            sushiComponent.CreateTime = nftInfo.CreateTime.ToString("yyyy/MM/dd, h:mm tt", new System.Globalization.CultureInfo("en-US"));
             sushiComponent.IsMinted = nftInfo.IsMinted;
             // sushiComponent.OwnerID = nftInfo.OwnerID;
             sushiComponent.viewMode = viewMode;
@@ -164,8 +168,8 @@ public class SushiManager : MonoBehaviour
     public void PreviewNonMintedNFT()
     {
         string email = PlayerPrefs.GetString("Email");
-        PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByEmail(email);
-        var nfts = findPlayer.NFTs.Where(nft => nft.IsMinted = false);
+        Debug.Log(email);
+        var nfts = BackendCommunicator.instance.FindOnePlayerByEmail(email).NFTs.Where(nft => !nft.IsMinted);
         if(nfts.Count() > 0)
         {
             SetMint(nfts.ToList()); 
@@ -175,14 +179,24 @@ public class SushiManager : MonoBehaviour
             Debug.LogError("You have no unminted NFTs!");
         }
     }
-    public void PreviewMintedNFT()
+    public void PreviewMintedNFT(string method)
     {
         string email = PlayerPrefs.GetString("Email");
-        PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByEmail(email);
-        var nfts = findPlayer.NFTs.Where(nft => nft.IsMinted = true);
+        var nfts = BackendCommunicator.instance.FindOnePlayerByEmail(email).NFTs.Where(nft => nft.IsMinted = true);
         if (nfts.Count() > 0)
         {
-            SetMint(nfts.ToList());
+            if(method == "transfer")
+            {
+                SetTransfer(nfts.ToList());
+            }
+            else if (method == "launch")
+            {
+                SetLaunch(nfts.ToList());
+            }
+            else
+            {
+                Debug.Log("Invalid command");
+            }
         }
         else
         {
@@ -190,44 +204,52 @@ public class SushiManager : MonoBehaviour
         }
     }
 
-    private async Task<bool> CheckBalanceAndMint(int _id)
+
+    public async Task<MintStatus> CheckBalanceAndMint(int _id)
     {
-        string method = "balanceOf";
-
-        var provider = new JsonRpcProvider(ContractManager.RPC);
-
-        Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
-
-        var data = await contract.Call(method, new object[]
+        try
         {
+            string method = "balanceOf";
+
+            var provider = new JsonRpcProvider(ContractManager.RPC);
+
+            Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
+
+            var data = await contract.Call(method, new object[]
+            {
                 PlayerPrefs.GetString("Account")
-        });
+            });
 
 
-        BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
-        BigInteger realPrice = (BigInteger)1000000000000000000 * price;
-        Debug.Log("Balance Of: " + balanceOf);
-        Debug.Log("Price:" + realPrice);
-        if (balanceOf < realPrice)
-        {
-            Debug.Log("Your balance is NOT enough!");
-            return false;
+            BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
+            BigInteger realPrice = (BigInteger)1000000000000000000 * price;
+            Debug.Log("Balance Of: " + balanceOf);
+            Debug.Log("Price:" + realPrice);
+            if (balanceOf < realPrice)
+            {
+                Debug.Log("Your balance is NOT enough!");
+                return MintStatus.MintFailure;
+            }
+            else
+            {
+                string[] preJsonData = { "mint", PlayerPrefs.GetString("Email"), _id.ToString() };
+                string jsonData = JsonConvert.SerializeObject(preJsonData);
+                string signature = await Web3Wallet.Sign(jsonData);
+                string[] messageObj = { jsonData, signature };
+                string message = JsonConvert.SerializeObject(messageObj);
+                Debug.Log(message);
+                // SendMessageRequest(message);
+                return MintStatus.MintSuccess;
+            }
         }
-        else
+        catch
         {
-            string[] preJsonData = { "mint", PlayerPrefs.GetString("Email"), _id.ToString() };
-            string jsonData = JsonConvert.SerializeObject(preJsonData);
-            string signature = await Web3Wallet.Sign(jsonData);
-            string[] messageObj = { jsonData, signature };
-            string message = JsonConvert.SerializeObject(messageObj);
-            Debug.Log(message);
-            // SendMessageRequest(message);
-            return true;
+            return MintStatus.ContractError;
         }
     }
 
 
-    private async Task<bool> CheckBalanceAndTransfer(string toEmail, int _id)
+    public async Task<bool> CheckBalanceAndTransfer(string toEmail, int _id)
     {
         string method = "balanceOf";
 
@@ -295,7 +317,14 @@ public class SushiManager : MonoBehaviour
         // log function, delay time, repeat interval        
         // InvokeRepeating("rsay", 0.0f, 1.0f);
         ChainSafeSetup();
-
+        PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
+        dialogButton.deactivateAllInputFields();
     }
 
 }
+public enum MintStatus
+{
+    MintSuccess,
+    MintFailure,
+    ContractError
+};

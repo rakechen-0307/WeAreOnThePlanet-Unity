@@ -39,13 +39,13 @@ public class TransferClick : MonoBehaviour
 
     public SushiManager sushiManager;
 
-    void OnMouseDown(){
+    async void OnMouseDown(){
 
         UIManager.Instance.UpdateDialog("none", "");
         UIManager.Instance.DeleteAllInputFields();
 
         // Load NFTs the player have
-        sushiManager.SetTransfer(Test); // set to the result of DB
+        sushiManager.PreviewMintedNFT("transfer"); // set to the result of DB
 
         // Show unminted NFTs
         sushiManager.SetDisplayed(0, "transfer");

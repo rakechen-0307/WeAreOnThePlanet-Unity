@@ -8,7 +8,7 @@ using TMPro;
 public class Sushi : MonoBehaviour
 {
     public string Author;
-    public DateTimeOffset CreateTime;
+    public string CreateTime;
     public bool IsMinted;
     public int Id;
     public string Name;
@@ -22,6 +22,7 @@ public class Sushi : MonoBehaviour
         UIManager.Instance.DeleteAllInputFields();
         say("Sushi clicked!");
         say(Id.ToString());
+        SushiManager.selected = Id;
         if(viewMode == "mint"){
             UIManager.Instance.UpdateDialog("mint1", "Would you like to mint this NFT?\n" +
                 "Name: " + Name + "\n" +

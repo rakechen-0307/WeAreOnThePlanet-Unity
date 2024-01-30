@@ -25,17 +25,27 @@ public class DialogButton : MonoBehaviour
         inputAuctionEndingTime.gameObject.SetActive(false);
     }
 
-    void OnMouseDown()
+    async void OnMouseDown()
     {
         if (UIManager.Instance.State == "mint1")
         {
             // try minting NFT
-            Debug.Log(sushiManager.Mint[sushiManager.viewNumber].Id); // other properties can be found likewise
+            Debug.Log(SushiManager.selected); // other properties can be found likewise
+            MintStatus result = await sushiManager.CheckBalanceAndMint(SushiManager.selected);
             // Handle errors
-
-
-            // If succeeded
-            UIManager.Instance.UpdateDialog("mint2", "\n\nYour NFT has been successfully minted!");
+            if (result == MintStatus.MintSuccess)
+            {
+                // If succeeded
+                UIManager.Instance.UpdateDialog("mint2", "\n\nYour NFT has been successfully minted!");
+            }
+            else if (result == MintStatus.MintFailure)
+            {
+                UIManager.Instance.UpdateDialog("mint2", "\n\nYou don't have enough tokens!");
+            }
+            else
+            {
+                UIManager.Instance.UpdateDialog("mint2", "\n\nSome errors occurred. Please try again.");
+            }
         }
 
         
@@ -44,7 +54,7 @@ public class DialogButton : MonoBehaviour
             inputTransfer2.gameObject.SetActive(true);
             inputTransfer2.interactable = true;
             inputTransfer2.ActivateInputField();
-            UIManager.Instance.UpdateDialog("transfer2", "Who would you like to transfer this NFT to?\nPlease enter their ID:\n");
+            UIManager.Instance.UpdateDialog("transfer2", "Who would you like to transfer this NFT to?\nPlease enter their email:\n");
         }
         else if (UIManager.Instance.State == "transfer2")
         {
