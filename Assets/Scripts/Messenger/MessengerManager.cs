@@ -97,7 +97,6 @@ public class MessengerManager : MonoBehaviour
         }
         
         IList<PlayerData> friends = BackendCommunicator.instance.FindAllFriends(playerId);
-        Debug.Log(friends[0]);
 
         for (int i = 0; i < friends.Count; i++)
         {
