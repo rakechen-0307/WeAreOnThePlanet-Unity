@@ -39,6 +39,9 @@ public class SaveManager : MonoBehaviour
     [SerializeField]
     private GameObject brushPannel;
 
+    [SerializeField]
+    private PlacementSystem placementSystem;
+
     public bool modified;
 
     private void Start()
@@ -78,7 +81,7 @@ public class SaveManager : MonoBehaviour
 
     private void leave()
     {
-        // TODO: destroy all
+        placementSystem.clearVisulization();
         nftMenu.showMainMenu();
     }
     private void saveNFT()

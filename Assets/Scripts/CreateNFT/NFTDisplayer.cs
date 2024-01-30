@@ -29,7 +29,6 @@ public class NFTDisplayer : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-
         foreach (BlockData blockData in NFT.blockDatas)
         {
             GameObject newBlock = Instantiate(blockPrefab, NFTtransform);

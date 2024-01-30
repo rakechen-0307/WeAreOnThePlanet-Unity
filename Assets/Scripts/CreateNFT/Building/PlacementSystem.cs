@@ -90,7 +90,8 @@ public class PlacementSystem : MonoBehaviour
     {
         foreach (GameObject block in blockDB)
         {
-            
+            Destroy(block);
         }
+        blockDB.Clear();
     }
 }
