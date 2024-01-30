@@ -31,14 +31,15 @@ public class DialogButton : MonoBehaviour
         {
             // try minting NFT
             Debug.Log(SushiManager.selected); // other properties can be found likewise
-            MintStatus result = await sushiManager.CheckBalanceAndMint(SushiManager.selected);
+            NFTStatus result = await sushiManager.CheckBalanceAndMint(SushiManager.selected);
             // Handle errors
-            if (result == MintStatus.MintSuccess)
+            if (result == NFTStatus.Success)
             {
                 // If succeeded
                 UIManager.Instance.UpdateDialog("mint2", "\n\nYour NFT has been successfully minted!");
+                BackendCommunicator.instance.UpdateNFTStatus(SushiManager.selected, true);
             }
-            else if (result == MintStatus.MintFailure)
+            else if (result == NFTStatus.Failure)
             {
                 UIManager.Instance.UpdateDialog("mint2", "\n\nYou don't have enough tokens!");
             }
@@ -59,14 +60,28 @@ public class DialogButton : MonoBehaviour
         else if (UIManager.Instance.State == "transfer2")
         {
             // try transfering NFT
-            Debug.Log(sushiManager.Transfer[sushiManager.viewNumber].Id);
+            Debug.Log(SushiManager.selected);
             Debug.Log(inputTransfer2.text);
             // Handle errors
-
+            NFTStatus result = await sushiManager.CheckBalanceAndTransfer("error@gmail.com", SushiManager.selected);
+            // Handle errors
+            if (result == NFTStatus.Success)
+            {
+                // If succeeded
+                UIManager.Instance.UpdateDialog("transfer3", "\n\nYour NFT has been successfully transferred!");
+                BackendCommunicator.instance.UpdateNFTStatus(SushiManager.selected, true);
+            }
+            else if (result == NFTStatus.Failure)
+            {
+                UIManager.Instance.UpdateDialog("transfer3", "\n\nYou don't have enough tokens!");
+            }
+            else
+            {
+                UIManager.Instance.UpdateDialog("transfer3", "\n\nSome errors occurred. Please try again.");
+            }
 
             // If succeeded            
             deactivateAllInputFields();
-            UIManager.Instance.UpdateDialog("transfer3", "\n\nYour NFT has been successfully transferred!");
         }
 
 

@@ -165,24 +165,27 @@ public class SushiManager : MonoBehaviour
             Debug.Log(viewNumber);
         }
 
-    public void PreviewNonMintedNFT()
+    public bool PreviewNonMintedNFT()
     {
         string email = PlayerPrefs.GetString("Email");
         Debug.Log(email);
-        var nfts = BackendCommunicator.instance.FindOnePlayerByEmail(email).NFTs.Where(nft => !nft.IsMinted);
+        var nfts = BackendCommunicator.instance.FindOnePlayerByEmail(email).NFTs.Where(nft => (!nft.IsMinted && !nft.IsPending));
         if(nfts.Count() > 0)
         {
-            SetMint(nfts.ToList()); 
+            SetMint(nfts.ToList());
+            Debug.Log("Hello");
+            return true;
         }
         else
         {
             Debug.LogError("You have no unminted NFTs!");
+            return false;
         }
     }
-    public void PreviewMintedNFT(string method)
+    public bool PreviewMintedNFT(string method)
     {
         string email = PlayerPrefs.GetString("Email");
-        var nfts = BackendCommunicator.instance.FindOnePlayerByEmail(email).NFTs.Where(nft => nft.IsMinted = true);
+        var nfts = BackendCommunicator.instance.FindOnePlayerByEmail(email).NFTs.Where(nft => nft.IsMinted && !nft.IsPending);
         if (nfts.Count() > 0)
         {
             if(method == "transfer")
@@ -196,16 +199,19 @@ public class SushiManager : MonoBehaviour
             else
             {
                 Debug.Log("Invalid command");
+                return false;
             }
+            return true;
         }
         else
         {
             Debug.Log("You have no minted NFTs!");
+            return false;
         }
     }
 
 
-    public async Task<MintStatus> CheckBalanceAndMint(int _id)
+    public async Task<NFTStatus> CheckBalanceAndMint(int _id)
     {
         try
         {
@@ -228,7 +234,7 @@ public class SushiManager : MonoBehaviour
             if (balanceOf < realPrice)
             {
                 Debug.Log("Your balance is NOT enough!");
-                return MintStatus.MintFailure;
+                return NFTStatus.Failure;
             }
             else
             {
@@ -239,17 +245,17 @@ public class SushiManager : MonoBehaviour
                 string message = JsonConvert.SerializeObject(messageObj);
                 Debug.Log(message);
                 // SendMessageRequest(message);
-                return MintStatus.MintSuccess;
+                return NFTStatus.Success;
             }
         }
         catch
         {
-            return MintStatus.ContractError;
+            return NFTStatus.ContractError;
         }
     }
 
 
-    public async Task<bool> CheckBalanceAndTransfer(string toEmail, int _id)
+    public async Task<NFTStatus> CheckBalanceAndTransfer(string toEmail, int _id)
     {
         string method = "balanceOf";
 
@@ -272,7 +278,7 @@ public class SushiManager : MonoBehaviour
             if (balanceOf < realFee)
             {
                 Debug.Log("Your balance is NOT enough!");
-                return false;
+                return NFTStatus.Failure;
             }
             else
             {
@@ -293,12 +299,12 @@ public class SushiManager : MonoBehaviour
                 string message = JsonConvert.SerializeObject(messageObj);
                 Debug.Log(message);
                 // SendMessageRequest(message);
-                return true;
+                return NFTStatus.Success;
             }
         }
         catch
         {
-            return false;
+            return NFTStatus.ContractError;
         }
     }
     private void ChainSafeSetup()
@@ -317,14 +323,14 @@ public class SushiManager : MonoBehaviour
         // log function, delay time, repeat interval        
         // InvokeRepeating("rsay", 0.0f, 1.0f);
         ChainSafeSetup();
-        PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
+        PlayerPrefs.SetString("Email", "a5566742211@gmail.com");// For test
         dialogButton.deactivateAllInputFields();
     }
 
 }
-public enum MintStatus
+public enum NFTStatus
 {
-    MintSuccess,
-    MintFailure,
+    Success,
+    Failure,
     ContractError
 };

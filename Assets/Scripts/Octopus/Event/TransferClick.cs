@@ -14,6 +14,7 @@ using System.Text;
 using Realms;
 using Realms.Sync;
 using System.Linq;
+using UnityEngine.UIElements;
 
 public class TransferClick : MonoBehaviour
 {
@@ -45,11 +46,17 @@ public class TransferClick : MonoBehaviour
         UIManager.Instance.DeleteAllInputFields();
 
         // Load NFTs the player have
-        sushiManager.PreviewMintedNFT("transfer"); // set to the result of DB
+        bool success = sushiManager.PreviewMintedNFT("transfer"); // set to the result of DB
 
         // Show unminted NFTs
-        sushiManager.SetDisplayed(0, "transfer");
-
+        if (success)
+        {
+            sushiManager.SetDisplayed(0, "transfer");
+        }
+        else
+        {
+            UIManager.Instance.UpdateDialog("none", "You don't have any minted NFTs!");
+        }
     }
 
 }

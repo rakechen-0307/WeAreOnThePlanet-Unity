@@ -45,10 +45,17 @@ public class MintClick : MonoBehaviour
 
         // Load NFTs the player have
         // StartCoroutine(LoadMintNFTOperation());
-        sushiManager.PreviewNonMintedNFT(); // set to the result of DB
+        bool success = sushiManager.PreviewNonMintedNFT(); // set to the result of DB
 
         // Show unminted NFTs
-        sushiManager.SetDisplayed(0, "mint");
+        if(success)
+        {
+            sushiManager.SetDisplayed(0, "mint");
+        }
+        else
+        {
+            UIManager.Instance.UpdateDialog("none", "You don't have any minted NFTs!");
+        }
 
     }
 
