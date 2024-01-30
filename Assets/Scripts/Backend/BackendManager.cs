@@ -163,7 +163,7 @@ public class BackendManager : MonoBehaviour
         bool isShown = NFT.isShown;
         bool isPending = NFT.isPending;
         List<BlockData> blockDatas = NFT.blockDatas;
-        BackendCommunicator.instance.UpdateOneNFT(nftID, NFTName, isShown, blockDatas);
+        BackendCommunicator.instance.UpdateOneNFT(nftID, NFTName, isShown, isPending, blockDatas);
     }
 
     public async Task<int> newNFT(ArtWork NFT)
@@ -175,7 +175,7 @@ public class BackendManager : MonoBehaviour
         bool isMinted = NFT.isMinted;
         bool isShown = NFT.isShown;
         bool isPending = NFT.isPending;
-        NFT.id = await BackendCommunicator.instance.CreateOneNFT(NFTName, ownerId, author, createTime, isMinted, isShown);
+        NFT.id = await BackendCommunicator.instance.CreateOneNFT(NFTName, ownerId, author, createTime, isMinted, isShown, isPending);
         return NFT.id;
     }
 }
