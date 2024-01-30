@@ -7,6 +7,9 @@ public class DialogButton : MonoBehaviour
 {
 
     public TMP_InputField inputTransfer2;  
+    public TMP_InputField inputAuctionStartingPrice;
+    public TMP_InputField inputAuctionStartingTime;
+    public TMP_InputField inputAuctionEndingTime;
     
     public SushiManager sushiManager;
 
@@ -17,6 +20,9 @@ public class DialogButton : MonoBehaviour
 
     public void deactivateAllInputFields(){
         inputTransfer2.gameObject.SetActive(false);
+        inputAuctionStartingPrice.gameObject.SetActive(false);
+        inputAuctionStartingTime.gameObject.SetActive(false);
+        inputAuctionEndingTime.gameObject.SetActive(false);
     }
 
     void OnMouseDown()
@@ -29,7 +35,7 @@ public class DialogButton : MonoBehaviour
 
 
             // If succeeded
-            UIManager.Instance.UpdateDialog("mint2", "Your NFT has been successfully minted!");
+            UIManager.Instance.UpdateDialog("mint2", "\n\nYour NFT has been successfully minted!");
         }
 
         
@@ -49,10 +55,42 @@ public class DialogButton : MonoBehaviour
 
 
             // If succeeded            
-            inputTransfer2.gameObject.SetActive(false);
-            inputTransfer2.interactable = false;
-            UIManager.Instance.UpdateDialog("transfer3", "Your NFT has been successfully transferred!");
+            deactivateAllInputFields();
+            UIManager.Instance.UpdateDialog("transfer3", "\n\nYour NFT has been successfully transferred!");
         }
+
+
+        else if (UIManager.Instance.State == "launch1")
+        {       
+            inputAuctionStartingPrice.gameObject.SetActive(true);
+            inputAuctionStartingTime.gameObject.SetActive(true);
+            inputAuctionEndingTime.gameObject.SetActive(true);
+            inputAuctionStartingPrice.interactable = true;
+            inputAuctionStartingTime.interactable = true;
+            inputAuctionEndingTime.interactable = true;
+            inputAuctionStartingPrice.ActivateInputField();
+            UIManager.Instance.UpdateDialog("launch2", "Please enter the information of the auction.\n\nStarting Price:\n\n" +
+                "From(UTF+0):\n\nTo(UTF+0):"
+            );
+        }
+        else if (UIManager.Instance.State == "launch2")
+        {
+            // try launching NFT
+            // Handle errors
+
+
+            // If succeeded            
+            deactivateAllInputFields();
+            UIManager.Instance.UpdateDialog("launch3", "\n\nThe auction has been successfully launched!");
+        }
+
+
+        else if (UIManager.Instance.State == "attend1")
+        {       
+            // try entering auction
+            // Handle errors
+        }
+
 
         else 
         {

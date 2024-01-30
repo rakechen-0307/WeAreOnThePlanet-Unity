@@ -40,6 +40,24 @@ public class Sushi : MonoBehaviour
                 "This will cost 5 dollars."
             );
         }
+        else if(viewMode == "launch"){
+            UIManager.Instance.UpdateDialog("launch1", "Would you like to launch an auction of this NFT?\n" +
+                "Name: " + Name + "\n" +
+                "ID: " + Id + "\n" +
+                "Author: " + Author + "\n" +
+                "Time of creation: " + CreateTime + "\n" +
+                "This will cost 5 dollars."
+            );
+        }
+        else if(viewMode == "attend"){
+            UIManager.Instance.UpdateDialog("attend1", "Would you like to attend the auction of this NFT?\n" +
+                "Name: " + Name + "\n" +
+                "ID: " + Id + "\n" +
+                "Author: " + Author + "\n" +
+                "Time of creation: " + CreateTime + "\n" +
+                "This will cost 5 dollars."
+            );
+        }
 
     }
 
