@@ -42,7 +42,6 @@ public class MainPlanetInit : MonoBehaviour
         {
             if (loadedData.currentPlanet.NFTs[NFTidx].isShown)
             {
-                // TODO: show NFT
                 ShowNFT(NFTDisplaySlots[displayedNFTCount], loadedData.currentPlanet.NFTs[NFTidx]);
                 displayedNFTCount++;
             }

@@ -15,7 +15,7 @@ public class CreateNFTSave : MonoBehaviour
         }
     }
 
-    private void NewNFT(string NFTName)
+    public void NewNFT(string NFTName)
     {
         ArtWork NFT = new ArtWork();
         NFT.artName = NFTName;
@@ -28,7 +28,7 @@ public class CreateNFTSave : MonoBehaviour
         loadedData.NFTs.Add(NFT);
     }
 
-    private void SaveNFTData(ArtWork newNFTData)
+    public void SaveNFTData(ArtWork newNFTData)
     {
         BackendManager.instance.saveNFT(newNFTData);
 
