@@ -29,13 +29,6 @@ public class BackendCommunicator : MonoBehaviour
         }        
     }
 
-    /*
-    public PlayerData CheckValid(string email)
-    {
-
-    }
-    */
-
     public PlayerData FindOnePlayerByEmail(string email)
     {
         PlayerData playerData = _realm.All<PlayerData>().Where(user => user.Email == email).FirstOrDefault();
@@ -46,6 +39,47 @@ public class BackendCommunicator : MonoBehaviour
     {
         PlayerData playerData = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault();
         return playerData;
+    }
+
+    public async Task<int> CreateOnePlayer(string email, string username, string password, string account)
+    {
+        int playerCount = _realm.All<PlayerData>().ToArray().Length;
+        List<Task> tasks = _realm.All<Task>().ToList();
+
+        await _realm.WriteAsync(() =>
+        {
+            PlayerData newPlayer = _realm.Add(new PlayerData()
+            {
+                Id = playerCount + 1,
+                Email = email,
+                Username = username,
+                Password = password,
+                Account = account,
+                Exp = 0,
+                Position = new PlayerPosition()
+                {
+                    PlanetID = playerCount + 1,
+                    PosX = 0,
+                    PosY = 50.7,
+                    PosZ = 0,
+                    RotX = 0,
+                    RotY = 0,
+                    RotZ = 0
+                }
+            });
+
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                newPlayer.TaskProgress.Add(new PlayerTask
+                {
+                    Task = tasks[i],
+                    Progress = 0,
+                    Achieved = false
+                });
+            }
+        });
+
+        return playerCount + 1;
     }
 
     public async void UpdatePlayerPosition(int playerId, int planetId, Vector3 pos, Vector3 rot)

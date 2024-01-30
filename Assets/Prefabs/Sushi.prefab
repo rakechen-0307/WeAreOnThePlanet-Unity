@@ -137,8 +137,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.87, y: 0.84, z: 0.79}
-  m_Center: {x: 0.65, y: 1.8, z: 1.92}
+  m_Size: {x: 0.87, y: 1.38, z: 0.79}
+  m_Center: {x: 0.65, y: 1.3, z: 1.92}
 --- !u!114 &-4929190247805160873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,12 +151,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60dc981a175f11b4ea7e0ae6cd768148, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogText: {fileID: 0}
   Author: 
   IsMinted: 0
-  NFTID: 0
+  Id: 0
   Name: 
-  OwnerID: 0
+  viewMode: 
 --- !u!1 &6034467451762371459
 GameObject:
   m_ObjectHideFlags: 0
