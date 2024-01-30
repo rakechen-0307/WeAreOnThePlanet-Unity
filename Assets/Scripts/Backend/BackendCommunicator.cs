@@ -119,7 +119,7 @@ public class BackendCommunicator : MonoBehaviour
             updateNFT.Name = name;
             updateNFT.IsShown = isShown;
 
-            while (updateNFT.Contents.Count >= 0)
+            while (updateNFT.Contents.Count > 0)
             {
                 _realm.Remove(updateNFT.Contents[0]);
             }
