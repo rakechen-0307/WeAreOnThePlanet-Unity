@@ -110,7 +110,6 @@ public class SushiManager : MonoBehaviour
         for(int i=0; i<Displayed.Count; i++){
             Vector3 spawnPosition = new Vector3(-0.3f, -0.75f, sushiInterval * (1.5f-i) - 2f - 9.25f);
             GameObject sushiInstance = Instantiate(sushiPrefab, spawnPosition, Quaternion.identity);
-            sushiInstance.tag = "sushi";
             Sushi sushiComponent = sushiInstance.GetComponent<Sushi>();
             NFTInfo nftInfo = Displayed[i];
             sushiComponent.Id = nftInfo.Id;

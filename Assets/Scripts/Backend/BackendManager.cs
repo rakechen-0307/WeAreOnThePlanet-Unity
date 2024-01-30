@@ -146,4 +146,24 @@ public class BackendManager : MonoBehaviour
             loadedData.NFTs.Add(nft);
         }
     }
+
+    public void saveNFT(ArtWork NFT)
+    {
+        int nftID = NFT.id;
+        string NFTName = NFT.artName;
+        bool isShown = NFT.isShown;
+        List<BlockData> blockDatas = NFT.blockDatas;
+        BackendCommunicator.instance.UpdateOneNFT(nftID, NFTName, isShown, blockDatas);
+    }
+
+    public async void newNFT(ArtWork NFT)
+    {
+        string NFTName = NFT.artName;
+        int ownerId = NFT.ownerID;
+        string author = NFT.author;
+        DateTimeOffset createTime = NFT.createdTime;
+        bool isMinted = NFT.isMinted;
+        bool isShown = NFT.isShown;
+        NFT.id = await BackendCommunicator.instance.CreateOneNFT(NFTName, ownerId, author, createTime, isMinted, isShown);
+    }
 }

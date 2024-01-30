@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
+using System.Threading.Tasks;
 
 public class BackendCommunicator : MonoBehaviour
 {
@@ -27,13 +29,6 @@ public class BackendCommunicator : MonoBehaviour
         }        
     }
 
-    /*
-    public PlayerData CheckValid(string email)
-    {
-
-    }
-    */
-
     public PlayerData FindOnePlayerByEmail(string email)
     {
         PlayerData playerData = _realm.All<PlayerData>().Where(user => user.Email == email).FirstOrDefault();
@@ -44,6 +39,47 @@ public class BackendCommunicator : MonoBehaviour
     {
         PlayerData playerData = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault();
         return playerData;
+    }
+
+    public async Task<int> CreateOnePlayer(string email, string username, string password, string account)
+    {
+        int playerCount = _realm.All<PlayerData>().ToArray().Length;
+        List<Task> tasks = _realm.All<Task>().ToList();
+
+        await _realm.WriteAsync(() =>
+        {
+            PlayerData newPlayer = _realm.Add(new PlayerData()
+            {
+                Id = playerCount + 1,
+                Email = email,
+                Username = username,
+                Password = password,
+                Account = account,
+                Exp = 0,
+                Position = new PlayerPosition()
+                {
+                    PlanetID = playerCount + 1,
+                    PosX = 0,
+                    PosY = 50.7,
+                    PosZ = 0,
+                    RotX = 0,
+                    RotY = 0,
+                    RotZ = 0
+                }
+            });
+
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                newPlayer.TaskProgress.Add(new PlayerTask
+                {
+                    Task = tasks[i],
+                    Progress = 0,
+                    Achieved = false
+                });
+            }
+        });
+
+        return playerCount + 1;
     }
 
     public async void UpdatePlayerPosition(int playerId, int planetId, Vector3 pos, Vector3 rot)
@@ -66,6 +102,60 @@ public class BackendCommunicator : MonoBehaviour
     {
         IList<NFTInfo> nftInfos = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault().NFTs;
         return nftInfos;
+    }
+
+    public async void UpdateOneNFT(int nftId, string name, bool isShown, List<BlockData> blockData)
+    {
+        NFTInfo updateNFT = _realm.All<NFTInfo>().Where(nft => nft.Id == nftId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            updateNFT.Name = name;
+            updateNFT.IsShown = isShown;
+            for (int i = 0; i < blockData.Count; i++)
+            {
+                Vector3 pos = blockData[i].position;
+                Color color = blockData[i].color;
+                RGBColor rgbColor = new RGBColor()
+                {
+                    R = color.r,
+                    G = color.g,
+                    B = color.b,
+                };
+                NFTContent nftContent = new NFTContent()
+                {
+                    PosX = pos.x,
+                    PosY = pos.y,
+                    PosZ = pos.z,
+                    Color = rgbColor
+                };
+                updateNFT.Contents.Add(nftContent);
+            }
+        });
+    }
+
+    public async Task<int> CreateOneNFT(string name, int ownerId, string author, DateTimeOffset createTime, bool isMinted, bool isShown)
+    {
+        int NFTsCount = _realm.All<NFTInfo>().ToArray().Length;
+        PlayerData owner = _realm.All<PlayerData>().Where(user => user.Id == ownerId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            NFTInfo newNFT = _realm.Add(new NFTInfo()
+            {
+                Id = NFTsCount + 1,
+                Owner = owner,
+                Name = name,
+                Author = author,
+                CreateTime = createTime,
+                IsMinted = isMinted,
+                IsShown = isShown
+            });
+
+            owner.NFTs.Add(newNFT);
+        });
+
+        return NFTsCount + 1;
     }
 
     private async void RealmSetup()
