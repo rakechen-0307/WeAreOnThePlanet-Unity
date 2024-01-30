@@ -588,7 +588,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:
@@ -2905,7 +2905,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:
@@ -4271,7 +4271,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:
@@ -4399,7 +4399,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:
@@ -4607,7 +4607,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadedData: {fileID: 11400000, guid: 8c7085d898f4aa941b63d8b50e52d4dc, type: 2}
-  blockPrefab: {fileID: 2362717742350079294, guid: 2e7fd45a0e4a9f84584c4ca372a46007,
+  blockPrefab: {fileID: 5119779292655232420, guid: 1dabe04eb85958c4293c4b9d7876ef3b,
     type: 3}
   NFTDisplaySlots:
   - {fileID: 1520886080}
@@ -5261,7 +5261,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:
@@ -5698,7 +5698,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:
@@ -8723,9 +8723,18 @@ MonoBehaviour:
   viewMenu: {fileID: 284914833}
   viewBackButton: {fileID: 1067363925}
   NFTDisplay: {fileID: 1232736733}
+  NFTNames:
+  - {fileID: 126564988}
+  - {fileID: 881715066}
+  - {fileID: 543465011}
+  - {fileID: 1666103896}
+  - {fileID: 1552985789}
+  - {fileID: 1631740921}
   NFTNameInput: {fileID: 1222186949}
   comfirmButton: {fileID: 2094690986}
   cancelButton: {fileID: 1118875062}
+  nextPage: {fileID: 2118198719}
+  previousPage: {fileID: 1093728663}
   saveManager: {fileID: 2137033485}
 --- !u!1 &1834589791
 GameObject:
@@ -11266,6 +11275,7 @@ MonoBehaviour:
     ownerID: 0
     isMinted: 0
     isShown: 0
+    isPending: 0
     blockDatas: []
   NFTinProgress:
     id: 0
@@ -11274,6 +11284,7 @@ MonoBehaviour:
     ownerID: 0
     isMinted: 0
     isShown: 0
+    isPending: 0
     blockDatas: []
   saveButton: {fileID: 1834589794}
   leaveButton: {fileID: 2001516049}

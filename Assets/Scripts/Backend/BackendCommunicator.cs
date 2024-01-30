@@ -106,8 +106,16 @@ public class BackendCommunicator : MonoBehaviour
 
     public IList<NFTInfo> GetNFTsById(int playerId)
     {
-        IList<NFTInfo> nftInfos = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault().NFTs;
-        return nftInfos;
+        try
+        {
+            IList<NFTInfo> nftInfos = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault().NFTs;
+            return nftInfos;
+        }
+        catch (System.Exception)
+        {
+            Debug.LogError("failed to get NFT");
+            throw;
+        }
     }
 
     public async void UpdateOneNFT(int nftId, string name, bool isShown, bool isPending, List<BlockData> blockData)
