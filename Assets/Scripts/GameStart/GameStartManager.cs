@@ -296,11 +296,29 @@ public class GameStartManager : Singleton<GameStartManager>
         if (account.Length == 42 && expirationTime >= now)
         {
             PlayerPrefs.SetString("Account", account);
+            PlayerPrefs.SetString("Email", email);
             print("Account: " + account);
             
             if (isNew)
             {
+                PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByAccount(account);
+                if (findPlayer != null)
+                {
+                    SignInErrorText.enabled = true;
+                    SignInErrorText.text = "Account has been used";
+                    return;
+                }
                 _playerId = await BackendCommunicator.instance.CreateOnePlayer(email, username, password, account);
+            }
+            else
+            {
+                PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByEmail(email);
+                if(findPlayer.Account != account)
+                {
+                    SignInErrorText.enabled = true;
+                    SignInErrorText.text = "Wrong account";
+                    return;
+                }
             }
             VivoxSignIn(_playerId.ToString());
             int planetId = BackendManager.instance.loadMainPlayerData(_playerId, _loadedData);

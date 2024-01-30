@@ -51,21 +51,6 @@ public class AuctionManager : MonoBehaviour
     {
         PlayerData findPlayer = _realm.All<PlayerData>().Where(user => user.Email == PlayerPrefs.GetString("Email")).FirstOrDefault();
         var auctionsCount = _realm.All<Auction>().ToArray().Length;
-        try
-        {
-            string[] data = { "launch", PlayerPrefs.GetString("Account"), (auctionsCount + 1).ToString() };
-            string jsonData = JsonConvert.SerializeObject(data);
-            string signature = await Web3Wallet.Sign(jsonData);
-            string[] messageObj = { jsonData, signature };
-            string message = JsonConvert.SerializeObject(messageObj);
-            Debug.Log(message);
-            // SendMessageRequest(message);
-        }
-        catch
-        {
-            Debug.Log("Signing error");
-            return;
-        }
         await _realm.WriteAsync(() =>
         {
             var auction = _realm.Add(new Auction()
@@ -104,45 +89,30 @@ public class AuctionManager : MonoBehaviour
     }
     private async Task<bool> CheckBalanceAndBid(int price, int auction)
     {
-        try
+        string method = "balanceOf";
+
+        var provider = new JsonRpcProvider(ContractManager.RPC);
+
+        Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
+
+        var data = await contract.Call(method, new object[]
         {
-            string method = "balanceOf";
-
-            var provider = new JsonRpcProvider(ContractManager.RPC);
-
-            Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
-
-            var data = await contract.Call(method, new object[]
-            {
-                PlayerPrefs.GetString("Account")
-            });
+            PlayerPrefs.GetString("Account")
+        });
 
 
-            BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
-            BigInteger realPrice = (BigInteger)1000000000000000000 * price;
-            Debug.Log("Balance Of: " + balanceOf);
-            Debug.Log("Price:" + realPrice);
-            if (balanceOf < 100)
-            {
-                Debug.Log("Your balance is NOT enough!");
-                return false;
-            }
-            else
-            {
-                string[] preJsonData = { "bid", PlayerPrefs.GetString("Account"), auction.ToString() };
-                string jsonData = JsonConvert.SerializeObject(preJsonData);
-                string signature = await Web3Wallet.Sign(jsonData);
-                string[] messageObj = { jsonData, signature };
-                string message = JsonConvert.SerializeObject(messageObj);
-                Debug.Log(message);
-                // SendMessageRequest(message);
-                return true;
-            }
-        }
-        catch
+        BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
+        BigInteger realPrice = (BigInteger)1000000000000000000 * price;
+        Debug.Log("Balance Of: " + balanceOf);
+        Debug.Log("Price:" + realPrice);
+        if (balanceOf < realPrice)
         {
-            Debug.Log("Signing error");
+            Debug.Log("Your balance is NOT enough!");
             return false;
+        }
+        else
+        {
+            return true;
         }
     }
 }

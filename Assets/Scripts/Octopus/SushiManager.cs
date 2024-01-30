@@ -15,6 +15,9 @@ using Web3Unity.Scripts.Library.Web3Wallet;
 using System.Threading.Tasks;
 using Web3Unity.Scripts.Library.Ethers.Providers;
 using Web3Unity.Scripts.Library.Ethers.Contracts;
+using SysRandom = System.Random;
+using Unity.VisualScripting.Antlr3.Runtime;
+using Unity.VisualScripting;
 
 public class SushiManager : MonoBehaviour
 {
@@ -41,6 +44,7 @@ public class SushiManager : MonoBehaviour
     public static BigInteger price = 100;
     public static BigInteger fee = 5;
 
+    SysRandom rnd = new SysRandom(Guid.NewGuid().GetHashCode());
     public void SetDisplayed(int num, string mode)
     {
         if(isLeaving || isComing) return;
@@ -192,7 +196,7 @@ public class SushiManager : MonoBehaviour
         }
         else
         {
-            string[] preJsonData = { "mint", PlayerPrefs.GetString("Account"), _id.ToString() };
+            string[] preJsonData = { "mint", PlayerPrefs.GetString("Email"), _id.ToString() };
             string jsonData = JsonConvert.SerializeObject(preJsonData);
             string signature = await Web3Wallet.Sign(jsonData);
             string[] messageObj = { jsonData, signature };
@@ -204,14 +208,14 @@ public class SushiManager : MonoBehaviour
     }
 
 
-    private async Task<bool> CheckBalanceAndTransfer(int to, int _id)
+    private async Task<bool> CheckBalanceAndTransfer(string toEmail, int _id)
     {
         string method = "balanceOf";
 
         var provider = new JsonRpcProvider(ContractManager.RPC);
 
         Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
-
+        Contract NFTcontract = new Contract(ContractManager.NFTABI, ContractManager.NFTContract, provider);
         try
         {
             var data = await contract.Call(method, new object[]
@@ -219,7 +223,7 @@ public class SushiManager : MonoBehaviour
                 PlayerPrefs.GetString("Account")
             });
 
-
+            BigInteger nonce = rnd.Next();
             BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
             BigInteger realFee = (BigInteger)1000000000000000000 * fee;
             Debug.Log("Balance Of: " + balanceOf);
@@ -231,14 +235,20 @@ public class SushiManager : MonoBehaviour
             }
             else
             {
-                string[] preJsonData = { "transfer", PlayerPrefs.GetString("Account"), to.ToString(), _id.ToString() };
+                method = "getTransferPreSignedHash";
+                string toAccount = BackendCommunicator.instance.FindOnePlayerByEmail(toEmail).Account; 
+                string[] preJsonData = { "transfer", PlayerPrefs.GetString("Email"), toEmail, _id.ToString(), nonce.ToString() };
                 string jsonData = JsonConvert.SerializeObject(preJsonData);
-                data = await contract.Call(method, new object[]
+                data = await NFTcontract.Call(method, new object[]
                 {
-                    PlayerPrefs.GetString("Account")
+                    PlayerPrefs.GetString("Account"),
+                    toAccount,
+                    _id.ToString(),
+                    nonce.ToString()
                 });
-                string signature = await Web3Wallet.Sign(jsonData);
-                string[] messageObj = { jsonData, signature };
+                var result_hash = BitConverter.ToString((byte[])data[0]).Replace("-", string.Empty).ToLower();
+                string signature = await Web3Wallet.Sign(result_hash);
+                string[] messageObj = { jsonData, result_hash, signature };
                 string message = JsonConvert.SerializeObject(messageObj);
                 Debug.Log(message);
                 // SendMessageRequest(message);
@@ -266,6 +276,7 @@ public class SushiManager : MonoBehaviour
         // log function, delay time, repeat interval        
         // InvokeRepeating("rsay", 0.0f, 1.0f);
         ChainSafeSetup();
+
     }
 
 }

@@ -41,6 +41,12 @@ public class BackendCommunicator : MonoBehaviour
         return playerData;
     }
 
+    public PlayerData FindOnePlayerByAccount(string account)
+    {
+        PlayerData playerData = _realm.All<PlayerData>().Where(user => user.Account == account).FirstOrDefault();
+        return playerData;
+    }
+
     public async Task<int> CreateOnePlayer(string email, string username, string password, string account)
     {
         int playerCount = _realm.All<PlayerData>().ToArray().Length;
