@@ -29,6 +29,12 @@ public class BackendCommunicator : MonoBehaviour
         }        
     }
 
+    public IList<PlayerData> FindAllPlayers()
+    {
+        IList<PlayerData> players = _realm.All<PlayerData>().ToList();
+        return players;
+    }
+
     public PlayerData FindOnePlayerByEmail(string email)
     {
         PlayerData playerData = _realm.All<PlayerData>().Where(user => user.Email == email).FirstOrDefault();
