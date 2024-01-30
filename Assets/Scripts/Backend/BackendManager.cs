@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class BackendManager : MonoBehaviour
@@ -27,12 +28,18 @@ public class BackendManager : MonoBehaviour
         loadedData.playerId = playerData.Id;
         loadedData.playerName = playerData.Username;
         loadedData.experience = playerData.Exp;
+
         loadedData.friendIds = new List<int>();
         for (int i = 0; i < playerData.Friends.Count; i++)
         {
             loadedData.friendIds.Add(playerData.Friends[i].Id);
         }
 
+        loadedData.pendingIds = new List<int>();
+        for (int i = 0; i < playerData.Friends.Count; i++)
+        {
+            loadedData.pendingIds.Add(playerData.PendingFriends[i].Id);
+        }
         // load player data
         float posX = (float) playerData.Position.PosX;
         float posY = (float) playerData.Position.PosY;
@@ -98,6 +105,7 @@ public class BackendManager : MonoBehaviour
             nft.ownerID = nftInfo.Owner.Id;
             nft.isMinted = nftInfo.IsMinted;
             nft.isShown = nftInfo.IsShown;
+            nft.isPending = nftInfo.IsPending;
             foreach (NFTContent nftContent in nftInfo.Contents)
             {
                 float posX = (float) nftContent.PosX;
@@ -130,6 +138,7 @@ public class BackendManager : MonoBehaviour
             nft.ownerID = nftInfo.Owner.Id;
             nft.isMinted = nftInfo.IsMinted;
             nft.isShown = nftInfo.IsShown;
+            nft.isPending = nftInfo.IsPending;
             foreach (NFTContent nftContent in nftInfo.Contents)
             {
                 float posX = (float) nftContent.PosX;
@@ -152,11 +161,12 @@ public class BackendManager : MonoBehaviour
         int nftID = NFT.id;
         string NFTName = NFT.artName;
         bool isShown = NFT.isShown;
+        bool isPending = NFT.isPending;
         List<BlockData> blockDatas = NFT.blockDatas;
         BackendCommunicator.instance.UpdateOneNFT(nftID, NFTName, isShown, blockDatas);
     }
 
-    public async void newNFT(ArtWork NFT)
+    public async Task<int> newNFT(ArtWork NFT)
     {
         string NFTName = NFT.artName;
         int ownerId = NFT.ownerID;
@@ -164,6 +174,8 @@ public class BackendManager : MonoBehaviour
         DateTimeOffset createTime = NFT.createdTime;
         bool isMinted = NFT.isMinted;
         bool isShown = NFT.isShown;
+        bool isPending = NFT.isPending;
         NFT.id = await BackendCommunicator.instance.CreateOneNFT(NFTName, ownerId, author, createTime, isMinted, isShown);
+        return NFT.id;
     }
 }

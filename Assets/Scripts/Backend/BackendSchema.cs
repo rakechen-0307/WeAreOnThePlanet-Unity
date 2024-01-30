@@ -38,6 +38,9 @@ public partial class PlayerData : IRealmObject
     [MapTo("friends")]
     public IList<PlayerData> Friends { get; }
 
+    [MapTo("pendingFriends")]
+    public IList<PlayerData> PendingFriends { get; }
+
     public IList<NFTInfo> NFTs { get; }
 
     [MapTo("bidAuction")]
@@ -156,6 +159,9 @@ public partial class NFTInfo : IRealmObject
 
     [MapTo("isShown")]
     public bool IsShown { get; set; }
+
+    [MapTo("isPending")]
+    public bool IsPending { get; set; }
 
     [MapTo("contents")]
     public IList<NFTContent> Contents { get; }
