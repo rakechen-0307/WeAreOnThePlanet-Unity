@@ -1860,6 +1860,7 @@ MonoBehaviour:
   dialogBox: {fileID: 1583929843}
   button: {fileID: 1053978414}
   State: 
+  dialogButton: {fileID: 1053978419}
 --- !u!1 &713479356
 GameObject:
   m_ObjectHideFlags: 0
@@ -2758,6 +2759,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputTransfer2: {fileID: 837141109}
+  sushiManager: {fileID: 1343729464}
 --- !u!1 &1055281059
 GameObject:
   m_ObjectHideFlags: 0

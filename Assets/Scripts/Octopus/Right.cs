@@ -6,6 +6,7 @@ public class Right : MonoBehaviour
 {
     public SushiManager sushiManager;
     void OnMouseDown(){
+        UIManager.Instance.DeleteAllInputFields();
         Debug.Log("Right page clicked");
         if(sushiManager.viewMode == "none") return;
         int num = sushiManager.viewNumber;

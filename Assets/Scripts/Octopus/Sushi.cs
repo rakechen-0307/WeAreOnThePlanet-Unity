@@ -19,6 +19,7 @@ public class Sushi : MonoBehaviour
 
     void OnMouseDown()
     {
+        UIManager.Instance.DeleteAllInputFields();
         say("Sushi clicked!");
         say(Id.ToString());
         if(viewMode == "mint"){

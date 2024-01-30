@@ -42,6 +42,7 @@ public class TransferClick : MonoBehaviour
     void OnMouseDown(){
 
         UIManager.Instance.UpdateDialog("none", "");
+        UIManager.Instance.DeleteAllInputFields();
 
         // Load NFTs the player have
         sushiManager.SetTransfer(Test); // set to the result of DB

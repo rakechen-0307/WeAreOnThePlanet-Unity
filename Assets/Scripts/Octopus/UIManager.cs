@@ -47,4 +47,9 @@ public class UIManager : MonoBehaviour
         //button part
         State = state;
     }
+
+    public DialogButton dialogButton;
+    public void DeleteAllInputFields(){
+        dialogButton.deactivateAllInputFields();
+    }
 }

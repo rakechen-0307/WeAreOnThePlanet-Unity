@@ -6,6 +6,7 @@ public class Left : MonoBehaviour
 {
     public SushiManager sushiManager;
     void OnMouseDown(){
+        UIManager.Instance.DeleteAllInputFields();
         Debug.Log("Left page clicked");
         if(sushiManager.viewMode == "none") return;
         int num = sushiManager.viewNumber;
