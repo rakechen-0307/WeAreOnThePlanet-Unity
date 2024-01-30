@@ -61,6 +61,8 @@ public class NFTMenu : MonoBehaviour
     [SerializeField]
     private Button previousPage;
 
+    [SerializeField]
+    private GameObject NFTDataModal;
     // Other
     [SerializeField]
     private SaveManager saveManager;
@@ -134,7 +136,9 @@ public class NFTMenu : MonoBehaviour
             return;
         }
         ArtWork NFT = loadedData.NFTs[index];
-        
+
+        NFTDataModal.SetActive(true);
+        displayNFTModal(NFT);
     }
     // Menus
     private void showBuildMenu()
@@ -142,6 +146,7 @@ public class NFTMenu : MonoBehaviour
         menuPannel.SetActive(false);
         buildModal.SetActive(false);
         viewMenu.SetActive(false);
+        NFTDataModal.SetActive(false);
         buildPannel.SetActive(true);
     }
 
@@ -151,9 +156,14 @@ public class NFTMenu : MonoBehaviour
         buildModal.SetActive(false);
         viewMenu.SetActive(false);
         buildPannel.SetActive(false);
+        NFTDataModal.SetActive(false);
         displayIndex = 0;
     }
     // Utility
+    private void displayNFTModal(ArtWork NFT)
+    {
+        
+    }
     private void displayNFT(int displayIdx)
     {
         // display object
