@@ -1,12 +1,19 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class UIManager : MonoBehaviour
 {
     
     public static UIManager Instance;
 
-    public TextMeshProUGUI myText;
+    public TextMeshProUGUI dialogText;
+    public TextMeshProUGUI buttonText;
+    public GameObject dialogBox;
+    public GameObject button;
+
+    public string State;
 
     void Awake()
     {
@@ -14,19 +21,30 @@ public class UIManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            UpdateText("");
+            UIManager.Instance.UpdateDialog("none", "");
         }
         else Destroy(gameObject);
-    }    
-
-    public void UpdateText(string message)
+        ToggleDialog(false);
+        State = "none";
+    }
+    
+    public void ToggleDialog(bool mode)
     {
-        if (myText != null) myText.text = message;
-        else myText.text = "";
+        dialogBox.SetActive(mode);
+        button.SetActive(mode);
+        if (mode) buttonText.text = "OK";
+        else buttonText.text = "";
     }
 
-    public void UpdateButton(string message)
+    public void UpdateDialog(string state, string message)
     {
+        //text part
+        if (dialogText != null) dialogText.text = message;
+        else dialogText.text = "";
+        if (message == "") ToggleDialog(false);
+        else ToggleDialog(true);
 
+        //button part
+        State = state;
     }
 }

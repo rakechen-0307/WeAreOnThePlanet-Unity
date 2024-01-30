@@ -9,7 +9,7 @@ public class Left : MonoBehaviour
         Debug.Log("Left page clicked");
         if(sushiManager.viewMode == "none") return;
         int num = sushiManager.viewNumber;
-        if(num - 4 >= 0) sushiManager.SetDisplayed(num - 4, "mint");
-        UIManager.Instance.UpdateText("");
+        if(num - 4 >= 0) sushiManager.SetDisplayed(num - 4, sushiManager.viewMode);
+        UIManager.Instance.UpdateDialog("none", "");
     }
 }

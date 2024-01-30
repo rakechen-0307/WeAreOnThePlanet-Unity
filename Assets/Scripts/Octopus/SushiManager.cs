@@ -15,6 +15,8 @@ public class SushiManager : MonoBehaviour
     public List<NFTInfo> Displayed = new List<NFTInfo>();
     public List<NFTInfo> Mint = new List<NFTInfo>();
     public List<NFTInfo> Transfer = new List<NFTInfo>();
+    public List<NFTInfo> Launch = new List<NFTInfo>();
+    public List<NFTInfo> Attend = new List<NFTInfo>();
 
     private List<GameObject> sushiInstances = new List<GameObject>();
     private float moveStartTime;
@@ -24,8 +26,10 @@ public class SushiManager : MonoBehaviour
         if(isLeaving || isComing) return;
 
         Displayed.Clear();
-        if(viewMode == "mint") for(int i=num; i<num+4; i++) if(i<Mint.Count) Displayed.Add(Mint[i]);
-        // TODO - other modes
+        if(viewMode == "mint") {for(int i=num; i<num+4; i++) if(i<Mint.Count) Displayed.Add(Mint[i]);}
+        else if(viewMode == "transfer") {for(int i=num; i<num+4; i++) if(i<Transfer.Count) Displayed.Add(Transfer[i]);}
+        else if(viewMode == "launch") {for(int i=num; i<num+4; i++) if(i<Launch.Count) Displayed.Add(Launch[i]);}
+        else if(viewMode == "attend") {for(int i=num; i<num+4; i++) if(i<Attend.Count) Displayed.Add(Attend[i]);}
 
         viewNumber = num;
         viewMode = mode;
@@ -78,6 +82,21 @@ public class SushiManager : MonoBehaviour
     {
         viewMode = "mint";
         Mint = nfts;
+    }
+    public void SetTransfer(List<NFTInfo> nfts)
+    {
+        viewMode = "transfer";
+        Transfer = nfts;
+    }
+    public void SetLaunch(List<NFTInfo> nfts)
+    {
+        viewMode = "launch";
+        Launch = nfts;
+    }
+    public void SetAttend(List<NFTInfo> nfts)
+    {
+        viewMode = "attend";
+        Attend = nfts;
     }
 
     private void ResetComingSushiInstance()

@@ -41,7 +41,7 @@ public class MintClick : MonoBehaviour
 
     void OnMouseDown(){
 
-        Debug.Log("Mint NFT clicked");
+        UIManager.Instance.UpdateDialog("none", "");
 
         // Load NFTs the player have
         // StartCoroutine(LoadMintNFTOperation());

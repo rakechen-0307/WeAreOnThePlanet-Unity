@@ -22,18 +22,28 @@ public class Sushi : MonoBehaviour
         say("Sushi clicked!");
         say(Id.ToString());
         if(viewMode == "mint"){
-            UIManager.Instance.UpdateText("Would you like to mint this NFT?\n" +
+            UIManager.Instance.UpdateDialog("mint1", "Would you like to mint this NFT?\n" +
                 "Name: " + Name + "\n" +
                 "ID: " + Id + "\n" +
                 "Author: " + Author + "\n" +
-                "Time of creation: " + CreateTime + "\n"
+                "Time of creation: " + CreateTime + "\n" +
+                "This will cost 5 dollars."
+            );
+        }
+        else if(viewMode == "transfer"){
+            UIManager.Instance.UpdateDialog("transfer1", "Would you like to transfer this NFT?\n" +
+                "Name: " + Name + "\n" +
+                "ID: " + Id + "\n" +
+                "Author: " + Author + "\n" +
+                "Time of creation: " + CreateTime + "\n" +
+                "This will cost 5 dollars."
             );
         }
 
     }
 
     private void say(string s){
-        bool debugging = true;
+        bool debugging = false;
         if(debugging)Debug.Log(s);
     }
 }
