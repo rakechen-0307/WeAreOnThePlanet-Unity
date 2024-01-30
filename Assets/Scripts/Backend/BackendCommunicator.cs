@@ -112,6 +112,12 @@ public class BackendCommunicator : MonoBehaviour
         {
             updateNFT.Name = name;
             updateNFT.IsShown = isShown;
+
+            while (updateNFT.Contents.Count >= 0)
+            {
+                _realm.Remove(updateNFT.Contents[0]);
+            }
+
             for (int i = 0; i < blockData.Count; i++)
             {
                 Vector3 pos = blockData[i].position;
@@ -132,6 +138,12 @@ public class BackendCommunicator : MonoBehaviour
                 updateNFT.Contents.Add(nftContent);
             }
         });
+    }
+
+    public IList<PlayerData> FindAllFriends(int playerId)
+    {
+        IList<PlayerData> friends = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault().Friends;
+        return friends;
     }
 
     public async Task<int> CreateOneNFT(string name, int ownerId, string author, DateTimeOffset createTime, bool isMinted, bool isShown)
