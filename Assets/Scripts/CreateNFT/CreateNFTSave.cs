@@ -25,6 +25,7 @@ public class CreateNFTSave : MonoBehaviour
         NFT.createdTime = DateTimeOffset.Now;
         NFT.isMinted = false;
         NFT.isShown = false;
+        NFT.isPending = false;
         NFT.id = await BackendManager.instance.newNFT(NFT);
         loadedData.NFTs.Add(NFT);
         return NFT;

@@ -10,6 +10,7 @@ public class LoadedData : ScriptableObject
     public Player mainPlayer;
     public List<ArtWork> NFTs;
     public List<int> friendIds;
+    public List<int> pendingIds;
     public List<SubscribedAuction> bidAuctions;
     public List<Achievement> achievements;
     public int experience;
@@ -86,6 +87,7 @@ public class ArtWork
     public int ownerID;
     public bool isMinted;
     public bool isShown;
+    public bool isPending;
     public List<BlockData> blockDatas = new List<BlockData>();
 
     public ArtWork()
@@ -101,6 +103,7 @@ public class ArtWork
         ownerID = artWork.ownerID;
         isMinted = artWork.isMinted;
         isShown = artWork.isShown;
+        isPending = artWork.isPending;
         foreach (BlockData blockData in artWork.blockDatas)
         {
             blockDatas.Add(new BlockData(blockData));
