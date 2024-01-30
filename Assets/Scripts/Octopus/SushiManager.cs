@@ -33,12 +33,13 @@ public class SushiManager : MonoBehaviour
     private List<GameObject> sushiInstances = new List<GameObject>();
     private float moveStartTime;
 
-    private Realm _realm;
-    private App _realmApp;
-    private User _realmUser;
-    private string _realmAppID = "weareontheplanet-ouawh";
+    //private Realm _realm;
+    //private App _realmApp;
+    //private User _realmUser;
+    //private string _realmAppID = "weareontheplanet-ouawh";
 
     public static BigInteger price = 100;
+    public static BigInteger fee = 5;
 
     public void SetDisplayed(int num, string mode)
     {
@@ -141,7 +142,7 @@ public class SushiManager : MonoBehaviour
     public void PreviewNonMintedNFT()
     {
         string email = PlayerPrefs.GetString("Email");
-        PlayerData findPlayer = _realm.All<PlayerData>().Where(user => user.Email == email).FirstOrDefault();
+        PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByEmail(email);
         var nfts = findPlayer.NFTs.Where(nft => nft.IsMinted = false);
         if(nfts.Count() > 0)
         {
@@ -155,7 +156,7 @@ public class SushiManager : MonoBehaviour
     public void PreviewMintedNFT()
     {
         string email = PlayerPrefs.GetString("Email");
-        PlayerData findPlayer = _realm.All<PlayerData>().Where(user => user.Email == email).FirstOrDefault();
+        PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByEmail(email);
         var nfts = findPlayer.NFTs.Where(nft => nft.IsMinted = true);
         if (nfts.Count() > 0)
         {
@@ -203,23 +204,51 @@ public class SushiManager : MonoBehaviour
         }
     }
 
-    private async void RealmSetup()
+
+    private async Task<bool> CheckBalanceAndTransfer(int to, int _id)
     {
-        if (_realm == null)
+        string method = "balanceOf";
+
+        var provider = new JsonRpcProvider(ContractManager.RPC);
+
+        Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
+
+        try
         {
-            _realmApp = App.Create(new AppConfiguration(_realmAppID));
-            if (_realmApp.CurrentUser == null)
+            var data = await contract.Call(method, new object[]
             {
-                _realmUser = await _realmApp.LogInAsync(Credentials.Anonymous());
-                Debug.Log("user created");
-                _realm = await Realm.GetInstanceAsync(new FlexibleSyncConfiguration(_realmUser));
+                PlayerPrefs.GetString("Account")
+            });
+
+
+            BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
+            BigInteger realFee = (BigInteger)1000000000000000000 * fee;
+            Debug.Log("Balance Of: " + balanceOf);
+            Debug.Log("Fee:" + realFee);
+            if (balanceOf < realFee)
+            {
+                Debug.Log("Your balance is NOT enough!");
+                return false;
             }
             else
             {
-                _realmUser = _realmApp.CurrentUser;
-                Debug.Log("user remain");
-                _realm = Realm.GetInstance(new FlexibleSyncConfiguration(_realmUser));
+                string[] preJsonData = { "transfer", PlayerPrefs.GetString("Account"), to.ToString(), _id.ToString() };
+                string jsonData = JsonConvert.SerializeObject(preJsonData);
+                data = await contract.Call(method, new object[]
+                {
+                    PlayerPrefs.GetString("Account")
+                });
+                string signature = await Web3Wallet.Sign(jsonData);
+                string[] messageObj = { jsonData, signature };
+                string message = JsonConvert.SerializeObject(messageObj);
+                Debug.Log(message);
+                // SendMessageRequest(message);
+                return true;
             }
+        }
+        catch
+        {
+            return false;
         }
     }
     private void ChainSafeSetup()
@@ -234,11 +263,10 @@ public class SushiManager : MonoBehaviour
         PlayerPrefs.SetString("Network", projectConfigSO.Network);
         PlayerPrefs.SetString("RPC", projectConfigSO.RPC);
     }
-    void Start(){
+    void Awake(){
         // log function, delay time, repeat interval        
         // InvokeRepeating("rsay", 0.0f, 1.0f);
         ChainSafeSetup();
-        RealmSetup();
     }
 
 }
