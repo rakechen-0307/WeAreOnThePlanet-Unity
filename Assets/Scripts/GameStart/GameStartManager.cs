@@ -149,6 +149,7 @@ public class GameStartManager : Singleton<GameStartManager>
                     {
                         EmailPage.SetActive(false);
                         CreateAccountPage.SetActive(true);
+                        CreateAccountErrorText.gameObject.SetActive(true);
                     }
                     else
                     {
@@ -182,7 +183,7 @@ public class GameStartManager : Singleton<GameStartManager>
                     EmailErrorText.text = "Waiting For Correct Join...";
                     if (RelayManager.Instance.isRelayEnabled)
                     {
-                        RelayJoinData JoinData = await RelayManager.Instance.JoinRelay(_joinCode);
+                        RelayJoinData JoinData = await RelayManager.Instance.JoinRelay(_joinCode.Substring(0, 6));
                     }
 
                     EmailErrorText.text = "";
@@ -190,6 +191,7 @@ public class GameStartManager : Singleton<GameStartManager>
                     {
                         EmailPage.SetActive(false);
                         SigninPage.SetActive(true);
+                        SignInErrorText.gameObject.SetActive(true);
                     }
                     else
                     {
@@ -224,15 +226,15 @@ public class GameStartManager : Singleton<GameStartManager>
             _password = SignInPasswordInput.text;
             if (string.IsNullOrEmpty(_password))
             {
-                CreateAccountErrorText.enabled = true;
-                CreateAccountErrorText.text = "Please Fill In Your Password";
+                SignInErrorText.enabled = true;
+                SignInErrorText.text = "Please Fill In Your Password";
             }
             else
             {
                 if (_password != _player.Password)
                 {
-                    CreateAccountErrorText.enabled = true;
-                    CreateAccountErrorText.text = "Password Is Wrong";
+                    SignInErrorText.enabled = true;
+                    SignInErrorText.text = "Password Is Wrong";
                 }
                 else
                 {
@@ -295,7 +297,7 @@ public class GameStartManager : Singleton<GameStartManager>
             
             if (isNew)
             {
-                _playerId = await BackendCommunicator.instance.CreateOnePlayer(email, username, password);
+                _playerId = await BackendCommunicator.instance.CreateOnePlayer(email, username, password, account);
             }
             VivoxSignIn(_playerId.ToString());
             int planetId = BackendManager.instance.loadMainPlayerData(_playerId, _loadedData);

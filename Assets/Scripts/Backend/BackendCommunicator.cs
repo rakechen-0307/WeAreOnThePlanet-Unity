@@ -41,7 +41,7 @@ public class BackendCommunicator : MonoBehaviour
         return playerData;
     }
 
-    public async Task<int> CreateOnePlayer(string email, string username, string password)
+    public async Task<int> CreateOnePlayer(string email, string username, string password, string account)
     {
         int playerCount = _realm.All<PlayerData>().ToArray().Length;
         List<Task> tasks = _realm.All<Task>().ToList();
@@ -54,6 +54,7 @@ public class BackendCommunicator : MonoBehaviour
                 Email = email,
                 Username = username,
                 Password = password,
+                Account = account,
                 Exp = 0,
                 Position = new PlayerPosition()
                 {
