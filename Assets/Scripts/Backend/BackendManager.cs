@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class BackendManager : MonoBehaviour
@@ -156,7 +157,7 @@ public class BackendManager : MonoBehaviour
         BackendCommunicator.instance.UpdateOneNFT(nftID, NFTName, isShown, blockDatas);
     }
 
-    public async void newNFT(ArtWork NFT)
+    public async Task<int> newNFT(ArtWork NFT)
     {
         string NFTName = NFT.artName;
         int ownerId = NFT.ownerID;
@@ -165,5 +166,6 @@ public class BackendManager : MonoBehaviour
         bool isMinted = NFT.isMinted;
         bool isShown = NFT.isShown;
         NFT.id = await BackendCommunicator.instance.CreateOneNFT(NFTName, ownerId, author, createTime, isMinted, isShown);
+        return NFT.id;
     }
 }

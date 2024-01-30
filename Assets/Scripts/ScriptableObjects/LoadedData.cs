@@ -87,6 +87,25 @@ public class ArtWork
     public bool isMinted;
     public bool isShown;
     public List<BlockData> blockDatas = new List<BlockData>();
+
+    public ArtWork()
+    {
+
+    }
+    public ArtWork(ArtWork artWork)
+    {
+        id = artWork.id;
+        artName = artWork.artName;
+        author = artWork.author;
+        createdTime = artWork.createdTime;
+        ownerID = artWork.ownerID;
+        isMinted = artWork.isMinted;
+        isShown = artWork.isShown;
+        foreach (BlockData blockData in artWork.blockDatas)
+        {
+            blockDatas.Add(new BlockData(blockData));
+        }
+    }
 }   
 
 [Serializable]
@@ -103,5 +122,10 @@ public class BlockData
     {
         position = Position;
         color = Color;
+    }
+    public BlockData(BlockData blockData)
+    {
+        position = blockData.position;
+        color = blockData.color;
     }
 }

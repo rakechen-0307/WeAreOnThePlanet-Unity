@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +16,7 @@ public class CreateNFTSave : MonoBehaviour
         }
     }
 
-    public void NewNFT(string NFTName)
+    public async Task<ArtWork> NewNFT(string NFTName)
     {
         ArtWork NFT = new ArtWork();
         NFT.artName = NFTName;
@@ -24,8 +25,9 @@ public class CreateNFTSave : MonoBehaviour
         NFT.createdTime = DateTimeOffset.Now;
         NFT.isMinted = false;
         NFT.isShown = false;
-        BackendManager.instance.newNFT(NFT);
+        NFT.id = await BackendManager.instance.newNFT(NFT);
         loadedData.NFTs.Add(NFT);
+        return NFT;
     }
 
     public void SaveNFTData(ArtWork newNFTData)
