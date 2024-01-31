@@ -275,6 +275,7 @@ public class GameStartManager : Singleton<GameStartManager>
             await VivoxSignIn("host");
             StartPage.SetActive(false);
             HostPage.SetActive(true);
+            Debug.Log(BackendCommunicator.instance.FindOnePlayerById(1));
         }
         else
         {

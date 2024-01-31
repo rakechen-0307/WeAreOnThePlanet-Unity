@@ -18,6 +18,13 @@ public class MessengerManager : MonoBehaviour
     public Button PendingButton;
     public GameObject ChatPage;
     public GameObject AddFriendPage;
+    public GameObject PlayerView;
+    public TMP_Text AddFriendUsername;
+    public TMP_Text AddFriendLevel;
+    public TMP_Text AddFriendNFT;
+    public TMP_Text AddFriendFriends;
+    public TMP_Text AddFriendAuction;
+    public Button SendRequestButton;
     public GameObject PendingPage;
 
     public GameObject playerListObj, chatChannelObj, addFriendChannelObj;
@@ -49,6 +56,7 @@ public class MessengerManager : MonoBehaviour
             AddFriendPage.SetActive(true);
             ChatPage.SetActive(false);
             PendingPage.SetActive(false);
+            PlayerView.SetActive(false);
             ShowNotFriendList(_loadedData.playerId);
         });
 
@@ -100,7 +108,7 @@ public class MessengerManager : MonoBehaviour
 
         for (int i = 0; i < friends.Count; i++)
         {
-            AddPlayer(friends[i].Username, playerId, friends[i].Id, chatChannelObj);
+            AddFriendToList(friends[i].Username, playerId, friends[i].Id);
             Debug.Log("add friends");
         }
     }
@@ -115,26 +123,46 @@ public class MessengerManager : MonoBehaviour
 
         IList<PlayerData> allPlayers = BackendCommunicator.instance.FindAllPlayers();
         IList<PlayerData> friends = BackendCommunicator.instance.FindAllFriends(playerId);
+        IList<PendingFreiendInfo> pendings = BackendCommunicator.instance.FindAllPendingFriends(playerId);
+        IList<PlayerData> pendingFriends = new List<PlayerData>();
+        for (int i = 0; i < pendings.Count; i++)
+        {
+            pendingFriends.Add(pendings[i].Player);
+        }
         PlayerData player = BackendCommunicator.instance.FindOnePlayerById(playerId);
 
-        IList<PlayerData> notFriends = allPlayers.Except(friends).ToList();
+        IList<PlayerData> notFriends = allPlayers.Except(friends).ToList().Except(pendingFriends).ToList();
         notFriends.Remove(player);
 
         for (int i = 0; i < notFriends.Count; i++)
         {
-            AddPlayer(notFriends[i].Username, playerId, notFriends[i].Id, addFriendChannelObj);
+            AddNotFriendToList(notFriends[i].Username, playerId, notFriends[i].Id);
             Debug.Log("show player");
         }
     }
 
-    private void AddPlayer(string playerName, int currentUserID, int playerID, GameObject Channel)
+    private void AddFriendToList(string friendName, int currentUserID, int friendID)
     {
-        var newPlayer = Instantiate(playerListObj, Channel.transform);
+        var newPlayer = Instantiate(playerListObj, chatChannelObj.transform);
         var newMessagePlayerObj = newPlayer.GetComponent<PlayerListObject>();
 
         newMessagePlayerObj.SelectButton.onClick.AddListener(() =>
         {
-            ChannelSwitch(currentUserID, playerID);
+            ChannelSwitch(currentUserID, friendID);
+        });
+
+        newMessagePlayerObj.Username.text = friendName;
+        _player.Add(newMessagePlayerObj);
+    }
+
+    private void AddNotFriendToList(string playerName, int currentUserID, int playerID)
+    {
+        var newPlayer = Instantiate(playerListObj, addFriendChannelObj.transform);
+        var newMessagePlayerObj = newPlayer.GetComponent<PlayerListObject>();
+
+        newMessagePlayerObj.SelectButton.onClick.AddListener(() =>
+        {
+            ShowPlayerInfo(currentUserID, playerID, newMessagePlayerObj.SelectButton);
         });
 
         newMessagePlayerObj.Username.text = playerName;
@@ -163,6 +191,30 @@ public class MessengerManager : MonoBehaviour
     public async void ChannelSendMessageAsync(string channelName, string message)
     {
         await VivoxService.Instance.SendChannelTextMessageAsync(channelName, message);
+    }
+
+    public void ShowPlayerInfo(int currentUserID, int playerID, Button button)
+    {
+        PlayerData playerData = BackendCommunicator.instance.FindOnePlayerById(playerID);
+        int auctionCount = BackendCommunicator.instance.FindHeldAuctionByPlayerID(playerID).Count;
+
+        AddFriendUsername.text = playerData.Username;
+        AddFriendLevel.text = "Planet Level : " + playerData.Exp.ToString();
+        AddFriendNFT.text = "Owned NFT : " + playerData.NFTs.Count.ToString();
+        AddFriendFriends.text = "Total Friends : " + playerData.Friends.Count.ToString();
+        AddFriendAuction.text = "Auction Held : " + auctionCount.ToString();
+        PlayerView.SetActive(true);
+
+        SendRequestButton.onClick.AddListener(() =>
+        {
+            SendRequestToPlayer(currentUserID, playerID, button);
+        });
+    }
+
+    public async void SendRequestToPlayer(int from, int to, Button button)
+    {
+        await BackendCommunicator.instance.AddPendingFriend(from, to);
+        Destroy(button.gameObject);
     }
 
     /*
