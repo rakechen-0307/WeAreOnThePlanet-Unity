@@ -116,6 +116,21 @@ public class BackendCommunicator : MonoBehaviour
         return true;
     }
 
+    public IList<PlayerData> FindPlanetUsers(int planetId)
+    {
+        IList<PlayerData> players = _realm.All<PlayerData>().ToList();
+        IList<PlayerData> planetUsers = new List<PlayerData>();
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].Position.PlanetID == planetId)
+            {
+                planetUsers.Add(players[i]);
+            }
+        }
+        return planetUsers;
+    }
+
     public IList<NFTInfo> GetNFTsById(int playerId)
     {
         try

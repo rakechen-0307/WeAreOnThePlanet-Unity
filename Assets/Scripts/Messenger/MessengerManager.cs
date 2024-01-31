@@ -14,6 +14,7 @@ using UnityEngine.SceneManagement;
 public class MessengerManager : MonoBehaviour
 {
     public GameObject MessengerUI;
+    public GameObject VoiceChat;
     public Button ChatButton;
     public Button AddFriendButton;
     public Button PendingButton;
@@ -51,32 +52,54 @@ public class MessengerManager : MonoBehaviour
     public TMP_Text TravelAuction;
     public Button GoButton;
 
+    public Button SoundButton;
+    public Button MicButton;
+    public GameObject Sound;
+    public GameObject NoSound;
+    public GameObject Mic;
+    public GameObject Mute;
+
     public GameObject Aim;
     public PlayerMovement playerMovement;
-    public GameObject playerListObj, chatChannelObj, addFriendChannelObj, pendingChannelObj, travelChannelObj;
+    public GameObject playerListObj, chatChannelObj, addFriendChannelObj, pendingChannelObj, travelChannelObj, voiceChatChannelObj;
     public GameObject myTextObj, comingTextObj, chatRoomObj;
     public LoadedData _loadedData;
     public MainPlanetTravel mainPlanetTravel;
 
     private bool _messengerIsOpened;
-    private string _currentChannel;
+    private bool _soundOn;
+    private bool _micOn;
+    private string _currentChannel = null;
 
     private IList<PlayerListObject> _player = new List<PlayerListObject>();
+    private List<PlayerListObject> _planetUser = new List<PlayerListObject>();
     private IList<MessageObject> _message = new List<MessageObject>();
 
-    private async void Awake()
+    private void Awake()
     {
         MessengerUI.SetActive(false);
         _messengerIsOpened = false;
+        _soundOn = false;
+        _micOn = false;
+        Sound.SetActive(false);
+        NoSound.SetActive(true);
+        Mic.SetActive(false);
+        Mute.SetActive(true);
         Aim.SetActive(true);
-
-        await VivoxInitialize();
-        await VivoxSignIn(_loadedData.playerId.ToString());
     }
 
-    void Start()
+    async void Start()
     {
+        await VivoxInitialize();
+        await VivoxSignIn(_loadedData.playerId.ToString());
+        await VivoxService.Instance.LeaveAllChannelsAsync();
+        VivoxService.Instance.EnableAcousticEchoCancellation();
+
+        VivoxService.Instance.MuteOutputDevice();
+        VivoxService.Instance.MuteInputDevice();
+
         VivoxService.Instance.ChannelMessageReceived += ChannelMessageReceived;
+        ShowPlanetUserList(_loadedData.mainPlayer.lastPlanetId);
 
         ChatButton.onClick.AddListener(() =>
         {
@@ -126,15 +149,52 @@ public class MessengerManager : MonoBehaviour
                 TextInput.text = string.Empty;
             }
         });
+
+        SoundButton.onClick.AddListener(() =>
+        {
+            if (_soundOn)
+            {
+                VivoxService.Instance.MuteOutputDevice();
+                Sound.SetActive(false);
+                NoSound.SetActive(true);
+                _soundOn = false;
+            }
+            else
+            {
+                VivoxService.Instance.UnmuteOutputDevice();
+                Sound.SetActive(true);
+                NoSound.SetActive(false);
+                _soundOn = true;
+            }
+        });
+
+        MicButton.onClick.AddListener(() =>
+        {
+            if (_micOn)
+            {
+                VivoxService.Instance.MuteInputDevice();
+                Mic.SetActive(false);
+                Mute.SetActive(true);
+                _micOn = false;
+            }
+            else
+            {
+                VivoxService.Instance.UnmuteInputDevice();
+                Mic.SetActive(true);
+                Mute.SetActive(false);
+                _micOn = true;
+            }
+        });
     }
 
-    void Update()
+    async void Update()
     {
         if (Input.GetKeyDown(KeyCode.Keypad0)) 
         {
             if (_messengerIsOpened)
             {
                 Debug.Log("Messenger Closed");
+                await VivoxService.Instance.LeaveChannelAsync(_loadedData.mainPlayer.lastPlanetId.ToString());
                 MessengerUI.SetActive(false);
                 _messengerIsOpened = false;
                 Cursor.visible = false;
@@ -145,7 +205,9 @@ public class MessengerManager : MonoBehaviour
             else
             {
                 Debug.Log("Messenger Opened");
+                await VivoxService.Instance.JoinGroupChannelAsync(_loadedData.mainPlayer.lastPlanetId.ToString(), ChatCapability.AudioOnly);
                 MessengerUI.SetActive(true);
+                VoiceChat.SetActive(true);
                 ChatPage.SetActive(true);
                 AddFriendPage.SetActive(false);
                 PendingPage.SetActive(false);
@@ -243,6 +305,25 @@ public class MessengerManager : MonoBehaviour
         }
     }
 
+    private void ShowPlanetUserList(int planetId)
+    {
+        _planetUser = new List<PlayerListObject>();
+        foreach (Transform child in voiceChatChannelObj.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        IList<PlayerData> planetUsers = BackendCommunicator.instance.FindPlanetUsers(planetId);
+
+        for (int i = 0; i < planetUsers.Count; i++)
+        {
+            if (planetUsers[i].Id != _loadedData.playerId)
+            {
+                AddPlanetUserToList(planetUsers[i].Username);
+            }
+        }
+    }
+
     private void AddFriendToList(string friendName, int currentUserID, int friendID)
     {
         var newPlayer = Instantiate(playerListObj, chatChannelObj.transform);
@@ -297,6 +378,15 @@ public class MessengerManager : MonoBehaviour
 
         newMessagePlayerObj.Username.text = friendName;
         _player.Add(newMessagePlayerObj);
+    }
+
+    private void AddPlanetUserToList(string friendName)
+    {
+        var newPlayer = Instantiate(playerListObj, voiceChatChannelObj.transform);
+        var newMessagePlayerObj = newPlayer.GetComponent<PlayerListObject>();
+
+        newMessagePlayerObj.Username.text = friendName;
+        _planetUser.Add(newMessagePlayerObj);
     }
 
     public void ShowPlayerInfo(int currentUserID, int playerID, Button button)
@@ -428,7 +518,10 @@ public class MessengerManager : MonoBehaviour
         string channelToJoin = (from < to) ? (from.ToString() + "_" + to.ToString()) : (to.ToString() + "_" + from.ToString());
         if (channelToJoin != _currentChannel)
         {
-            await VivoxService.Instance.LeaveAllChannelsAsync();
+            if (_currentChannel != null)
+            {
+                await VivoxService.Instance.LeaveChannelAsync(_currentChannel);
+            }
 
             _message = new List<MessageObject>();
             foreach (Transform child in chatRoomObj.transform)
