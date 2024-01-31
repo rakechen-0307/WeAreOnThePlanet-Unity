@@ -252,7 +252,7 @@ public class NFTMenu : MonoBehaviour
     private void displayNFT(int displayIdx)
     {
         // display object
-        nftDisplayer.DisplayNFTs(displayIdx);
+        nftDisplayer.showNFTFromIdx(displayIdx, "RenderTexture");
         int index = displayIdx;
         // display ui
         for (int i = 0; i < 6; i++)
