@@ -1159,7 +1159,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadedData: {fileID: 11400000, guid: 8c7085d898f4aa941b63d8b50e52d4dc, type: 2}
-  blockPrefab: {fileID: 5119779292655232420, guid: 1dabe04eb85958c4293c4b9d7876ef3b,
+  blockPrefab: {fileID: 5238578583560948024, guid: 59222ceb4be898f488b34d8efa2987ed,
     type: 3}
   NFTDisplaySlots:
   - {fileID: 1124206129}
