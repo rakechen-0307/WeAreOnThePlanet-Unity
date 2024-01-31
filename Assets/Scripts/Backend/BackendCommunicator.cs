@@ -7,6 +7,7 @@ using System.Linq;
 using System;
 using System.Threading.Tasks;
 using MongoDB.Bson.Serialization.Serializers;
+using UnityEngine.SceneManagement;
 
 public class BackendCommunicator : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class BackendCommunicator : MonoBehaviour
             Destroy(gameObject);
         }
         Debug.Log(_realm);
-        //SceneManager.LoadScene("octopus");// Delete this
+        SceneManager.LoadScene("octopus");// Delete this
     }
 
     public IList<PlayerData> FindAllPlayers()
