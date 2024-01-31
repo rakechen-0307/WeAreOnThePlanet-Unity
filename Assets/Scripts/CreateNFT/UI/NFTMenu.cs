@@ -155,6 +155,7 @@ public class NFTMenu : MonoBehaviour
 
     private void exitButtonOnClick()
     {
+        loadedData.mainPlayer.lastPlanetId = loadedData.playerId;
         SceneManager.LoadScene("MainPlanet", LoadSceneMode.Single);
     }
 

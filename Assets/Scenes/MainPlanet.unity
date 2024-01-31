@@ -7485,6 +7485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadedData: {fileID: 11400000, guid: 8c7085d898f4aa941b63d8b50e52d4dc, type: 2}
+  mainPlayer: {fileID: 1555521246}
 --- !u!4 &1555521246 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2136496826883977153, guid: 027800e2ae6bbab40a6bc39372e78e3b,
