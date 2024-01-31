@@ -96,7 +96,7 @@ public class ERC865_chainsafe : MonoBehaviour
         // Delegated Transfer
         _Transfer.onClick.AddListener(() =>
         {
-            Transfer();
+            TokenTransfer();
         });
 
         // Mint NFT
@@ -217,7 +217,7 @@ public class ERC865_chainsafe : MonoBehaviour
         _nonce = rnd.Next();
     }
     
-    private async void Transfer()
+    private async void TokenTransfer()
     {
         // Send { from, to, value, fee, nonce, hash, signature } to host 
         var method = "transferPreSigned";
