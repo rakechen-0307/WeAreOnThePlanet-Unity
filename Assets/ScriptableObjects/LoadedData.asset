@@ -266,3 +266,4 @@ MonoBehaviour:
     NFTs: []
     experience: 0
   account: 
+  attendingAuctionNFTId: 4

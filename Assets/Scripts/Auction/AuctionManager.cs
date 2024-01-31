@@ -71,7 +71,7 @@ public class AuctionManager : MonoBehaviour
     }
     */
         
-    private async void AuctionBid(int id, int bidPrice)
+    public async void AuctionBid(int id, int bidPrice)
     {
         bool result = await CheckBalanceAndBid(bidPrice, id);
         if(result)

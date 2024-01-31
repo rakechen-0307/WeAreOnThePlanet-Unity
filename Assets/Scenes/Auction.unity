@@ -3594,6 +3594,7 @@ GameObject:
   - component: {fileID: 1565044943}
   - component: {fileID: 1565044942}
   - component: {fileID: 1565044946}
+  - component: {fileID: 1565044947}
   m_Layer: 5
   m_Name: Auction Text
   m_TagString: Untagged
@@ -3712,6 +3713,19 @@ MonoBehaviour:
   bidInput: {fileID: 906371621}
   bidButton: {fileID: 1025506822}
   backButton: {fileID: 1675088445}
+  auctionManager: {fileID: 1565044947}
+--- !u!114 &1565044947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565044941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c48258c29936749b16b101fe35d6a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1620914761
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class AuctionUI : MonoBehaviour
@@ -21,9 +22,6 @@ public class AuctionUI : MonoBehaviour
     private TMP_Text highestBidder;
 
     [SerializeField]
-    private TMP_Text remainingTime;
-
-    [SerializeField]
     private TMP_InputField bidInput;
 
     [SerializeField]
@@ -32,15 +30,18 @@ public class AuctionUI : MonoBehaviour
     [SerializeField]
     private Button backButton;
 
+    [SerializeField]
+    private AuctionManager auctionManager;
+
     private void Start()
     {
         getAuctionInfo();
+        bidButton.onClick.AddListener(bidButtonOnClick);
+        backButton.onClick.AddListener(backButtonOnClick);
     }
     private void getAuctionInfo()
     {
         Auction auction = BackendCommunicator.instance.FindAuctionByNFTId(loadedData.attendingAuctionNFTId);
-        // string startTime = auction.StartTime.ToString("yyyy/MM/dd, h:mm tt", new System.Globalization.CultureInfo("en-US")) + " (UTF+0)";
-        // string endTime = auction.EndTime.ToString("yyyy/MM/dd, h:mm tt", new System.Globalization.CultureInfo("en-US")) + " (UTF+0)";
         DateTimeOffset currentTime = DateTimeOffset.Now;
         DateTimeOffset endTime = auction.EndTime;
         TimeSpan timeInterval = endTime - currentTime;
@@ -52,11 +53,30 @@ public class AuctionUI : MonoBehaviour
         string highestPriceText = auction.BidPrice.ToString();
         string highestBidderName = auction.BidPlayer != null ? auction.BidPlayer.Username : "Start Price";
 
-        nameTitle.text = auction.Owner.Username;
-        infoText.text = $"ID: {nftID}\nOwner: {ownerId}\nCreator: {creator}\nCreated Time: {createdTime}";
+        nameTitle.text = $"Auction Of {auction.Owner.Username}";
+        infoText.text = $"ID: {nftID}\nOwner: {ownerId}\nCreator: {creator}\nCreated Time: {createdTime}\nAuction ends in {timeIntervalText}";
         highestBid.text = highestPriceText;
         highestBidder.text = highestBidderName;
-        remainingTime.text = timeIntervalText;
-        bidInput.text = highestPriceText;
+
+        int highestPriceNumber = int.Parse(highestPriceText);
+        bidInput.text = (highestPriceNumber + 1).ToString();
+    }
+    
+    private void bidButtonOnClick()
+    {
+        bool legit = int.TryParse(bidInput.text, out int bidPrice);
+        int highestPrice = int.Parse(highestBid.text);
+        if (!legit || bidPrice < highestPrice + 1)
+        {
+            bidInput.text = (highestPrice + 1).ToString();
+            return;
+        }
+        auctionManager.AuctionBid(loadedData.attendingAuctionNFTId, bidPrice);
+        getAuctionInfo();
+    }
+
+    private void backButtonOnClick()
+    {
+        SceneManager.LoadScene("Octopus");
     }
 }
