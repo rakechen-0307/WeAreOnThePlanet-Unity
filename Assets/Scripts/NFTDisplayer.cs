@@ -24,7 +24,7 @@ public class NFTDisplayer : MonoBehaviour
         }
     }
 
-    private void ShowNFT(Transform NFTtransform, ArtWork NFT)
+    public void ShowNFT(Transform NFTtransform, ArtWork NFT)
     {
         foreach (Transform child in NFTtransform)
         {
