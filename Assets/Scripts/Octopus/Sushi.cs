@@ -29,7 +29,7 @@ public class Sushi : MonoBehaviour
                 "ID: " + Id + "\n" +
                 "Author: " + Author + "\n" +
                 "Time of creation: " + CreateTime + " (UTF+0)\n" +
-                "This will cost 100 WATP-Ts."
+                "This will cost 5 WATP-Ts."
             );
         }
         else if(viewMode == "transfer"){
@@ -56,7 +56,7 @@ public class Sushi : MonoBehaviour
                 "ID: " + Id + "\n" +
                 "Author: " + Author + "\n" +
                 "Time of creation: " + CreateTime + " (UTF+0)\n" +
-                "This will cost 5 dollars."
+                "This will cost 5 WATP-Ts."
             );
         }
 
