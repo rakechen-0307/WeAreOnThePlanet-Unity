@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using UnityEngine.SceneManagement;
 
 public class DialogButton : MonoBehaviour
 {
@@ -146,11 +147,15 @@ public class DialogButton : MonoBehaviour
             Debug.Log(auction.StartPrice.ToString());
             Debug.Log(auction.StartTime.ToString("yyyy/MM/dd, h:mm tt", new System.Globalization.CultureInfo("en-US")) + " (UTF+0)");
             Debug.Log(auction.EndTime.ToString("yyyy/MM/dd, h:mm tt", new System.Globalization.CultureInfo("en-US")) + " (UTF+0)");
+            SceneManager.LoadScene("Auction");
         }
 
 
         else 
         {
+            // somehow works, don't change it (clear the screen)
+            sushiManager.SetMint(sushiManager.Empty);
+            sushiManager.SetDisplayed(0, "mint");
             UIManager.Instance.UpdateDialog("none", "");
         }
     }

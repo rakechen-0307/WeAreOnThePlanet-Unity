@@ -37,6 +37,7 @@ public class SushiManager : MonoBehaviour
     public List<NFTInfo> Transfer = new List<NFTInfo>();
     public List<NFTInfo> Launch = new List<NFTInfo>();
     public List<NFTInfo> Attend = new List<NFTInfo>();
+    public List<NFTInfo> Empty = new List<NFTInfo>() { };
 
     private List<GameObject> sushiInstances = new List<GameObject>();
     private float moveStartTime;
