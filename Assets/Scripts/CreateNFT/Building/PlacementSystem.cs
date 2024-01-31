@@ -82,9 +82,16 @@ public class PlacementSystem : MonoBehaviour
         }
     }
 
-    public void loadVisulaization()
+    public void loadVisulaization(ArtWork NFT)
     {
-
+        foreach (BlockData blockData in NFT.blockDatas)
+        {
+            GameObject newBlock = Instantiate(blockPrefab, blockData.position, Quaternion.identity, transform);
+            VisualizeBlock newBlockVisulize = newBlock.GetComponent<VisualizeBlock>();
+            newBlockVisulize.placementSystem = this;
+            newBlockVisulize.color = blockData.color;
+            blockDB.Add(newBlock);
+        }
     }
     public void clearVisulization()
     {

@@ -205,7 +205,8 @@ public class NFTMenu : MonoBehaviour
 
     private void editNFTButtonOnClick()
     {
-
+        showBuildMenu();
+        saveManager.startBuilding(currentViewingNFT);
     }
     // Menus
     private void showBuildMenu()

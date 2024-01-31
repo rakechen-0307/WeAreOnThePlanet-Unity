@@ -4,9 +4,6 @@ using UnityEngine.UI;
 public class SaveManager : MonoBehaviour
 {
     [SerializeField]
-    private ArtWork lastSave;
-
-    [SerializeField]
     public ArtWork NFTinProgress;
 
     [SerializeField]
@@ -87,17 +84,16 @@ public class SaveManager : MonoBehaviour
     private void saveNFT()
     {
         createNFTSave.SaveNFTData(NFTinProgress);
-        lastSave = new ArtWork(NFTinProgress);
         modified = false;
     }
 
     public void startBuilding(ArtWork NFT)
     {
-        lastSave = new ArtWork(NFT);
         NFTinProgress = new ArtWork(NFT);
         colorPannel.SetActive(true);
         brushPannel.SetActive(true);
         leaveModal.SetActive(false);
         modified = false;
+        placementSystem.loadVisulaization(NFT);
     }
 }
