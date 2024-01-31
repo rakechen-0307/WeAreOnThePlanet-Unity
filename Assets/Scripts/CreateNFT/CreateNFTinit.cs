@@ -32,6 +32,12 @@ public class CreateNFTinit : MonoBehaviour
         Cursor.visible = true;
     }
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
