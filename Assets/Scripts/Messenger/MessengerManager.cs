@@ -17,6 +17,8 @@ public class MessengerManager : MonoBehaviour
     public Button AddFriendButton;
     public Button PendingButton;
     public GameObject ChatPage;
+    public Button SendButton;
+    public TMP_InputField TextInput;
     public GameObject AddFriendPage;
     public GameObject PlayerView;
     public TMP_Text AddFriendUsername;
@@ -68,7 +70,6 @@ public class MessengerManager : MonoBehaviour
 
         AddFriendButton.onClick.AddListener(() =>
         {
-            Debug.Log("ADD");
             AddFriendPage.SetActive(true);
             ChatPage.SetActive(false);
             PendingPage.SetActive(false);
@@ -83,6 +84,16 @@ public class MessengerManager : MonoBehaviour
             AddFriendPage.SetActive(false);
             PendingView.SetActive(false);
             ShowPendingList(_loadedData.playerId);
+        });
+
+        SendButton.onClick.AddListener(() =>
+        {
+            if (TextInput.text != string.Empty)
+            {
+                ChannelSendMessageAsync(_currentChannel, TextInput.text);
+                AddMessage(TextInput.text, true);
+                TextInput.text = string.Empty;
+            }
         });
     }
 
@@ -324,18 +335,17 @@ public class MessengerManager : MonoBehaviour
 
     public async void ChannelSwitch(int from, int to)
     {
-        await VivoxService.Instance.LeaveAllChannelsAsync();
-        
-        _message = new List<MessageObject>();
-        foreach (Transform child in chatRoomObj.transform)
-        {
-            Destroy(child.gameObject);
-        }
-
         string channelToJoin = (from < to) ? (from.ToString() + "_" + to.ToString()) : (to.ToString() + "_" + from.ToString());
-
         if (channelToJoin != _currentChannel)
         {
+            await VivoxService.Instance.LeaveAllChannelsAsync();
+
+            _message = new List<MessageObject>();
+            foreach (Transform child in chatRoomObj.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
             JoinChannelAsync(channelToJoin);
             _currentChannel = channelToJoin;
         }
