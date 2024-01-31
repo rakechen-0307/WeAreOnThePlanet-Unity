@@ -57,6 +57,8 @@ public class TransferClick : MonoBehaviour
         {
             UIManager.Instance.UpdateDialog("none", "You don't have any minted NFTs!");
         }
+
+
     }
 
 }

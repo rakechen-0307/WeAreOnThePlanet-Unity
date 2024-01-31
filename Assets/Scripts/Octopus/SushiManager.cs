@@ -174,6 +174,10 @@ public class SushiManager : MonoBehaviour
         {
             SetMint(nfts.ToList());
             Debug.Log("Hello");
+            foreach(var nft in nfts)
+            {
+                Debug.Log(nft.Owner);
+            }
             return true;
         }
         else

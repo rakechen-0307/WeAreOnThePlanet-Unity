@@ -63,7 +63,7 @@ public class DialogButton : MonoBehaviour
             Debug.Log(SushiManager.selected);
             Debug.Log(inputTransfer2.text);
             // Handle errors
-            NFTStatus result = await sushiManager.CheckBalanceAndTransfer("error@gmail.com", SushiManager.selected);
+            NFTStatus result = await sushiManager.CheckBalanceAndTransfer(inputTransfer2.text, SushiManager.selected);
             // Handle errors
             if (result == NFTStatus.Success)
             {

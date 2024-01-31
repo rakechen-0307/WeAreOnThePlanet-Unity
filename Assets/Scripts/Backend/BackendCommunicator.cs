@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 public class BackendCommunicator : MonoBehaviour
 {
@@ -26,7 +27,9 @@ public class BackendCommunicator : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        }        
+        }
+        Debug.Log(_realm);
+        SceneManager.LoadScene("octopus");// Delete this
     }
 
     public IList<PlayerData> FindAllPlayers()
@@ -152,12 +155,57 @@ public class BackendCommunicator : MonoBehaviour
         });
     }
 
+    public async void UpdateNFTStatus(int nftId, bool status)
+    {
+        NFTInfo updateNFT = _realm.All<NFTInfo>().Where(nft => nft.Id == nftId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            updateNFT.IsPending = status;
+        });
+    }
+
     public IList<PlayerData> FindAllFriends(int playerId)
     {
         IList<PlayerData> friends = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault().Friends;
         return friends;
     }
 
+    public IList<Auction> FindEndedAuctionsByEmail(string email)
+    {
+        IList<Auction> auctions = _realm.All<Auction>().Where(auction => auction.Owner.Email == email && auction.EndTime < DateTimeOffset.UtcNow && auction.NFT.Owner.Email == email).ToList();
+        return auctions;
+    }
+
+    public async Task<int> CreateAuction(NFTInfo nft, int startPrice, DateTimeOffset startTime, DateTimeOffset endTime)
+    {
+        PlayerData findPlayer = _realm.All<PlayerData>().Where(user => user.Email == PlayerPrefs.GetString("Email")).FirstOrDefault();
+        var auctionsCount = _realm.All<Auction>().ToArray().Length;
+        await _realm.WriteAsync(() =>
+        {
+            var auction = _realm.Add(new Auction()
+            {
+                Id = auctionsCount + 1,
+                Owner = findPlayer,
+                NFT = nft,
+                StartTime = startTime,
+                EndTime = endTime,
+                StartPrice = startPrice,
+                BidPrice = startPrice
+            });
+        });
+        return auctionsCount + 1;
+    }
+    public async void Bid(int id, int bidPrice)
+    {
+        Auction auction = _realm.All<Auction>().Where(auction => auction.Id == id).FirstOrDefault();
+        PlayerData player = _realm.All<PlayerData>().Where(user => user.Email == PlayerPrefs.GetString("Email")).FirstOrDefault();
+        await _realm.WriteAsync(() =>
+        {
+            auction.BidPlayer = player;
+            auction.BidPrice = bidPrice;
+        });
+    }
     public async Task<int> CreateOneNFT(string name, int ownerId, string author, DateTimeOffset createTime, bool isMinted, bool isShown)
     {
         int NFTsCount = _realm.All<NFTInfo>().ToArray().Length;
