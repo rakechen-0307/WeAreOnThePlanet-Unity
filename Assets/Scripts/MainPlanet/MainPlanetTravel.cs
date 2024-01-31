@@ -17,7 +17,7 @@ public class MainPlanetTravel : MonoBehaviour
         }
 
         string sceneName = "MainPlanet";
-        if (planetId == -1) // NFT workshop
+        if (planetId == -1)  // NFT workshop
         {
             sceneName = "CreateNFT";
             loadedData.mainPlayer.lastPosition = mainPlayer.transform.position;

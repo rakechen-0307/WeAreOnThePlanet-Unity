@@ -30,7 +30,7 @@ public class BackendCommunicator : MonoBehaviour
             Destroy(gameObject);
         }
         Debug.Log(_realm);
-        // SceneManager.LoadScene("octopus");// Delete this
+        //SceneManager.LoadScene("octopus");// Delete this
     }
 
     public IList<PlayerData> FindAllPlayers()

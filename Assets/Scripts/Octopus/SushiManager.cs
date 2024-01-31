@@ -20,6 +20,7 @@ using Web3Unity.Scripts.Library.Ethers.Contracts;
 using SysRandom = System.Random;
 using Unity.VisualScripting.Antlr3.Runtime;
 using Unity.VisualScripting;
+using Unity.Services.Vivox;
 
 public class SushiManager : MonoBehaviour
 {
@@ -273,6 +274,7 @@ public class SushiManager : MonoBehaviour
                 string message = JsonConvert.SerializeObject(messageObj);
                 Debug.Log(message);
                 // SendMessageRequest(message);
+                MessageLaunch(message);
                 return NFTStatus.Success;
             }
         }
@@ -327,6 +329,7 @@ public class SushiManager : MonoBehaviour
                 string message = JsonConvert.SerializeObject(messageObj);
                 Debug.Log(message);
                 // SendMessageRequest(message);
+                MessageLaunch(message);
                 return NFTStatus.Success;
             }
         }
@@ -352,11 +355,34 @@ public class SushiManager : MonoBehaviour
         // log function, delay time, repeat interval        
         // InvokeRepeating("rsay", 0.0f, 1.0f);
         ChainSafeSetup();
-        // PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
+        PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
         dialogButton.deactivateAllInputFields();
+        VivoxService.Instance.ChannelJoined += OnChannelJoined;
     }
+    public async void OnChannelJoined(string channelName) //傳訊息給host -> 離開host channel
+    {
+        if (channelName == "hostChannel")
+        {
+            Debug.Log("nice");
+        }
+    }
+    public async void MessageLaunch(string message) //進host channel -> OnChannelJoined
+    {
+        await VivoxService.Instance.LeaveAllChannelsAsync();
 
+        string channelToJoin = "hostChannel";
+        JoinChannelAsync(channelToJoin, message);//進host channel
+
+        Debug.Log(channelToJoin);
+    }
+    public async void JoinChannelAsync(string channelName, string message)
+    {
+        await VivoxService.Instance.JoinEchoChannelAsync(channelName, ChatCapability.TextOnly);
+        await VivoxService.Instance.SendChannelTextMessageAsync("hostChannel", message);
+        await VivoxService.Instance.LeaveAllChannelsAsync();
+    }
 }
+
 public enum NFTStatus
 {
     Success,
