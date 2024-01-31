@@ -21,6 +21,12 @@ public class HostTransactionTest : MonoBehaviour
 {
     //測試按鈕
     public Button mint;
+    public TMP_InputField mintInputField;
+
+
+
+    SysRandom rnd = new SysRandom(Guid.NewGuid().GetHashCode());
+    private BigInteger _nonce = 1;
 
     // Start is called before the first frame update
     public void ChannelSwitch() //永遠待在host channel
@@ -45,22 +51,25 @@ public class HostTransactionTest : MonoBehaviour
         switch (PreJsonData[0])
         {
             case "mint":
-                string verifiedEmail = SignVerifySignature(messageObj[1], messageObj[0]);
-                Debug.Log("verifiedEmail = " + verifiedEmail);
-                if(verifiedEmail == PreJsonData[1])
-                {
-                    string to = BackendCommunicator.instance.FindOnePlayerByEmail(verifiedEmail).Account;
+                string verifiedAddress = SignVerifySignature(messageObj[1], messageObj[0]);
+                Debug.Log("verifiedAddress = " + verifiedAddress);
+                string to = BackendCommunicator.instance.FindOnePlayerByEmail(PreJsonData[1]).Account;
+                if (verifiedAddress == to)
+                {   
                     Debug.Log("MintNFTTo = " + to);
                     NFTMint(to, Int16.Parse(PreJsonData[2]));
+                    TokenTransfer(to, 4, 1);
+                    //狀態改成isMinted = true
                 }
                 else
                 {
                     //驗證不正確，要把pending改回false
                 }
                 break;
+            case "transfer":
+                break;
             default:
                 break;
-
         }
     }
 
@@ -77,10 +86,8 @@ public class HostTransactionTest : MonoBehaviour
     {
         var method = "mint";
 
-        var to = "0xC79dbE9296E54e5C503Bd1820eE5dAC6376c98C5";
+        var to = mintInputField.text;
         string amount = "5000000000000000000000000";
-        string abi = ContractManager.TokenABI;
-        string[] obj = { to, amount };
         var provider = new JsonRpcProvider(ContractManager.RPC);
 
         try
@@ -132,13 +139,46 @@ public class HostTransactionTest : MonoBehaviour
         }
     }
 
-    
+    private async void TokenTransfer(string from, BigInteger value, BigInteger fee)
+    {
+        // Send { from, to, value, fee, nonce, hash, signature } to host 
+        var method = "transferPreSigned";
+
+        string receiver = ContractManager.HostAddress;
+
+        var provider = new JsonRpcProvider(ContractManager.RPC);
+
+        try
+        {
+            Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
+
+            var data = contract.Calldata(method, new object[]
+            {
+                from,
+                receiver,
+                value.ToString(),
+                fee.ToString(),
+                _nonce.ToString()
+            });
+            // send transaction
+            string response = await Web3Wallet.SendTransaction(PlayerPrefs.GetString("ChainID"), ContractManager.TokenContract, "0", data, "", "");
+            // display response in game
+            print(response);
+            print("Transaction successful!");
+        }
+        catch
+        {
+            print("Error with the transaction");
+        }
+        _nonce = rnd.Next();
+    }
+
     void Start()
     {
+        _nonce = rnd.Next();
         VivoxService.Instance.ChannelMessageReceived += OnChannelMessageReceived;
         ChannelSwitch();
-        //mint.onClick.AddListener(() => { NFTMint(); });
-
+        mint.onClick.AddListener(() => { TokenMint(); });
     }
 
     // Update is called once per frame
