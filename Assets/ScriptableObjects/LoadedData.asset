@@ -15,255 +15,133 @@ MonoBehaviour:
   playerName: rake
   playerId: 1
   mainPlayer:
-    lastPosition: {x: 0, y: 52, z: 0}
-    lastEuler: {x: 0, y: 0, z: 0}
-    lastPlanetId: 2
+    lastPosition: {x: 49.473274, y: 3.1996734, z: -3.045769}
+    lastEuler: {x: 77.49885, y: 20.731842, z: 287.59244}
+    lastPlanetId: 1
   NFTs:
-  - id: 1
-    artName: changeName
-    author: rake
-    ownerID: 1
-    isMinted: 0
-    isShown: 1
-    isPending: 0
-    blockDatas:
-    - position: {x: 0.5, y: 0.5, z: -0.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: 0.5, y: 1.5, z: -0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: -0.5, y: 0.5, z: -0.5}
-      color: {r: 0, g: 1, b: 0, a: 1}
-    - position: {x: -0.5, y: 1.5, z: -0.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -1.5, y: 0.5, z: -0.5}
-      color: {r: 1, g: 0, b: 1, a: 1}
-    - position: {x: -0.5, y: 0.5, z: -2.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -1.5, y: 0.5, z: -1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-  - id: 2
-    artName: new function test
-    author: rake
-    ownerID: 1
-    isMinted: 1
-    isShown: 1
-    isPending: 1
-    blockDatas:
-    - position: {x: -0.5, y: 0.5, z: 0.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: 2.5, y: 0.5, z: -2.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: -2.5, y: 0.5, z: -0.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -0.5, y: 0.5, z: 3.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: 2.5, y: 0.5, z: 1.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: 0.5, y: 0.5, z: -1.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: -0.5, y: 0.5, z: -2.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: 0.5, y: 0.5, z: -0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: 0.5, y: 1.5, z: -0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: -0.5, y: 1.5, z: 0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-  - id: 3
-    artName: capacityTest
-    author: rake
-    ownerID: 1
-    isMinted: 0
-    isShown: 1
-    isPending: 1
-    blockDatas:
-    - position: {x: 0.5, y: 0.5, z: -0.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: 0.5, y: 1.5, z: -0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: -1.5, y: 0.5, z: -0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: -0.5, y: 0.5, z: 0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: -0.5, y: 0.5, z: -0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: -1.5, y: 0.5, z: 1.5}
-      color: {r: 1, g: 0, b: 1, a: 1}
-    - position: {x: 1.5, y: 0.5, z: 0.5}
-      color: {r: 1, g: 0, b: 1, a: 1}
-    - position: {x: 0.5, y: 0.5, z: -1.5}
-      color: {r: 1, g: 0, b: 1, a: 1}
-    - position: {x: 0.5, y: 1.5, z: -1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -1.5, y: 0.5, z: -1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -0.5, y: 1.5, z: 0.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: 0.5, y: 0.5, z: 1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-  - id: 4
-    artName: capacityTest
-    author: rake
-    ownerID: 1
-    isMinted: 1
-    isShown: 1
-    isPending: 1
-    blockDatas:
-    - position: {x: -0.5, y: 0.5, z: -1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -0.5, y: 1.5, z: -1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-  - id: 5
-    artName: capacityTest
+  - id: 15
+    artName: hello
     author: rake
     ownerID: 1
     isMinted: 0
     isShown: 0
     isPending: 1
-    blockDatas:
-    - position: {x: -2.5, y: 0.5, z: 0.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: 1.5, y: 0.5, z: -0.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -3.5, y: 0.5, z: -0.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -2.5, y: 0.5, z: -0.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -0.5, y: 0.5, z: -1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -0.5, y: 1.5, z: -1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-  - id: 6
-    artName: capacityTest
-    author: rake
-    ownerID: 1
-    isMinted: 0
-    isShown: 0
-    isPending: 0
     blockDatas: []
-  - id: 7
-    artName: capacityTest
-    author: rake
-    ownerID: 1
-    isMinted: 0
-    isShown: 1
-    isPending: 0
-    blockDatas:
-    - position: {x: -0.5, y: 0.5, z: -0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: 1.5, y: 0.5, z: -1.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: -2.5, y: 0.5, z: -1.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: -1.5, y: 0.5, z: -1.5}
-      color: {r: 0, g: 1, b: 0, a: 1}
-    - position: {x: -0.5, y: 0.5, z: -1.5}
-      color: {r: 0, g: 1, b: 0, a: 1}
-    - position: {x: -0.5, y: 0.5, z: 0.5}
-      color: {r: 0, g: 1, b: 0, a: 1}
-    - position: {x: 0.5, y: 0.5, z: -0.5}
-      color: {r: 0, g: 1, b: 0, a: 1}
-    - position: {x: -0.5, y: 1.5, z: -0.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -1.5, y: 0.5, z: -0.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -1.5, y: 1.5, z: -0.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: 0.5, y: 0.5, z: -1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: 0.5, y: 1.5, z: -1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -0.5, y: 1.5, z: -1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -0.5, y: 0.5, z: -2.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-  - id: 8
-    artName: 99999
+  - id: 16
+    artName: hello
     author: rake
     ownerID: 1
     isMinted: 0
     isShown: 0
-    isPending: 0
+    isPending: 1
+    blockDatas: []
+  - id: 17
+    artName: test
+    author: rake
+    ownerID: 1
+    isMinted: 0
+    isShown: 0
+    isPending: 1
     blockDatas:
-    - position: {x: -0.5, y: 0.5, z: -0.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: 0.5, y: 0.5, z: -1.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: 2.5, y: 0.5, z: -0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: -2.5, y: 0.5, z: 0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: -1.5, y: 0.5, z: -2.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: 0.5, y: 0.5, z: 0.5}
-      color: {r: 0, g: 1, b: 0, a: 1}
-    - position: {x: 2.5, y: 0.5, z: -1.5}
-      color: {r: 0, g: 1, b: 0, a: 1}
-    - position: {x: 0.5, y: 0.5, z: -3.5}
-      color: {r: 0, g: 1, b: 0, a: 1}
-    - position: {x: 1.5, y: 0.5, z: -0.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: 1.5, y: 0.5, z: -2.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -2.5, y: 0.5, z: -1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: 0.5, y: 0.5, z: -0.5}
-      color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: 0.5, y: 1.5, z: -0.5}
-      color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: 0.5, y: 2.5, z: -0.5}
+    - position: {x: -0.5, y: 0.5, z: -1.5}
       color: {r: 0, g: 0, b: 0, a: 1}
     - position: {x: 0.5, y: 0.5, z: -2.5}
       color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: -1.5, y: 0.5, z: -1.5}
+    - position: {x: 0.5, y: 0.5, z: -0.5}
       color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: -1.5, y: 0.5, z: -0.5}
+    - position: {x: 1.5, y: 0.5, z: -1.5}
       color: {r: 0, g: 0, b: 0, a: 1}
+    - position: {x: 0.5, y: 0.5, z: -1.5}
+      color: {r: 0, g: 1, b: 0, a: 1}
+    - position: {x: 0.5, y: 1.5, z: -1.5}
+      color: {r: 0, g: 1, b: 0, a: 1}
+    - position: {x: 0.5, y: 0.5, z: -3.5}
+      color: {r: 0, g: 1, b: 0, a: 1}
     - position: {x: -0.5, y: 0.5, z: -2.5}
-      color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: -2.5, y: 0.5, z: 2.5}
-      color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: -1.5, y: 0.5, z: 2.5}
-      color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: -0.5, y: 0.5, z: 2.5}
-      color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: 0.5, y: 0.5, z: 2.5}
-      color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: 1.5, y: 0.5, z: 2.5}
-      color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: -2.5, y: 0.5, z: 1.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: -1.5, y: 0.5, z: 1.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
+      color: {r: 0, g: 1, b: 0, a: 1}
+    - position: {x: 1.5, y: 0.5, z: -2.5}
+      color: {r: 0, g: 1, b: 0, a: 1}
+    - position: {x: -0.5, y: 0.5, z: -0.5}
+      color: {r: 0, g: 1, b: 0, a: 1}
+    - position: {x: 0.5, y: 0.5, z: 0.5}
+      color: {r: 0, g: 1, b: 0, a: 1}
+    - position: {x: 1.5, y: 0.5, z: -0.5}
+      color: {r: 0, g: 1, b: 0, a: 1}
+    - position: {x: 2.5, y: 0.5, z: -1.5}
+      color: {r: 0, g: 1, b: 0, a: 1}
+    - position: {x: -1.5, y: 0.5, z: -1.5}
+      color: {r: 0, g: 1, b: 0, a: 1}
+    - position: {x: -2.5, y: 0.5, z: -0.5}
+      color: {r: 0, g: 0, b: 1, a: 1}
+    - position: {x: -2.5, y: 0.5, z: -1.5}
+      color: {r: 0, g: 0, b: 1, a: 1}
+    - position: {x: -2.5, y: 0.5, z: -2.5}
+      color: {r: 0, g: 0, b: 1, a: 1}
+    - position: {x: 3.5, y: 0.5, z: -0.5}
+      color: {r: 0, g: 0, b: 1, a: 1}
+    - position: {x: 3.5, y: 0.5, z: -1.5}
+      color: {r: 0, g: 0, b: 1, a: 1}
+    - position: {x: 3.5, y: 0.5, z: -2.5}
+      color: {r: 0, g: 0, b: 1, a: 1}
     - position: {x: -0.5, y: 0.5, z: 1.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: 1.5, y: 1.5, z: 2.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
+      color: {r: 1, g: 0, b: 1, a: 1}
+    - position: {x: 0.5, y: 0.5, z: 1.5}
+      color: {r: 1, g: 0, b: 1, a: 1}
     - position: {x: 1.5, y: 0.5, z: 1.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: 0.5, y: 1.5, z: 2.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
+      color: {r: 1, g: 0, b: 1, a: 1}
+    - position: {x: -0.5, y: 0.5, z: -4.5}
+      color: {r: 1, g: 0, b: 1, a: 1}
     - position: {x: 0.5, y: 0.5, z: -4.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: -0.5, y: 0.5, z: -3.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
+      color: {r: 1, g: 0, b: 1, a: 1}
+    - position: {x: 1.5, y: 0.5, z: -4.5}
+      color: {r: 1, g: 0, b: 1, a: 1}
     - position: {x: -1.5, y: 0.5, z: -3.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: -2.5, y: 0.5, z: -3.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: 1.5, y: 0.5, z: -3.5}
       color: {r: 1, g: 1, b: 1, a: 1}
     - position: {x: 2.5, y: 0.5, z: -3.5}
       color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: -3.5, y: 0.5, z: -3.5}
+    - position: {x: -1.5, y: 0.5, z: 0.5}
       color: {r: 1, g: 1, b: 1, a: 1}
+    - position: {x: 2.5, y: 0.5, z: 0.5}
+      color: {r: 1, g: 1, b: 1, a: 1}
+    - position: {x: -2.5, y: 0.5, z: 1.5}
+      color: {r: 1, g: 0, b: 0, a: 1}
+    - position: {x: -2.5, y: 0.5, z: -4.5}
+      color: {r: 1, g: 0, b: 0, a: 1}
+    - position: {x: 3.5, y: 0.5, z: -4.5}
+      color: {r: 1, g: 0, b: 0, a: 1}
+    - position: {x: 3.5, y: 0.5, z: 1.5}
+      color: {r: 1, g: 0, b: 0, a: 1}
   friendIds: 
   pendingIds: 
   bidAuctions: []
   achievements: []
   experience: 0
   currentPlanet:
-    NFTs: []
+    NFTs:
+    - id: 15
+      artName: hello
+      author: rake
+      ownerID: 1
+      isMinted: 0
+      isShown: 0
+      isPending: 1
+      blockDatas: []
+    - id: 16
+      artName: hello
+      author: rake
+      ownerID: 1
+      isMinted: 0
+      isShown: 0
+      isPending: 1
+      blockDatas: []
+    - id: 17
+      artName: test
+      author: rake
+      ownerID: 1
+      isMinted: 0
+      isShown: 0
+      isPending: 1
+      blockDatas: []
     experience: 0
-  account: 
+  account: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
   attendingAuctionNFTId: 4

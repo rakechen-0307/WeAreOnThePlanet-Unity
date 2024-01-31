@@ -51,7 +51,8 @@ public class MessengerManager : MonoBehaviour
     public TMP_Text TravelAuction;
     public Button GoButton;
 
-
+    public GameObject Aim;
+    public PlayerMovement playerMovement;
     public GameObject playerListObj, chatChannelObj, addFriendChannelObj, pendingChannelObj, travelChannelObj;
     public GameObject myTextObj, comingTextObj, chatRoomObj;
     public LoadedData _loadedData;
@@ -67,6 +68,7 @@ public class MessengerManager : MonoBehaviour
     {
         MessengerUI.SetActive(false);
         _messengerIsOpened = false;
+        Aim.SetActive(true);
 
         await VivoxInitialize();
         await VivoxSignIn(_loadedData.playerId.ToString());
@@ -137,6 +139,8 @@ public class MessengerManager : MonoBehaviour
                 _messengerIsOpened = false;
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
+                Aim.SetActive(true);
+                playerMovement.moveable = true;
             }
             else
             {
@@ -149,6 +153,8 @@ public class MessengerManager : MonoBehaviour
                 _messengerIsOpened = true;
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
+                Aim.SetActive(false);
+                playerMovement.moveable = false;
                 ShowFriendList(_loadedData.playerId);
             }
         }
