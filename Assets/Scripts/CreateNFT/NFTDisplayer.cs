@@ -20,6 +20,7 @@ public class NFTDisplayer : MonoBehaviour
         {
             ShowNFT(NFTDisplaySlots[displayedNFTCount], loadedData.NFTs[NFTidx]);
             displayedNFTCount++;
+            NFTidx++;
         }
     }
 

@@ -16,6 +16,7 @@ using Unity.Services.Relay;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Vivox;
+using System.Threading.Tasks;
 
 public class GameStartManager : Singleton<GameStartManager>
 {
@@ -273,7 +274,7 @@ public class GameStartManager : Singleton<GameStartManager>
         {
             PlayerPrefs.SetString("Account", account);
             print("Account: " + account);
-            VivoxSignIn("host");
+            await VivoxSignIn("host");
             StartPage.SetActive(false);
             HostPage.SetActive(true);
         }
@@ -320,7 +321,7 @@ public class GameStartManager : Singleton<GameStartManager>
                     return;
                 }
             }
-            VivoxSignIn(_playerId.ToString());
+            await VivoxSignIn(_playerId.ToString());
             int planetId = BackendManager.instance.loadMainPlayerData(_playerId, _loadedData);
             Debug.Log(planetId);
             if (planetId == -1)  // NFT Workshop 
@@ -361,7 +362,7 @@ public class GameStartManager : Singleton<GameStartManager>
         Debug.Log("Vivox Initialized");
     }
 
-    private async void VivoxSignIn(string displayName)
+    private async Task<bool> VivoxSignIn(string displayName)
     {
         var loginOption = new LoginOptions
         {
@@ -370,5 +371,6 @@ public class GameStartManager : Singleton<GameStartManager>
         };
         await VivoxService.Instance.LoginAsync(loginOption);
         Debug.Log("Log in");
+        return true;
     }
 }

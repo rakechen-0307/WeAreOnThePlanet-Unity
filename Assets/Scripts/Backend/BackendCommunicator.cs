@@ -115,11 +115,19 @@ public class BackendCommunicator : MonoBehaviour
 
     public IList<NFTInfo> GetNFTsById(int playerId)
     {
-        IList<NFTInfo> nftInfos = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault().NFTs;
-        return nftInfos;
+        try
+        {
+            IList<NFTInfo> nftInfos = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault().NFTs;
+            return nftInfos;
+        }
+        catch (System.Exception)
+        {
+            Debug.LogError("failed to get NFT");
+            throw;
+        }
     }
 
-    public async void UpdateOneNFT(int nftId, string name, bool isShown, List<BlockData> blockData)
+    public async void UpdateOneNFT(int nftId, string name, bool isShown, bool isPending, List<BlockData> blockData)
     {
         NFTInfo updateNFT = _realm.All<NFTInfo>().Where(nft => nft.Id == nftId).FirstOrDefault();
 
@@ -127,6 +135,7 @@ public class BackendCommunicator : MonoBehaviour
         {
             updateNFT.Name = name;
             updateNFT.IsShown = isShown;
+            updateNFT.IsPending = isPending;
 
             while (updateNFT.Contents.Count > 0)
             {
@@ -206,7 +215,7 @@ public class BackendCommunicator : MonoBehaviour
             auction.BidPrice = bidPrice;
         });
     }
-    public async Task<int> CreateOneNFT(string name, int ownerId, string author, DateTimeOffset createTime, bool isMinted, bool isShown)
+    public async Task<int> CreateOneNFT(string name, int ownerId, string author, DateTimeOffset createTime, bool isMinted, bool isShown, bool isPending)
     {
         int NFTsCount = _realm.All<NFTInfo>().ToArray().Length;
         PlayerData owner = _realm.All<PlayerData>().Where(user => user.Id == ownerId).FirstOrDefault();
@@ -221,7 +230,8 @@ public class BackendCommunicator : MonoBehaviour
                 Author = author,
                 CreateTime = createTime,
                 IsMinted = isMinted,
-                IsShown = isShown
+                IsShown = isShown,
+                IsPending = isPending
             });
 
             owner.NFTs.Add(newNFT);

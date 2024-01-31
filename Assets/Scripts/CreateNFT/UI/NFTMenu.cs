@@ -1,4 +1,4 @@
-using System.Linq;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -41,6 +41,9 @@ public class NFTMenu : MonoBehaviour
     [SerializeField]
     private Transform NFTDisplay;
 
+    [SerializeField]
+    private List<TMP_Text> NFTNames;
+
     // root/menuPannel/buildModal
     [SerializeField]
     private TMP_InputField NFTNameInput;
@@ -51,6 +54,16 @@ public class NFTMenu : MonoBehaviour
     [SerializeField]
     private Button cancelButton;
 
+    // root/menuPannel/viewMenu
+    [SerializeField]
+    private Button nextPage;
+
+    [SerializeField]
+    private Button previousPage;
+
+    [SerializeField]
+    private GameObject NFTDataModal;
+    // Other
     [SerializeField]
     private SaveManager saveManager;
 
@@ -64,6 +77,8 @@ public class NFTMenu : MonoBehaviour
         cancelButton.onClick.AddListener(cancelButtonOnClick);
         viewButton.onClick.AddListener(viewButtonOnClick);
         viewBackButton.onClick.AddListener(viewBackButtonOnClick);
+        nextPage.onClick.AddListener(nextPageOnClick);
+        previousPage.onClick.AddListener(previousPageOnClick);
     }
 
     private void buildButtonOnClick()
@@ -86,7 +101,7 @@ public class NFTMenu : MonoBehaviour
     private void viewButtonOnClick()
     {
         viewMenu.SetActive(true);
-        displayIndex = displayNFT(displayIndex);
+        displayNFT(displayIndex);
     }
 
     private void viewBackButtonOnClick()
@@ -94,12 +109,44 @@ public class NFTMenu : MonoBehaviour
         viewMenu.SetActive(false);
     }
 
+    private void previousPageOnClick()
+    {
+        if (displayIndex - 6 >= 0)
+        {
+            displayIndex -= 6;
+            displayNFT(displayIndex);
+        }
+    }
+
+    private void nextPageOnClick()
+    {
+        if (displayIndex + 6 < loadedData.NFTs.Count)
+        {
+            displayIndex += 6;
+            displayNFT(displayIndex);
+        }
+    }
+
+    private void NFTSlotOnClick(int offset)
+    {
+        int index = displayIndex + offset;
+        if (index >= loadedData.NFTs.Count)
+        {
+            Debug.LogError("Warning: NFT index out of range!, something is wrong with displayIndex or the loadData");
+            return;
+        }
+        ArtWork NFT = loadedData.NFTs[index];
+
+        NFTDataModal.SetActive(true);
+        displayNFTModal(NFT);
+    }
     // Menus
     private void showBuildMenu()
     {
         menuPannel.SetActive(false);
         buildModal.SetActive(false);
         viewMenu.SetActive(false);
+        NFTDataModal.SetActive(false);
         buildPannel.SetActive(true);
     }
 
@@ -109,26 +156,32 @@ public class NFTMenu : MonoBehaviour
         buildModal.SetActive(false);
         viewMenu.SetActive(false);
         buildPannel.SetActive(false);
+        NFTDataModal.SetActive(false);
+        displayIndex = 0;
     }
     // Utility
-    private int displayNFT(int displayIdx)
+    private void displayNFTModal(ArtWork NFT)
+    {
+        
+    }
+    private void displayNFT(int displayIdx)
     {
         // display object
         nftDisplayer.DisplayNFTs(displayIdx);
-
+        int index = displayIdx;
         // display ui
         for (int i = 0; i < 6; i++)
         {
-            if (displayIdx < loadedData.NFTs.Count)
+            if (index < loadedData.NFTs.Count)
             {
                 NFTDisplay.GetChild(i).gameObject.SetActive(true);
-                displayIdx++;
+                NFTNames[i].text = loadedData.NFTs[index].artName;
+                index++;
             }
             else
             {
                 NFTDisplay.GetChild(i).gameObject.SetActive(false);
             }
         }
-        return displayIdx;
     }
 }
