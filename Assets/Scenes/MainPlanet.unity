@@ -1164,6 +1164,9 @@ MonoBehaviour:
   NFTDisplaySlots:
   - {fileID: 1124206129}
   - {fileID: 1251480539}
+  - {fileID: 209480164}
+  - {fileID: 1452434966}
+  - {fileID: 1688508484}
 --- !u!4 &142610241
 Transform:
   m_ObjectHideFlags: 0
