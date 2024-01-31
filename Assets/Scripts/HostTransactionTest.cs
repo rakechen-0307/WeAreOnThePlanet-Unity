@@ -36,10 +36,41 @@ public class HostTransactionTest : MonoBehaviour
     }
 
 
-    void OnChannelMessageReceived(VivoxMessage message) //接收到訊息之後解碼 Debug.Log出來
+    void OnChannelMessageReceived(VivoxMessage message) 
     {
         Debug.Log(message.MessageText);
-        string[] incomingMessage = JsonConvert.DeserializeObject<string[]>(message.MessageText);
+        string[] messageObj = JsonConvert.DeserializeObject<string[]>(message.MessageText);
+        string[] PreJsonData = JsonConvert.DeserializeObject<string[]>(messageObj[0]);
+        Debug.Log("originalMessage = " + messageObj[0] + " , signatureString = " + messageObj[1] + " , function = " + PreJsonData[0]);
+        switch (PreJsonData[0])
+        {
+            case "mint":
+                string verifiedEmail = SignVerifySignature(messageObj[1], messageObj[0]);
+                Debug.Log("verifiedEmail = " + verifiedEmail);
+                if(verifiedEmail == PreJsonData[1])
+                {
+                    string to = BackendCommunicator.instance.FindOnePlayerByEmail(verifiedEmail).Account;
+                    Debug.Log("MintNFTTo = " + to);
+                    NFTMint(to, Int16.Parse(PreJsonData[2]));
+                }
+                else
+                {
+                    //驗證不正確，要把pending改回false
+                }
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    public string SignVerifySignature(string signatureString, string originalMessage)
+    {
+        var msg = "\x19" + "Ethereum Signed Message:\n" + originalMessage.Length + originalMessage;
+        var msgHash = new Sha3Keccack().CalculateHash(Encoding.UTF8.GetBytes(msg));
+        var signature = MessageSigner.ExtractEcdsaSignature(signatureString);
+        var key = EthECKey.RecoverFromSignature(signature, msgHash);
+        return key.GetPublicAddress();
     }
 
     private async void TokenMint()
@@ -72,11 +103,10 @@ public class HostTransactionTest : MonoBehaviour
         }
     }
 
-    private async void NFTMint()
+    private async void NFTMint(string to, int id)
     {
         var method = "safeMint";
 
-        var to = "0xC79dbE9296E54e5C503Bd1820eE5dAC6376c98C5";
         var uri = "ipfs://QmTQqtfx15vKbs5dKdhxgiTuY7eBATcJpFy9XQEhKTpxTU/0";
 
         var provider = new JsonRpcProvider(ContractManager.RPC);
@@ -87,7 +117,8 @@ public class HostTransactionTest : MonoBehaviour
             var data = contract.Calldata(method, new object[]
             {
                 to,
-                uri
+                uri,
+                id
             });
             // send transaction
             string response = await Web3Wallet.SendTransaction(PlayerPrefs.GetString("ChainID"), ContractManager.NFTContract, "0", data, "", "");
@@ -101,11 +132,12 @@ public class HostTransactionTest : MonoBehaviour
         }
     }
 
+    
     void Start()
     {
         VivoxService.Instance.ChannelMessageReceived += OnChannelMessageReceived;
         ChannelSwitch();
-        mint.onClick.AddListener(() => { NFTMint(); });
+        //mint.onClick.AddListener(() => { NFTMint(); });
 
     }
 
