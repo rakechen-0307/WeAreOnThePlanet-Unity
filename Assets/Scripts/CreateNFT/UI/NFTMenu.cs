@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class NFTMenu : MonoBehaviour
@@ -27,6 +28,9 @@ public class NFTMenu : MonoBehaviour
 
     [SerializeField]
     private Button viewButton;
+
+    [SerializeField]
+    private Button exitButton;
 
     [SerializeField]
     private GameObject buildModal;
@@ -122,6 +126,7 @@ public class NFTMenu : MonoBehaviour
         saveNFTInfo.onClick.AddListener(saveNFTInfoOnClick);
         leaveNFTInfo.onClick.AddListener(leaveNFTInfoOnClick);
         editNFTButton.onClick.AddListener(editNFTButtonOnClick);
+        exitButton.onClick.AddListener(exitButtonOnClick);
     }
 
     private void buildButtonOnClick()
@@ -146,6 +151,12 @@ public class NFTMenu : MonoBehaviour
         viewMenu.SetActive(true);
         NFTDataModal.SetActive(false);
         displayNFT(displayIndex);
+    }
+
+    private void exitButtonOnClick()
+    {
+        loadedData.mainPlayer.lastPlanetId = loadedData.playerId;
+        SceneManager.LoadScene("MainPlanet", LoadSceneMode.Single);
     }
 
     private void viewBackButtonOnClick()
@@ -205,7 +216,8 @@ public class NFTMenu : MonoBehaviour
 
     private void editNFTButtonOnClick()
     {
-
+        showBuildMenu();
+        saveManager.startBuilding(currentViewingNFT);
     }
     // Menus
     private void showBuildMenu()
@@ -240,7 +252,7 @@ public class NFTMenu : MonoBehaviour
     private void displayNFT(int displayIdx)
     {
         // display object
-        nftDisplayer.DisplayNFTs(displayIdx);
+        nftDisplayer.showNFTFromIdx(displayIdx, "RenderTexture");
         int index = displayIdx;
         // display ui
         for (int i = 0; i < 6; i++)

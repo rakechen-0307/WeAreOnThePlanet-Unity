@@ -16,11 +16,11 @@ public class MainPlanetSave : MonoBehaviour
         }
     }
 
-    private void SavePlayerData()
+    private async void SavePlayerData()
     {
         Debug.Log("save player position");
         loadedData.mainPlayer.lastPosition = mainPlayer.position;
         loadedData.mainPlayer.lastEuler = mainPlayer.eulerAngles;
-        BackendManager.instance.saveMainPlayerData(loadedData.playerId, loadedData.mainPlayer);
+        bool success = await BackendManager.instance.saveMainPlayerData(loadedData.playerId, loadedData.mainPlayer);
     }
 }

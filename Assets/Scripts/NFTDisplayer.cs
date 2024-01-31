@@ -12,19 +12,31 @@ public class NFTDisplayer : MonoBehaviour
     [SerializeField]
     private List<Transform> NFTDisplaySlots = new List<Transform>();
 
-    public void DisplayNFTs(int startIdx)
+    public void showNFTFromIdx(int startIdx, string layer = "Default")
     {
         int NFTidx = startIdx;
         int displayedNFTCount = 0;
         while (displayedNFTCount < NFTDisplaySlots.Count && NFTidx < loadedData.NFTs.Count)
         {
-            ShowNFT(NFTDisplaySlots[displayedNFTCount], loadedData.NFTs[NFTidx]);
+            ShowOneNFT(NFTDisplaySlots[displayedNFTCount], loadedData.NFTs[NFTidx], layer);
             displayedNFTCount++;
             NFTidx++;
         }
     }
 
-    private void ShowNFT(Transform NFTtransform, ArtWork NFT)
+    public void ShowNFTList(List<ArtWork> NFTs, string layer = "Default")
+    {
+        int NFTidx = 0;
+        int displayedNFTCount = 0;
+        while (displayedNFTCount < NFTDisplaySlots.Count && NFTidx < NFTs.Count)
+        {
+            ShowOneNFT(NFTDisplaySlots[displayedNFTCount], NFTs[NFTidx], layer);
+            displayedNFTCount++;
+            NFTidx++;
+        }
+    }
+
+    public void ShowOneNFT(Transform NFTtransform, ArtWork NFT, string layer = "Default")
     {
         foreach (Transform child in NFTtransform)
         {
@@ -35,7 +47,7 @@ public class NFTDisplayer : MonoBehaviour
             GameObject newBlock = Instantiate(blockPrefab, NFTtransform);
             newBlock.transform.localPosition = blockData.position;
             newBlock.GetComponent<Renderer>().material.color = blockData.color;
-            newBlock.layer = LayerMask.NameToLayer("RenderTexture");
+            newBlock.layer = LayerMask.NameToLayer(layer);
         }
     }
 }

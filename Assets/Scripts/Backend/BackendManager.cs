@@ -28,7 +28,7 @@ public class BackendManager : MonoBehaviour
         loadedData.playerId = playerData.Id;
         loadedData.playerName = playerData.Username;
         loadedData.experience = playerData.Exp;
-
+        loadedData.account = playerData.Account;
         loadedData.friendIds = new List<int>();
         for (int i = 0; i < playerData.Friends.Count; i++)
         {
@@ -75,17 +75,16 @@ public class BackendManager : MonoBehaviour
 
         return planetId;
     }
-    public async void saveMainPlayerData(int playerId, Player player)
+    public async Task<bool> saveMainPlayerData(int playerId, Player player)
     {
         Vector3 pos = player.lastPosition;
         Vector3 rot = player.lastEuler;
         int planetId = player.lastPlanetId;
-        await BackendCommunicator.instance.UpdatePlayerPosition(playerId, planetId, pos, rot);
+        return await BackendCommunicator.instance.UpdatePlayerPosition(playerId, planetId, pos, rot);
     }
 
     public void loadPlanetData(int playerId, LoadedData loadedData)
     {
-        Debug.Log(playerId);
         PlayerData playerData = BackendCommunicator.instance.FindOnePlayerById(playerId);
         if (playerData == null)
         {
@@ -157,14 +156,14 @@ public class BackendManager : MonoBehaviour
         }
     }
 
-    public async void saveNFT(ArtWork NFT)
+    public async Task<bool> saveNFT(ArtWork NFT)
     {
         int nftID = NFT.id;
         string NFTName = NFT.artName;
         bool isShown = NFT.isShown;
         bool isPending = NFT.isPending;
         List<BlockData> blockDatas = NFT.blockDatas;
-        await BackendCommunicator.instance.UpdateOneNFT(nftID, NFTName, isShown, isPending, blockDatas);
+        return await BackendCommunicator.instance.UpdateOneNFT(nftID, NFTName, isShown, isPending, blockDatas);
     }
 
     public async Task<int> newNFT(ArtWork NFT)

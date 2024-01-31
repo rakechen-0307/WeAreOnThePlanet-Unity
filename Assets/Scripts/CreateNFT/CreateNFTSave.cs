@@ -1,20 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CreateNFTSave : MonoBehaviour
 {
     [SerializeField]
     private LoadedData loadedData;
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            SaveNFTData(loadedData.NFTs[0]);
-        }
-    }
 
     public async Task<ArtWork> NewNFT(string NFTName)
     {
@@ -31,9 +22,9 @@ public class CreateNFTSave : MonoBehaviour
         return NFT;
     }
 
-    public void SaveNFTData(ArtWork newNFTData)
+    public async void SaveNFTData(ArtWork newNFTData)
     {
-        BackendManager.instance.saveNFT(newNFTData);
+        bool success = await BackendManager.instance.saveNFT(newNFTData);
 
         for (int i = 0; i < loadedData.NFTs.Count; i++)
         {

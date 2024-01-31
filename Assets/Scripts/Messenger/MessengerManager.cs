@@ -6,9 +6,9 @@ using Unity.Services.Vivox;
 using Unity.Services.Core;
 using TMPro;
 using UnityEngine.UI;
-using Realms;
-using Realms.Sync;
 using System.Linq;
+using System;
+using System.Threading.Tasks;
 
 public class MessengerManager : MonoBehaviour
 {
@@ -26,23 +26,38 @@ public class MessengerManager : MonoBehaviour
     public TMP_Text AddFriendAuction;
     public Button SendRequestButton;
     public GameObject PendingPage;
+    public GameObject PendingView;
+    public TMP_Text PendingUsername;
+    public TMP_Text PendingLevel;
+    public TMP_Text PendingNFT;
+    public TMP_Text PendingFriends;
+    public TMP_Text PendingAuction;
+    public Button AcceptButton;
+    public Button DenyButton;
 
-    public GameObject playerListObj, chatChannelObj, addFriendChannelObj;
+    public GameObject playerListObj, chatChannelObj, addFriendChannelObj, pendingChannelObj;
+    public GameObject myTextObj, comingTextObj, chatRoomObj;
     public LoadedData _loadedData;
 
     private bool _messengerIsOpened;
     private string _currentChannel;
 
     private IList<PlayerListObject> _player = new List<PlayerListObject>();
+    private IList<MessageObject> _message = new List<MessageObject>();
 
-    private void Awake()
+    private async void Awake()
     {
         MessengerUI.SetActive(false);
         _messengerIsOpened = false;
+
+        await VivoxInitialize();
+        await VivoxSignIn(_loadedData.playerId.ToString());
     }
 
     void Start()
     {
+        VivoxService.Instance.ChannelMessageReceived += ChannelMessageReceived;
+
         ChatButton.onClick.AddListener(() =>
         {
             ChatPage.SetActive(true);
@@ -53,6 +68,7 @@ public class MessengerManager : MonoBehaviour
 
         AddFriendButton.onClick.AddListener(() =>
         {
+            Debug.Log("ADD");
             AddFriendPage.SetActive(true);
             ChatPage.SetActive(false);
             PendingPage.SetActive(false);
@@ -65,6 +81,8 @@ public class MessengerManager : MonoBehaviour
             PendingPage.SetActive(true);
             ChatPage.SetActive(false);
             AddFriendPage.SetActive(false);
+            PendingView.SetActive(false);
+            ShowPendingList(_loadedData.playerId);
         });
     }
 
@@ -141,6 +159,23 @@ public class MessengerManager : MonoBehaviour
         }
     }
 
+    private void ShowPendingList(int playerId)
+    {
+        _player = new List<PlayerListObject>();
+        foreach (Transform child in pendingChannelObj.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        IList<PendingFreiendInfo> pendings = BackendCommunicator.instance.FindAllPendingFriends(playerId);
+
+        for (int i = 0; i < pendings.Count; i++)
+        {
+            AddPendingToList(pendings[i].Player.Username, playerId, pendings[i].Player.Id, pendings[i].IsSender);
+            Debug.Log("add friends");
+        }
+    }
+
     private void AddFriendToList(string friendName, int currentUserID, int friendID)
     {
         var newPlayer = Instantiate(playerListObj, chatChannelObj.transform);
@@ -169,28 +204,18 @@ public class MessengerManager : MonoBehaviour
         _player.Add(newMessagePlayerObj);
     }
 
-    public async void ChannelSwitch(int from, int to)
+    private void AddPendingToList(string pendingName, int currentUserID, int pendingID, bool isSender)
     {
-        await VivoxService.Instance.LeaveAllChannelsAsync();
+        var newPlayer = Instantiate(playerListObj, pendingChannelObj.transform);
+        var newMessagePlayerObj = newPlayer.GetComponent<PlayerListObject>();
 
-        string channelToJoin = (from < to) ? (from.ToString() + "_" + to.ToString()) : (to.ToString() + "_" + from.ToString());
-
-        if (channelToJoin != _currentChannel)
+        newMessagePlayerObj.SelectButton.onClick.AddListener(() =>
         {
-            JoinChannelAsync(channelToJoin);
-            _currentChannel = channelToJoin;
-        }
-        Debug.Log(channelToJoin);
-    }
+            ShowPendingInfo(currentUserID, pendingID, newMessagePlayerObj.SelectButton, isSender);
+        });
 
-    public async void JoinChannelAsync(string channelName)
-    {
-        await VivoxService.Instance.JoinEchoChannelAsync(channelName, ChatCapability.TextOnly);
-    }
-
-    public async void ChannelSendMessageAsync(string channelName, string message)
-    {
-        await VivoxService.Instance.SendChannelTextMessageAsync(channelName, message);
+        newMessagePlayerObj.Username.text = pendingName;
+        _player.Add(newMessagePlayerObj);
     }
 
     public void ShowPlayerInfo(int currentUserID, int playerID, Button button)
@@ -202,7 +227,7 @@ public class MessengerManager : MonoBehaviour
         AddFriendLevel.text = "Planet Level : " + playerData.Exp.ToString();
         AddFriendNFT.text = "Owned NFT : " + playerData.NFTs.Count.ToString();
         AddFriendFriends.text = "Total Friends : " + playerData.Friends.Count.ToString();
-        AddFriendAuction.text = "Auction Held : " + auctionCount.ToString();
+        AddFriendAuction.text = "Auctions Hold : " + auctionCount.ToString();
         PlayerView.SetActive(true);
 
         SendRequestButton.onClick.AddListener(() =>
@@ -211,123 +236,68 @@ public class MessengerManager : MonoBehaviour
         });
     }
 
+    public void ShowPendingInfo(int currentUserID, int playerID, Button button, bool isSender)
+    {
+        PlayerData playerData = BackendCommunicator.instance.FindOnePlayerById(playerID);
+        int auctionCount = BackendCommunicator.instance.FindHeldAuctionByPlayerID(playerID).Count;
+
+        PendingUsername.text = playerData.Username;
+        PendingLevel.text = "Planet Level : " + playerData.Exp.ToString();
+        PendingNFT.text = "Owned NFT : " + playerData.NFTs.Count.ToString();
+        PendingFriends.text = "Total Friends : " + playerData.Friends.Count.ToString();
+        PendingAuction.text = "Auctions Hold : " + auctionCount.ToString();
+        PendingView.SetActive(true);
+
+        if (isSender)
+        {
+            AcceptButton.gameObject.SetActive(false);
+            DenyButton.gameObject.SetActive(false);
+        }
+
+        AcceptButton.onClick.AddListener(() =>
+        {
+            AcceptRequest(currentUserID, playerID, button);
+        });
+
+        DenyButton.onClick.AddListener(() =>
+        {
+            DenyRequest(currentUserID, playerID, button);
+        });
+    }
+
     public async void SendRequestToPlayer(int from, int to, Button button)
     {
         await BackendCommunicator.instance.AddPendingFriend(from, to);
         Destroy(button.gameObject);
+        PlayerView.SetActive(false);
     }
 
-    /*
-    private IList<MessageObject> _message = new List<MessageObject>();
-    private IList<FriendListObject> _friend = new List<FriendListObject>();
-
-    public GameObject friendListObj, myTextObj, comingTextObj, channelObj, chatRoomObj;
-    public Button sendButton;
-    public TMP_InputField textInput;
-
-    private Realm _realm;
-    private App _realmApp;
-    private User _realmUser;
-    private string _realmAppID = "weareontheplanet-ouawh";
-
-    // Start is called before the first frame update
-    async void Start()
+    public async void AcceptRequest(int from, int to, Button button)
     {
-        var _email = "rakechen168@gmail.com";
+        await BackendCommunicator.instance.AcceptFriend(from, to);
+        Destroy(button.gameObject);
+        PendingView.SetActive(false);
+    }
 
-        RealmSetup();
+    public async void DenyRequest(int from, int to, Button button)
+    {
+        await BackendCommunicator.instance.DenyFriend(from, to);
+        Destroy(button.gameObject);
+        PendingView.SetActive(false);
+    }
 
-        // subscription
-        var playerQuery = _realm.All<PlayerData>();
-        await playerQuery.SubscribeAsync();
+    public void ChannelMessageReceived(VivoxMessage message)
+    {
+        var channelName = message.ChannelName;
+        var senderName = message.SenderDisplayName;
+        var senderId = message.SenderPlayerId;
+        var messageText = message.MessageText;
+        var fromSelf = message.FromSelf;
 
-        // Check if user is already existed and store user information
-        PlayerData findPlayer = _realm.All<PlayerData>().Where(user => user.Email == _email).FirstOrDefault();
-
-        if (findPlayer != null)
+        if (!fromSelf)
         {
-            var _userID = findPlayer.Id;
-            var friends = findPlayer.Friends.ToArray();
-            Debug.Log(friends.Length);
-            for (int i = 0; i < friends.Length; i++)
-            {
-                AddFriend(friends[i].Username, _userID, friends[i].Id);
-                Debug.Log("add friend");
-            }
+            AddMessage(messageText, false);
         }
-
-        // subscribe to receive coming channel message
-        VivoxService.Instance.ChannelMessageReceived += ChannelMessageReceived;
-
-        sendButton.onClick.AddListener(() =>
-        {
-            if (textInput.text != string.Empty)
-            {
-                ChannelSendMessageAsync(_currentChannel, textInput.text);
-                AddMessage(textInput.text, true);
-                textInput.text = string.Empty;
-            }
-        });
-    }
-
-    private void AddFriend(string friendName, int currentUserID, int friendID)
-    {
-        var newFriend = Instantiate(friendListObj, channelObj.transform);
-        var newMessageFriendObj = newFriend.GetComponent<FriendListObject>();
-
-        newMessageFriendObj.SelectButton.onClick.AddListener(() =>
-        {
-            ChannelSwitch(currentUserID, friendID);
-        });
-
-        newMessageFriendObj.Username.text = friendName;
-        _friend.Add(newMessageFriendObj);
-    }
-
-    public async void RealmSetup()
-    {
-        Debug.Log(_realm == null);
-        // setup Realm
-        if (_realm == null)
-        {
-            _realmApp = App.Create(new AppConfiguration(_realmAppID));
-            if (_realmApp.CurrentUser == null)
-            {
-                _realmUser = await _realmApp.LogInAsync(Credentials.Anonymous());
-                Debug.Log("user created");
-                _realm = await Realm.GetInstanceAsync(new FlexibleSyncConfiguration(_realmUser));
-            }
-            else
-            {
-                _realmUser = _realmApp.CurrentUser;
-                Debug.Log("user remain");
-                _realm = Realm.GetInstance(new FlexibleSyncConfiguration(_realmUser));
-            }
-        }
-    }
-
-    public async void ChannelSwitch(int from, int to)
-    {
-        await VivoxService.Instance.LeaveAllChannelsAsync();
-
-        string channelToJoin = (from < to) ? (from.ToString() + "_" + to.ToString()) : (to.ToString() + "_" + from.ToString());
-
-        if (channelToJoin != _currentChannel)
-        {
-            JoinChannelAsync(channelToJoin);
-            _currentChannel = channelToJoin;
-        }
-        Debug.Log(channelToJoin);
-    }
-
-    public async void JoinChannelAsync(string channelName)
-    {
-        await VivoxService.Instance.JoinEchoChannelAsync(channelName, ChatCapability.TextOnly);
-    }
-
-    public async void ChannelSendMessageAsync(string channelName, string message)
-    {
-        await VivoxService.Instance.SendChannelTextMessageAsync(channelName, message);
     }
 
     private void AddMessage(string message, bool isFromSelf)
@@ -352,19 +322,83 @@ public class MessengerManager : MonoBehaviour
         }
     }
 
-    public void ChannelMessageReceived(VivoxMessage message)
+    public async void ChannelSwitch(int from, int to)
     {
-        var channelName = message.ChannelName;
-        var senderName = message.SenderDisplayName;
-        var senderId = message.SenderPlayerId;
-        var messageText = message.MessageText;
-        var fromSelf = message.FromSelf;
-
-        if (!fromSelf)
+        await VivoxService.Instance.LeaveAllChannelsAsync();
+        
+        _message = new List<MessageObject>();
+        foreach (Transform child in chatRoomObj.transform)
         {
-            AddMessage(messageText, false);
+            Destroy(child.gameObject);
+        }
+
+        string channelToJoin = (from < to) ? (from.ToString() + "_" + to.ToString()) : (to.ToString() + "_" + from.ToString());
+
+        if (channelToJoin != _currentChannel)
+        {
+            JoinChannelAsync(channelToJoin);
+            _currentChannel = channelToJoin;
+        }
+        Debug.Log(channelToJoin);
+    }
+
+    public async void JoinChannelAsync(string channelName)
+    {
+        await VivoxService.Instance.JoinEchoChannelAsync(channelName, ChatCapability.TextOnly);
+
+        // get history messages
+        var historyOptions = new ChatHistoryQueryOptions();
+        historyOptions.TimeStart = DateTime.Now.AddHours(-1);
+        historyOptions.TimeEnd = DateTime.Now;
+
+        var historyMessages = await VivoxService.Instance.GetChannelTextMessageHistoryAsync(channelName, 50, historyOptions);
+        for (int i = 0; i < historyMessages.Count; i++)
+        {
+            VivoxMessage vivoxMessage = historyMessages[i];
+            AddMessage(vivoxMessage.MessageText, vivoxMessage.FromSelf);
         }
     }
-    */
+
+    public async void ChannelSendMessageAsync(string channelName, string message)
+    {
+        await VivoxService.Instance.SendChannelTextMessageAsync(channelName, message);
+    }
+
+    // will be removed when all is finished
+    private async Task<bool> VivoxInitialize()
+    {
+        await UnityServices.InitializeAsync();
+        try
+        {
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        }
+        catch (Exception)
+        {
+            Debug.Log("already sign in");
+        }
+
+        await VivoxService.Instance.InitializeAsync();
+        Debug.Log("Vivox Initialized");
+        return true;
+    }
+
+    private async Task<bool> VivoxSignIn(string displayName)
+    {
+        var loginOption = new LoginOptions
+        {
+            DisplayName = displayName,
+            EnableTTS = false
+        };
+        try
+        {
+            await VivoxService.Instance.LoginAsync(loginOption);
+        }
+        catch (Exception ex)
+        {
+            Debug.Log(ex.Message);
+        }
+
+        return true;
+    }
 }
 
