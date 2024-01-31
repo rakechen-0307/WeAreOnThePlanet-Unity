@@ -4,10 +4,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FriendListObject : MonoBehaviour
+public class PlayerListObject : MonoBehaviour
 {
-
     public Button SelectButton;
     public TMP_Text Username;
-
 }

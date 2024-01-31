@@ -38,6 +38,9 @@ public partial class PlayerData : IRealmObject
     [MapTo("friends")]
     public IList<PlayerData> Friends { get; }
 
+    [MapTo("pendingFriends")]
+    public IList<PendingFreiendInfo> PendingFriends { get; }
+
     public IList<NFTInfo> NFTs { get; }
 
     [MapTo("bidAuction")]
@@ -94,6 +97,17 @@ public partial class PlayerTask : IEmbeddedObject
 
     [MapTo("achieved")]
     public bool Achieved { get; set; }
+}
+
+public partial class PendingFreiendInfo : IEmbeddedObject
+{
+#nullable enable
+    [MapTo("player")]
+    public PlayerData? Player { get; set; }
+#nullable disable
+
+    [MapTo("isSender")]
+    public bool IsSender { get; set; }
 }
 
 public partial class Auction : IRealmObject
@@ -156,6 +170,9 @@ public partial class NFTInfo : IRealmObject
 
     [MapTo("isShown")]
     public bool IsShown { get; set; }
+
+    [MapTo("isPending")]
+    public bool IsPending { get; set; }
 
     [MapTo("contents")]
     public IList<NFTContent> Contents { get; }

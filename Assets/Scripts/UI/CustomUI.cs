@@ -63,6 +63,10 @@ public class CustomUI : MonoBehaviour
     #endif
     public void Resize()
     {
+        if (rectTransform == null)
+        {
+            return;
+        }
         switch (sizeMode)
         {
             case SizeMode.Absolute:

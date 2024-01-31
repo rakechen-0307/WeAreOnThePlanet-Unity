@@ -5,6 +5,10 @@ public class MainPlanetTravel : MonoBehaviour
 {
     [SerializeField]
     private LoadedData loadedData;
+
+    [SerializeField]
+    private Transform mainPlayer;
+
     public void TravelPlanet(int planetId)
     {
         if (loadedData.mainPlayer.lastPlanetId == planetId)
@@ -16,10 +20,14 @@ public class MainPlanetTravel : MonoBehaviour
         if (planetId == -1) // NFT workshop
         {
             sceneName = "CreateNFT";
+            loadedData.mainPlayer.lastPosition = mainPlayer.transform.position;
+            loadedData.mainPlayer.lastEuler = mainPlayer.transform.eulerAngles;
         }
         else if (planetId == -2)
         {
             sceneName = "Sushi";
+            loadedData.mainPlayer.lastPosition = mainPlayer.transform.position;
+            loadedData.mainPlayer.lastEuler = mainPlayer.transform.eulerAngles;
         }
         else
         {

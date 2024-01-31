@@ -11,7 +11,7 @@ public class MainPlanetInit : MonoBehaviour
     private Transform mainPlayer;
 
     [SerializeField]
-    private List<Transform> NFTDisplaySlots = new List<Transform>();
+    private NFTDisplayer nftDisplayer;
 
     [SerializeField]
     private GameObject blockPrefab;
@@ -36,18 +36,15 @@ public class MainPlanetInit : MonoBehaviour
     }
     private void initNFTDisplay()
     {
-        int NFTidx = 0;
-        int displayedNFTCount = 0;
-        while (displayedNFTCount < NFTDisplaySlots.Count && NFTidx < loadedData.currentPlanet.NFTs.Count)
+        List<ArtWork> NFTsToShow = new List<ArtWork>();
+        foreach (ArtWork NFT in loadedData.NFTs)
         {
-            if (loadedData.currentPlanet.NFTs[NFTidx].isShown)
+            if (NFT.isShown)
             {
-                // TODO: show NFT
-                ShowNFT(NFTDisplaySlots[displayedNFTCount], loadedData.currentPlanet.NFTs[NFTidx]);
-                displayedNFTCount++;
+                NFTsToShow.Add(NFT);
             }
-            NFTidx++;
         }
+        nftDisplayer.ShowNFTList(NFTsToShow);
     }
     private void initGarden()
     {

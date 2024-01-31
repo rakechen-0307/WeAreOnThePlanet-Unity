@@ -5,9 +5,9 @@ public class PlacementSystem : MonoBehaviour
 {
     [SerializeField]
     private List<GameObject> blockDB = new List<GameObject>();
-    
+
     [SerializeField]
-    private ArtWork artWorkInProgress;
+    private SaveManager saveManager;
 
     [SerializeField]
     private GameObject blockPrefab;
@@ -54,7 +54,8 @@ public class PlacementSystem : MonoBehaviour
             blockDB.Add(newBlock);
             // record
             BlockData newBlockData = new BlockData(position, colorManager.getBrushColor());
-            artWorkInProgress.blockDatas.Add(newBlockData);
+            saveManager.NFTinProgress.blockDatas.Add(newBlockData);
+            saveManager.modified = true;
         }
     }
     private void RemoveBlock(Vector3 position)
@@ -75,8 +76,29 @@ public class PlacementSystem : MonoBehaviour
         {
             GameObject blockToRemove = blockDB[removeIndex];
             blockDB.RemoveAt(removeIndex);
-            artWorkInProgress.blockDatas.RemoveAt(removeIndex);
+            saveManager.NFTinProgress.blockDatas.RemoveAt(removeIndex);
+            saveManager.modified = true;
             Destroy(blockToRemove);
         }
+    }
+
+    public void loadVisulaization(ArtWork NFT)
+    {
+        foreach (BlockData blockData in NFT.blockDatas)
+        {
+            GameObject newBlock = Instantiate(blockPrefab, blockData.position, Quaternion.identity, transform);
+            VisualizeBlock newBlockVisulize = newBlock.GetComponent<VisualizeBlock>();
+            newBlockVisulize.placementSystem = this;
+            newBlockVisulize.color = blockData.color;
+            blockDB.Add(newBlock);
+        }
+    }
+    public void clearVisulization()
+    {
+        foreach (GameObject block in blockDB)
+        {
+            Destroy(block);
+        }
+        blockDB.Clear();
     }
 }
