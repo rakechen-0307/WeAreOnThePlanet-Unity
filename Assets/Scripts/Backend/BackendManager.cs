@@ -75,12 +75,14 @@ public class BackendManager : MonoBehaviour
 
         return planetId;
     }
-    public async void saveMainPlayerData(int playerId, Player player)
+    public async Task<bool> saveMainPlayerData(int playerId, Player player)
     {
         Vector3 pos = player.lastPosition;
         Vector3 rot = player.lastEuler;
         int planetId = player.lastPlanetId;
         await BackendCommunicator.instance.UpdatePlayerPosition(playerId, planetId, pos, rot);
+
+        return true;
     }
 
     public void loadPlanetData(int playerId, LoadedData loadedData)
@@ -156,7 +158,7 @@ public class BackendManager : MonoBehaviour
         }
     }
 
-    public async void saveNFT(ArtWork NFT)
+    public async Task<bool> saveNFT(ArtWork NFT)
     {
         int nftID = NFT.id;
         string NFTName = NFT.artName;
@@ -164,6 +166,8 @@ public class BackendManager : MonoBehaviour
         bool isPending = NFT.isPending;
         List<BlockData> blockDatas = NFT.blockDatas;
         await BackendCommunicator.instance.UpdateOneNFT(nftID, NFTName, isShown, isPending, blockDatas);
+
+        return true;
     }
 
     public async Task<int> newNFT(ArtWork NFT)
