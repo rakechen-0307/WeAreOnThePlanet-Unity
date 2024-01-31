@@ -401,6 +401,15 @@ public class MessengerManager : MonoBehaviour
 
         try
         {
+            await VivoxService.Instance.LogoutAsync();
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e.Message);
+        }
+
+        try
+        {
             await VivoxService.Instance.LoginAsync(loginOption);
         }
         catch (Exception e)
