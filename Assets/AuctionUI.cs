@@ -32,26 +32,31 @@ public class AuctionUI : MonoBehaviour
     [SerializeField]
     private Button backButton;
 
+    private void Start()
+    {
+        getAuctionInfo();
+    }
     private void getAuctionInfo()
     {
         Auction auction = BackendCommunicator.instance.FindAuctionByNFTId(loadedData.attendingAuctionNFTId);
-        string startPrice = auction.StartPrice.ToString();
         // string startTime = auction.StartTime.ToString("yyyy/MM/dd, h:mm tt", new System.Globalization.CultureInfo("en-US")) + " (UTF+0)";
         // string endTime = auction.EndTime.ToString("yyyy/MM/dd, h:mm tt", new System.Globalization.CultureInfo("en-US")) + " (UTF+0)";
         DateTimeOffset currentTime = DateTimeOffset.Now;
         DateTimeOffset endTime = auction.EndTime;
         TimeSpan timeInterval = endTime - currentTime;
+        string timeIntervalText = $"{timeInterval.Days} days, {timeInterval.Hours}:{timeInterval.Minutes}";
         string ownerId = auction.Owner.Id.ToString();
         string nftID = loadedData.attendingAuctionNFTId.ToString();
         string createdTime = auction.NFT.CreateTime.ToString("yyyy/MM/dd, h:mm tt", new System.Globalization.CultureInfo("en-US")) + " (UTF+0)";
         string creator = auction.NFT.Author;
-        string highestPrice = auction.BidPrice.ToString();
-        string highestBidderName = auction.BidPlayer.Username;
+        string highestPriceText = auction.BidPrice.ToString();
+        string highestBidderName = auction.BidPlayer != null ? auction.BidPlayer.Username : "Start Price";
 
         nameTitle.text = auction.Owner.Username;
         infoText.text = $"ID: {nftID}\nOwner: {ownerId}\nCreator: {creator}\nCreated Time: {createdTime}";
-        highestBid.text = highestPrice;
+        highestBid.text = highestPriceText;
         highestBidder.text = highestBidderName;
-        // remainingTime.text = 
+        remainingTime.text = timeIntervalText;
+        bidInput.text = highestPriceText;
     }
 }
