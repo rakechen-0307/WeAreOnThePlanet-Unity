@@ -12,128 +12,286 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b7319dae12bc7b4496700c6cd07bf24, type: 3}
   m_Name: LoadedData
   m_EditorClassIdentifier: 
-  playerName: Hi
+  playerName: rake
   playerId: 1
   mainPlayer:
     lastPosition: {x: 0, y: 50.7, z: 0}
     lastEuler: {x: 0, y: 0, z: 0}
     lastPlanetId: 1
-  NFTs:
-  - id: 1
-    artName: 1
-    author: Hi
-    ownerID: 1
-    isMinted: 0
-    isShown: 0
-    blockDatas: []
-  - id: 2
-    artName: 2
-    author: Hi
-    ownerID: 1
-    isMinted: 0
-    isShown: 0
-    blockDatas:
-    - position: {x: -0.5, y: 0.5, z: -1.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: -0.5, y: 0.5, z: -0.5}
-      color: {r: 1, g: 0, b: 1, a: 1}
-    - position: {x: 1.5, y: 0.5, z: -1.5}
-      color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: -2.5, y: 0.5, z: -2.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
-    - position: {x: -2.5, y: 0.5, z: 2.5}
-      color: {r: 1, g: 0, b: 1, a: 1}
-  - id: 3
-    artName: 3
-    author: Hi
-    ownerID: 1
-    isMinted: 0
-    isShown: 0
-    blockDatas: []
-  - id: 4
-    artName: 4
-    author: Hi
-    ownerID: 1
-    isMinted: 0
-    isShown: 0
-    blockDatas:
-    - position: {x: -0.5, y: 0.5, z: -1.5}
-      color: {r: 0, g: 1, b: 0, a: 1}
-    - position: {x: -1.5, y: 0.5, z: 2.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: 1.5, y: 0.5, z: -0.5}
-      color: {r: 0, g: 0, b: 0, a: 1}
-  - id: 5
-    artName: 5
-    author: Hi
-    ownerID: 1
-    isMinted: 0
-    isShown: 0
-    blockDatas: []
-  - id: 6
-    artName: test
-    author: Hi
-    ownerID: 1
-    isMinted: 0
-    isShown: 0
-    blockDatas:
-    - position: {x: -1.5, y: 0.5, z: -0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: 0.5, y: 0.5, z: -2.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: 0.5, y: 0.5, z: 1.5}
-      color: {r: 1, g: 0, b: 1, a: 1}
-    - position: {x: -0.5, y: 0.5, z: -0.5}
-      color: {r: 0, g: 1, b: 0, a: 1}
-  - id: 7
-    artName: test2
-    author: Hi
-    ownerID: 1
-    isMinted: 0
-    isShown: 0
-    blockDatas: []
-  - id: 8
-    artName: newTest
-    author: Hi
-    ownerID: 1
-    isMinted: 0
-    isShown: 0
-    blockDatas:
-    - position: {x: -1.5, y: 0.5, z: -0.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: 1.5, y: 0.5, z: -1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -0.5, y: 0.5, z: 1.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: -4.5, y: 0.5, z: 2.5}
-      color: {r: 1, g: 0, b: 0, a: 1}
-    - position: {x: 0.5, y: 0.5, z: -1.5}
-      color: {r: 1, g: 0, b: 1, a: 1}
-  - id: 9
-    artName: newTest2
-    author: Hi
-    ownerID: 1
-    isMinted: 0
-    isShown: 0
-    blockDatas:
-    - position: {x: -0.5, y: 0.5, z: -2.5}
-      color: {r: 0, g: 1, b: 0, a: 1}
-    - position: {x: 1.5, y: 0.5, z: -1.5}
-      color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: -0.5, y: 0.5, z: 0.5}
-      color: {r: 0, g: 0, b: 0, a: 1}
-    - position: {x: -2.5, y: 0.5, z: 0.5}
-      color: {r: 1, g: 0, b: 1, a: 1}
-    - position: {x: -0.5, y: 1.5, z: 0.5}
-      color: {r: 1, g: 0, b: 1, a: 1}
-    - position: {x: 2.5, y: 0.5, z: -1.5}
-      color: {r: 0, g: 0, b: 1, a: 1}
-    - position: {x: 2.5, y: 0.5, z: 2.5}
-      color: {r: 1, g: 1, b: 1, a: 1}
+  NFTs: []
   friendIds: 
+  pendingIds: 
   bidAuctions: []
   achievements: []
   experience: 0
   currentPlanet:
-    NFTs: []
-    experience: 200
+    NFTs:
+    - id: 1
+      artName: 100Commits!
+      author: Hi
+      ownerID: 1
+      isMinted: 0
+      isShown: 0
+      isPending: 0
+      blockDatas:
+      - position: {x: -1.5, y: 0.5, z: -0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -1.5, y: 1.5, z: -0.5}
+        color: {r: 1, g: 0, b: 1, a: 1}
+      - position: {x: 2.5, y: 0.5, z: -2.5}
+        color: {r: 1, g: 0, b: 1, a: 1}
+      - position: {x: -1.5, y: 0.5, z: -3.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 2.5, y: 0.5, z: 1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 0.5, y: 0.5, z: -0.5}
+        color: {r: 0, g: 0, b: 1, a: 1}
+    - id: 2
+      artName: clipping
+      author: Hi
+      ownerID: 1
+      isMinted: 0
+      isShown: 0
+      isPending: 0
+      blockDatas: []
+    - id: 3
+      artName: clipping solved
+      author: Hi
+      ownerID: 1
+      isMinted: 0
+      isShown: 0
+      isPending: 0
+      blockDatas:
+      - position: {x: -3.5, y: 0.5, z: 1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -2.5, y: 0.5, z: 0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -1.5, y: 0.5, z: -0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -0.5, y: 0.5, z: 0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 0.5, y: 0.5, z: 1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -1.5, y: 0.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -1.5, y: 0.5, z: -2.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 1.5, y: 0.5, z: -2.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 1.5, y: 0.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 1.5, y: 0.5, z: -0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 2.5, y: 0.5, z: 0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 2.5, y: 0.5, z: 1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 3.5, y: 0.5, z: 1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 4.5, y: 0.5, z: 0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 4.5, y: 0.5, z: -0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 4.5, y: 0.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 4.5, y: 0.5, z: -2.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 2.5, y: 0.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 3.5, y: 0.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -3.5, y: 1.5, z: 1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: -2.5, y: 1.5, z: 0.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: -1.5, y: 1.5, z: -0.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: -1.5, y: 1.5, z: -1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: -1.5, y: 1.5, z: -2.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: -0.5, y: 1.5, z: 0.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 0.5, y: 1.5, z: 1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 2.5, y: 1.5, z: 1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 2.5, y: 1.5, z: 0.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 1.5, y: 1.5, z: -0.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 1.5, y: 1.5, z: -1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 1.5, y: 1.5, z: -2.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 2.5, y: 1.5, z: -1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 3.5, y: 1.5, z: -1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 3.5, y: 1.5, z: 1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 4.5, y: 1.5, z: 0.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 4.5, y: 1.5, z: -0.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 4.5, y: 1.5, z: -1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 4.5, y: 1.5, z: -2.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+    - id: 4
+      artName: need more!
+      author: Hi
+      ownerID: 1
+      isMinted: 0
+      isShown: 0
+      isPending: 0
+      blockDatas:
+      - position: {x: -3.5, y: 0.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -3.5, y: 1.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -3.5, y: 2.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -3.5, y: 3.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -1.5, y: 0.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -1.5, y: 1.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -1.5, y: 2.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -1.5, y: 3.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 1.5, y: 0.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 1.5, y: 1.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -2.5, y: 1.5, z: -1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: 1.5, y: 3.5, z: -1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+    - id: 5
+      artName: and more!
+      author: Hi
+      ownerID: 1
+      isMinted: 0
+      isShown: 0
+      isPending: 0
+      blockDatas:
+      - position: {x: -2.5, y: 0.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -0.5, y: 0.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -2.5, y: 1.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -0.5, y: 1.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -2.5, y: 2.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -1.5, y: 0.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -1.5, y: 0.5, z: 0.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 2.5, y: 0.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 2.5, y: 1.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 2.5, y: 2.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 1.5, y: 0.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 1.5, y: 0.5, z: -2.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 2.5, y: 0.5, z: -2.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 1.5, y: 1.5, z: -2.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 0.5, y: 0.5, z: -2.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 1.5, y: 0.5, z: -3.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 3.5, y: 0.5, z: -2.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 3.5, y: 0.5, z: -3.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+    - id: 6
+      artName: more!
+      author: Hi
+      ownerID: 1
+      isMinted: 0
+      isShown: 0
+      isPending: 0
+      blockDatas:
+      - position: {x: -1.5, y: 0.5, z: -2.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -1.5, y: 1.5, z: -2.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -0.5, y: 0.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 0.5, y: 0.5, z: 0.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 2.5, y: 0.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 2.5, y: 0.5, z: -3.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 0.5, y: 0.5, z: -2.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 0.5, y: 0.5, z: -3.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -1.5, y: 0.5, z: 2.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 1.5, y: 0.5, z: 1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 2.5, y: 0.5, z: 1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 1.5, y: 0.5, z: -0.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 1.5, y: 1.5, z: -0.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 1.5, y: 0.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: 1.5, y: 0.5, z: -2.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -0.5, y: 0.5, z: -3.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -3.5, y: 0.5, z: 0.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -2.5, y: 0.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -3.5, y: 0.5, z: -1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -2.5, y: 0.5, z: -2.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -2.5, y: 0.5, z: 0.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -1.5, y: 0.5, z: 1.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+      - position: {x: -2.5, y: 1.5, z: 0.5}
+        color: {r: 0, g: 1, b: 0, a: 1}
+    - id: 7
+      artName: nextPage!
+      author: Hi
+      ownerID: 1
+      isMinted: 0
+      isShown: 0
+      isPending: 0
+      blockDatas:
+      - position: {x: -3.5, y: 0.5, z: -1.5}
+        color: {r: 0, g: 0, b: 1, a: 1}
+      - position: {x: -3.5, y: 1.5, z: -1.5}
+        color: {r: 0, g: 0, b: 1, a: 1}
+      - position: {x: -3.5, y: 2.5, z: -1.5}
+        color: {r: 0, g: 0, b: 1, a: 1}
+      - position: {x: -3.5, y: 3.5, z: -1.5}
+        color: {r: 0, g: 0, b: 1, a: 1}
+      - position: {x: -3.5, y: 4.5, z: -1.5}
+        color: {r: 0, g: 0, b: 1, a: 1}
+      - position: {x: -3.5, y: 5.5, z: -1.5}
+        color: {r: 0, g: 0, b: 1, a: 1}
+      - position: {x: -3.5, y: 6.5, z: -1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: -3.5, y: 7.5, z: -1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+      - position: {x: -3.5, y: 8.5, z: -1.5}
+        color: {r: 1, g: 0, b: 0, a: 1}
+    experience: 0

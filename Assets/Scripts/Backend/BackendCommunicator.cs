@@ -13,7 +13,7 @@ public class BackendCommunicator : MonoBehaviour
     private Realm _realm;
     private App _realmApp;
     private User _realmUser;
-    private string _realmAppID = "weareontheplanet-ouawh";
+    private string _realmAppID = "weareontheplanet-wkrim";
 
     private void Awake()
     {
