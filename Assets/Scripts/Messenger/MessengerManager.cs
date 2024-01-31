@@ -335,18 +335,17 @@ public class MessengerManager : MonoBehaviour
 
     public async void ChannelSwitch(int from, int to)
     {
-        await VivoxService.Instance.LeaveAllChannelsAsync();
-        
-        _message = new List<MessageObject>();
-        foreach (Transform child in chatRoomObj.transform)
-        {
-            Destroy(child.gameObject);
-        }
-
         string channelToJoin = (from < to) ? (from.ToString() + "_" + to.ToString()) : (to.ToString() + "_" + from.ToString());
-
         if (channelToJoin != _currentChannel)
         {
+            await VivoxService.Instance.LeaveAllChannelsAsync();
+
+            _message = new List<MessageObject>();
+            foreach (Transform child in chatRoomObj.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
             JoinChannelAsync(channelToJoin);
             _currentChannel = channelToJoin;
         }
