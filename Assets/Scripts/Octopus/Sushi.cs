@@ -8,7 +8,7 @@ using TMPro;
 public class Sushi : MonoBehaviour
 {
     public string Author;
-    public DateTimeOffset CreateTime;
+    public string CreateTime;
     public bool IsMinted;
     public int Id;
     public string Name;
@@ -22,13 +22,14 @@ public class Sushi : MonoBehaviour
         UIManager.Instance.DeleteAllInputFields();
         say("Sushi clicked!");
         say(Id.ToString());
+        SushiManager.selected = Id;
         if(viewMode == "mint"){
             UIManager.Instance.UpdateDialog("mint1", "Would you like to mint this NFT?\n" +
                 "Name: " + Name + "\n" +
                 "ID: " + Id + "\n" +
                 "Author: " + Author + "\n" +
-                "Time of creation: " + CreateTime + "\n" +
-                "This will cost 5 dollars."
+                "Time of creation: " + CreateTime + " (UTF+0)\n" +
+                "This will cost 100 WATP-Ts."
             );
         }
         else if(viewMode == "transfer"){
@@ -36,8 +37,8 @@ public class Sushi : MonoBehaviour
                 "Name: " + Name + "\n" +
                 "ID: " + Id + "\n" +
                 "Author: " + Author + "\n" +
-                "Time of creation: " + CreateTime + "\n" +
-                "This will cost 5 dollars."
+                "Time of creation: " + CreateTime + " (UTF+0)\n" +
+                "This will cost 5 WATP-Ts."
             );
         }
         else if(viewMode == "launch"){
@@ -45,8 +46,8 @@ public class Sushi : MonoBehaviour
                 "Name: " + Name + "\n" +
                 "ID: " + Id + "\n" +
                 "Author: " + Author + "\n" +
-                "Time of creation: " + CreateTime + "\n" +
-                "This will cost 5 dollars."
+                "Time of creation: " + CreateTime + " (UTF+0)\n" +
+                "This will cost 5 WATP-Ts."
             );
         }
         else if(viewMode == "attend"){
@@ -54,7 +55,7 @@ public class Sushi : MonoBehaviour
                 "Name: " + Name + "\n" +
                 "ID: " + Id + "\n" +
                 "Author: " + Author + "\n" +
-                "Time of creation: " + CreateTime + "\n" +
+                "Time of creation: " + CreateTime + " (UTF+0)\n" +
                 "This will cost 5 dollars."
             );
         }

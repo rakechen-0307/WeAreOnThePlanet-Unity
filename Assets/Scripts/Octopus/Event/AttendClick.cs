@@ -14,27 +14,13 @@ using System.Text;
 using Realms;
 using Realms.Sync;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class AttendClick : MonoBehaviour
 {
 
-    List<NFTInfo> Test = new List<NFTInfo>
+    List<NFTInfo> Empty = new List<NFTInfo>
     {
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 1, Name="NFT1", Owner = null,
-        },
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 2, Name="NFT2", Owner = null,
-        },
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 3, Name="NFT3", Owner = null,
-        },
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 4, Name="NFT4", Owner = null,
-        },
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 5, Name="NFT5", Owner = null,
-        },
     };
 
     public SushiManager sushiManager;
@@ -45,9 +31,15 @@ public class AttendClick : MonoBehaviour
         UIManager.Instance.DeleteAllInputFields();
 
         // Load NFTs the player have
-        sushiManager.SetAttend(Test); // set to the result of DB
+        bool success = sushiManager.PreviewActiveAuctions(); // set to the result of DB
 
         // Show unminted NFTs
+        if (!success)
+        {
+            sushiManager.SetAttend(Empty);
+            UIManager.Instance.UpdateDialog("none", "There isn't any active auctions!");
+
+        }
         sushiManager.SetDisplayed(0, "attend");
 
     }

@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CreateNFT.unity
     guid: 6fe1b236bc2120c408b10d034a826ea9
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Octopus.unity
     guid: adda056341eaf9643b89869633a7f29a
   m_configObjects: {}

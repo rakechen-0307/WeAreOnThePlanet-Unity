@@ -14,6 +14,7 @@ using SysRandom = System.Random;
 using Nethereum.Util;
 using System.Text;
 using Unity.Collections;
+using Web3Unity.Scripts.Library.ETHEREUEM.EIP;
 //using UnityEditor.VersionControl;
 //using ERC865.ContractDefinition;
 //using ERC721.ContractDefinition;
@@ -43,6 +44,7 @@ public class ERC865_chainsafe : MonoBehaviour
     private string _currentHash;
     SysRandom rnd = new SysRandom(Guid.NewGuid().GetHashCode());
     private BigInteger _nonce = 1;
+    private BigInteger _currentNonce;
     //private string _NFTContractAddress;
     private string _NFTContractSignature;
     private string _NFTContractHash;
@@ -106,7 +108,7 @@ public class ERC865_chainsafe : MonoBehaviour
         // NFT Transfer Signature
         _NFTSign.onClick.AddListener(() =>
         {
-            NFTSign();
+            CheckBalanceAndSign();
         });
 
         _NFTTransfer.onClick.AddListener(() =>
@@ -201,7 +203,7 @@ public class ERC865_chainsafe : MonoBehaviour
 
 
         var result_hash = BitConverter.ToString((byte[])data[0]).Replace("-", string.Empty).ToLower();
-
+        Debug.Log(result_hash);
         var signer = new EthereumMessageSigner();
         var signature1 = signer.EncodeUTF8AndSign(result_hash, new EthECKey(_PrivateKey.text));
 
@@ -210,28 +212,46 @@ public class ERC865_chainsafe : MonoBehaviour
         
         Debug.Log(_currentSignature);
         Debug.Log(_currentHash);
+
+        _currentNonce = _nonce;
         _nonce = rnd.Next();
-
     }
-
+    
     private async void Transfer()
     {
+        // Send { from, to, value, fee, nonce, hash, signature } to host 
         var method = "transferPreSigned";
+        var checkMethod = "getTransferFromPreSignedHash";
 
         string receiver = "0xaE3CdFe3C638288E4CA5Db25A08133C36229ddB3";
         BigInteger value = 10000;
         BigInteger fee = 500;
 
+        //Check if the signer is same as the account
         var signer = new EthereumMessageSigner();
         var from = signer.EncodeUTF8AndEcRecover(_currentHash, _currentSignature);
         Debug.Log(_accountAddress);
         Debug.Log(from);
-
+        
         var provider = new JsonRpcProvider(ContractManager.RPC);
 
         try
         {
             Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
+            //Check hash (information is correct)
+            var checkData = await contract.Call(checkMethod, new object[]
+            {
+                from,
+                from,
+                receiver,
+                value.ToString(),
+                fee.ToString(),
+                _currentNonce.ToString()
+            });
+            var result_hash = BitConverter.ToString((byte[])checkData[0]).Replace("-", string.Empty).ToLower();
+            Debug.Log(result_hash);
+            Debug.Log(_currentHash);
+
             var data = contract.Calldata(method, new object[]
             {
                 from,
@@ -250,7 +270,6 @@ public class ERC865_chainsafe : MonoBehaviour
         {
             print("Error with the transaction");
         }
-
         _nonce = rnd.Next();
 
     }
@@ -283,12 +302,46 @@ public class ERC865_chainsafe : MonoBehaviour
             print("Error with the transaction");
         }
     }
-   
+
+    private async void CheckBalanceAndSign()
+    {
+        string method = "balanceOf";
+
+        var provider = new JsonRpcProvider(ContractManager.RPC);
+
+        Debug.Log(_accountAddress);
+        Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
+        var data = await contract.Call(method, new object[]
+        {
+            _accountAddress,
+        });
+
+
+        BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
+        BigInteger price = 100 * (BigInteger)1000000000000000000;
+        Debug.Log("Balance Of: " + balanceOf);
+        Debug.Log("Price:" + price);
+        if (balanceOf < 100)
+        {
+            Debug.Log("Your balance is NOT enough!");
+        }
+        else
+        {
+            string uri = "0"; // To be determined later
+            string[] preJsonData = { "safeMint", PlayerPrefs.GetString("Account"), uri };
+            string jsonData = JsonConvert.SerializeObject(preJsonData);
+            string signature = await Web3Wallet.Sign(jsonData);
+            string[] messageObj = { jsonData, signature };
+            string message = JsonConvert.SerializeObject(messageObj);
+            Debug.Log(message);
+            // SendMessageRequest(message);
+        }
+    }
     private async void NFTSign()
     {
         string method = "getTransferPreSignedHash";
 
-        string receiver = "0xaE3CdFe3C638288E4CA5Db25A08133C36229ddB3";
+        string receiver = "0xF6Ba2c6Ae09690187ee515332253fd9BeFAe83db";
         BigInteger tokenId = 8;
         Debug.Log(_accountAddress);
 
@@ -322,14 +375,17 @@ public class ERC865_chainsafe : MonoBehaviour
             Debug.Log("Fail to fetch hash.");
         }
 
+        _currentNonce = _nonce;
         _nonce = rnd.Next();
     }
 
     private async void NFTTransfer()
     {
+        // Send { from, to, tokenId, nonce, hash, signature } to host 
         var method = "transferPreSigned";
+        string checkMethod = "getTransferPreSignedHash";
 
-        var receiver = "0xaE3CdFe3C638288E4CA5Db25A08133C36229ddB3";
+        var receiver = "0xF6Ba2c6Ae09690187ee515332253fd9BeFAe83db";
         BigInteger tokenId = 8;
 
         var signer = new EthereumMessageSigner();
@@ -342,6 +398,19 @@ public class ERC865_chainsafe : MonoBehaviour
         try
         {
             Contract contract = new Contract(ContractManager.NFTABI, ContractManager.NFTContract, provider);
+
+            //Check hash (information is correct)
+            var checkData = await contract.Call(checkMethod, new object[]
+            {
+                from,
+                receiver,
+                tokenId.ToString(),
+                _currentNonce.ToString()
+            });
+            var result_hash = BitConverter.ToString((byte[])checkData[0]).Replace("-", string.Empty).ToLower();
+            Debug.Log("Calculated hash: " + result_hash);
+            Debug.Log("Correct hash: " + _NFTContractHash);
+         
             var data = contract.Calldata(method, new object[]
             {
                 from,

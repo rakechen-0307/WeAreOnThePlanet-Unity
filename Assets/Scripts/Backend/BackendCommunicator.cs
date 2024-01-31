@@ -27,15 +27,9 @@ public class BackendCommunicator : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        }        
-    }
-
-    private void OnDisable()
-    {
-        if (_realm != null)
-        {
-            _realm.Dispose();
         }
+        Debug.Log(_realm);
+        //SceneManager.LoadScene("octopus");// Delete this
     }
 
     public IList<PlayerData> FindAllPlayers()
@@ -53,6 +47,12 @@ public class BackendCommunicator : MonoBehaviour
     public PlayerData FindOnePlayerById(int playerId)
     {
         PlayerData playerData = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault();
+        return playerData;
+    }
+
+    public PlayerData FindOnePlayerByAccount(string account)
+    {
+        PlayerData playerData = _realm.All<PlayerData>().Where(user => user.Account == account).FirstOrDefault();
         return playerData;
     }
 
@@ -128,7 +128,11 @@ public class BackendCommunicator : MonoBehaviour
             throw;
         }
     }
-
+    public NFTInfo FindOneNFTById(int NFTId)
+    {
+        NFTInfo nftData = _realm.All<NFTInfo>().Where(nft => nft.Id == NFTId).FirstOrDefault();
+        return nftData;
+    }
     public async Task<bool> UpdateOneNFT(int nftId, string name, bool isShown, bool isPending, List<BlockData> blockData)
     {
         NFTInfo updateNFT = _realm.All<NFTInfo>().Where(nft => nft.Id == nftId).FirstOrDefault();
@@ -168,12 +172,73 @@ public class BackendCommunicator : MonoBehaviour
         return true;
     }
 
+    public async void UpdateNFTStatus(int nftId, bool status)
+    {
+        NFTInfo updateNFT = _realm.All<NFTInfo>().Where(nft => nft.Id == nftId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            updateNFT.IsPending = status;
+        });
+    }
+
     public IList<PlayerData> FindAllFriends(int playerId)
     {
         IList<PlayerData> friends = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault().Friends;
         return friends;
     }
 
+
+    public IList<Auction> FindEndedAuctionsByEmail(string email)
+    {
+        IList<Auction> auctions = _realm.All<Auction>().Where(auction => auction.Owner.Email == email && auction.EndTime < DateTimeOffset.UtcNow && auction.NFT.Owner.Email == email).ToList();
+        return auctions;
+    }
+    public List<Auction> FindActiveAuctions()
+    {
+        DateTimeOffset now = System.DateTime.UtcNow;
+        List<Auction> activeAuctions = _realm.All<Auction>().Where(auction => (
+            auction.EndTime >= now && auction.StartTime < now
+        )).ToList();
+        return activeAuctions;
+    }
+    public async Task<int> CreateAuction(NFTInfo nft, int startPrice, DateTimeOffset startTime, DateTimeOffset endTime)
+    {
+        try
+        {
+            PlayerData findPlayer = _realm.All<PlayerData>().Where(user => user.Email == PlayerPrefs.GetString("Email")).FirstOrDefault();
+            var auctionsCount = _realm.All<Auction>().ToArray().Length;
+            await _realm.WriteAsync(() =>
+            {
+                var auction = _realm.Add(new Auction()
+                {
+                    Id = auctionsCount + 1,
+                    Owner = findPlayer,
+                    NFT = nft,
+                    StartTime = startTime,
+                    EndTime = endTime,
+                    StartPrice = startPrice,
+                    BidPrice = startPrice
+                });
+            });
+            return auctionsCount + 1;
+        }
+        catch(Exception ex)
+        {
+            Debug.Log(ex);
+            return -1;
+        }
+    }
+    public async void Bid(int id, int bidPrice)
+    {
+        Auction auction = _realm.All<Auction>().Where(auction => auction.Id == id).FirstOrDefault();
+        PlayerData player = _realm.All<PlayerData>().Where(user => user.Email == PlayerPrefs.GetString("Email")).FirstOrDefault();
+        await _realm.WriteAsync(() =>
+        {
+            auction.BidPlayer = player;
+            auction.BidPrice = bidPrice;
+        });
+    }
     public IList<PendingFreiendInfo> FindAllPendingFriends(int playerId)
     {
         IList<PendingFreiendInfo> pendings = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault().PendingFriends;
