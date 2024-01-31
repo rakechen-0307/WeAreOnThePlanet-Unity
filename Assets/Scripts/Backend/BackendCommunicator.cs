@@ -30,14 +30,6 @@ public class BackendCommunicator : MonoBehaviour
         }        
     }
 
-    private void OnDisable()
-    {
-        if (_realm != null)
-        {
-            _realm.Dispose();
-        }
-    }
-
     public IList<PlayerData> FindAllPlayers()
     {
         IList<PlayerData> players = _realm.All<PlayerData>().ToList();
