@@ -34,13 +34,7 @@ public class HostTransactionTest : MonoBehaviour
     {
         await VivoxService.Instance.JoinEchoChannelAsync(channelName, ChatCapability.TextOnly);
     }
-    void Start()
-    {
-        VivoxService.Instance.ChannelMessageReceived += OnChannelMessageReceived;
-        ChannelSwitch();
-        mint.onClick.AddListener(() => { TokenMint(); });
 
-    }
 
     void OnChannelMessageReceived(VivoxMessage message) //接收到訊息之後解碼 Debug.Log出來
     {
@@ -78,6 +72,42 @@ public class HostTransactionTest : MonoBehaviour
         }
     }
 
+    private async void NFTMint()
+    {
+        var method = "safeMint";
+
+        var to = "0xC79dbE9296E54e5C503Bd1820eE5dAC6376c98C5";
+        var uri = "ipfs://QmTQqtfx15vKbs5dKdhxgiTuY7eBATcJpFy9XQEhKTpxTU/0";
+
+        var provider = new JsonRpcProvider(ContractManager.RPC);
+
+        try
+        {
+            Contract contract = new Contract(ContractManager.NFTABI, ContractManager.NFTContract, provider);
+            var data = contract.Calldata(method, new object[]
+            {
+                to,
+                uri
+            });
+            // send transaction
+            string response = await Web3Wallet.SendTransaction(PlayerPrefs.GetString("ChainID"), ContractManager.NFTContract, "0", data, "", "");
+            // display response in game
+            print(response);
+            print("Transaction successful!");
+        }
+        catch
+        {
+            print("Error with the transaction");
+        }
+    }
+
+    void Start()
+    {
+        VivoxService.Instance.ChannelMessageReceived += OnChannelMessageReceived;
+        ChannelSwitch();
+        mint.onClick.AddListener(() => { NFTMint(); });
+
+    }
 
     // Update is called once per frame
     void Update()
