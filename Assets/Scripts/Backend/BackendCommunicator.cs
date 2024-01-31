@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
+using MongoDB.Bson.Serialization.Serializers;
 
 public class BackendCommunicator : MonoBehaviour
 {
@@ -27,6 +28,14 @@ public class BackendCommunicator : MonoBehaviour
         {
             Destroy(gameObject);
         }        
+    }
+
+    private void OnDisable()
+    {
+        if (_realm != null)
+        {
+            _realm.Dispose();
+        }
     }
 
     public IList<PlayerData> FindAllPlayers()
@@ -193,6 +202,92 @@ public class BackendCommunicator : MonoBehaviour
 
         return true;
     }
+
+    public async Task<bool> AcceptFriend(int from, int to)
+    {
+        PlayerData sender = _realm.All<PlayerData>().Where(user => user.Id == from).FirstOrDefault();
+        PlayerData receiver = _realm.All<PlayerData>().Where(user => user.Id == to).FirstOrDefault();
+
+        IList<PendingFreiendInfo> senderPendings = sender.PendingFriends;
+        IList<PendingFreiendInfo> receiverPendings = receiver.PendingFriends;
+
+        PendingFreiendInfo senderPending = null;
+        PendingFreiendInfo receiverPending = null;
+
+        for (int i = 0; i < senderPendings.Count; i++)
+        {
+            if (senderPendings[i].Player.Id == receiver.Id)
+            {
+                senderPending = senderPendings[i];
+            }
+        }
+        
+        for (int i = 0; i < receiverPendings.Count; i++)
+        {
+            if (receiverPendings[i].Player.Id == sender.Id)
+            {
+                receiverPending = receiverPendings[i];
+            }
+        }
+
+        if (senderPending == null || receiverPending == null)
+        {
+            Debug.Log("pending not found");
+            return false;
+        }
+
+        await _realm.WriteAsync(() =>
+        {
+            sender.PendingFriends.Remove(senderPending);
+            receiver.PendingFriends.Remove(receiverPending);
+            sender.Friends.Add(receiver);
+            receiver.Friends.Add(sender);
+        });
+
+        return true;
+    }
+
+    public async Task<bool> DenyFriend(int from, int to)
+    {
+        PlayerData sender = _realm.All<PlayerData>().Where(user => user.Id == from).FirstOrDefault();
+        PlayerData receiver = _realm.All<PlayerData>().Where(user => user.Id == to).FirstOrDefault();
+
+        IList<PendingFreiendInfo> senderPendings = sender.PendingFriends;
+        IList<PendingFreiendInfo> receiverPendings = receiver.PendingFriends;
+
+        PendingFreiendInfo senderPending = null;
+        PendingFreiendInfo receiverPending = null;
+
+        for (int i = 0; i < senderPendings.Count; i++)
+        {
+            if (senderPendings[i].Player.Id == receiver.Id)
+            {
+                senderPending = senderPendings[i];
+            }
+        }
+
+        for (int i = 0; i < receiverPendings.Count; i++)
+        {
+            if (receiverPendings[i].Player.Id == sender.Id)
+            {
+                receiverPending = receiverPendings[i];
+            }
+        }
+
+        if (senderPending == null || receiverPending == null)
+        {
+            Debug.Log("pending not found");
+            return false;
+        }
+
+        await _realm.WriteAsync(() =>
+        {
+            sender.PendingFriends.Remove(senderPending);
+            receiver.PendingFriends.Remove(receiverPending);
+        });
+
+        return true;
+    } 
 
     public async Task<int> CreateOneNFT(string name, int ownerId, string author, DateTimeOffset createTime, bool isMinted, bool isShown, bool isPending)
     {
