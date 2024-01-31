@@ -85,7 +85,6 @@ public class BackendManager : MonoBehaviour
 
     public void loadPlanetData(int playerId, LoadedData loadedData)
     {
-        Debug.Log(playerId);
         PlayerData playerData = BackendCommunicator.instance.FindOnePlayerById(playerId);
         if (playerData == null)
         {
