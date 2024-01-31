@@ -63,6 +63,40 @@ public class NFTMenu : MonoBehaviour
 
     [SerializeField]
     private GameObject NFTDataModal;
+
+    // NFTModal
+    [SerializeField]
+    private List<RenderTexture> NFTTextures;
+
+    [SerializeField]
+    private RawImage displayImage;
+
+    [SerializeField]
+    private TMP_InputField changeNameInput;
+
+    [SerializeField]
+    private Toggle isShownToggle;
+
+    [SerializeField]
+    private Toggle isMintedToggle;
+
+    [SerializeField]
+    private TMP_Text authorName;
+
+    [SerializeField]
+    private TMP_Text ownerId;
+
+    [SerializeField]
+    private Button saveNFTInfo;
+
+    [SerializeField]
+    private Button leaveNFTInfo;
+
+    [SerializeField]
+    private Button editNFTButton;
+
+    private ArtWork currentViewingNFT;
+
     // Other
     [SerializeField]
     private SaveManager saveManager;
@@ -79,6 +113,15 @@ public class NFTMenu : MonoBehaviour
         viewBackButton.onClick.AddListener(viewBackButtonOnClick);
         nextPage.onClick.AddListener(nextPageOnClick);
         previousPage.onClick.AddListener(previousPageOnClick);
+        for (int i = 0; i < NFTDisplay.childCount; i++)
+        {
+            Button nftSlotButton = NFTDisplay.GetChild(i).GetComponent<Button>();
+            int offset = i;
+            nftSlotButton.onClick.AddListener(() => NFTSlotOnClick(offset));
+        }
+        saveNFTInfo.onClick.AddListener(saveNFTInfoOnClick);
+        leaveNFTInfo.onClick.AddListener(leaveNFTInfoOnClick);
+        editNFTButton.onClick.AddListener(editNFTButtonOnClick);
     }
 
     private void buildButtonOnClick()
@@ -101,6 +144,7 @@ public class NFTMenu : MonoBehaviour
     private void viewButtonOnClick()
     {
         viewMenu.SetActive(true);
+        NFTDataModal.SetActive(false);
         displayNFT(displayIndex);
     }
 
@@ -126,7 +170,7 @@ public class NFTMenu : MonoBehaviour
             displayNFT(displayIndex);
         }
     }
-
+    // NFT Modal
     private void NFTSlotOnClick(int offset)
     {
         int index = displayIndex + offset;
@@ -138,7 +182,30 @@ public class NFTMenu : MonoBehaviour
         ArtWork NFT = loadedData.NFTs[index];
 
         NFTDataModal.SetActive(true);
-        displayNFTModal(NFT);
+        displayNFTModal(NFT, offset);
+    }
+
+    private void saveNFTInfoOnClick()
+    {
+        bool NFTNameChanged = changeNameInput.text != currentViewingNFT.artName;
+        bool NFTShowChanged = isShownToggle.isOn != currentViewingNFT.isShown;
+        if (NFTNameChanged || NFTShowChanged)
+        {
+            currentViewingNFT.artName = changeNameInput.text;
+            currentViewingNFT.isShown = isShownToggle.isOn;
+            createNFTSave.SaveNFTData(currentViewingNFT);
+        }
+    }
+
+    private void leaveNFTInfoOnClick()
+    {
+        NFTDataModal.SetActive(false);
+        displayNFT(displayIndex);
+    }
+
+    private void editNFTButtonOnClick()
+    {
+
     }
     // Menus
     private void showBuildMenu()
@@ -156,13 +223,19 @@ public class NFTMenu : MonoBehaviour
         buildModal.SetActive(false);
         viewMenu.SetActive(false);
         buildPannel.SetActive(false);
-        NFTDataModal.SetActive(false);
         displayIndex = 0;
     }
     // Utility
-    private void displayNFTModal(ArtWork NFT)
+    private void displayNFTModal(ArtWork NFT, int offset)
     {
-        
+        displayImage.texture = NFTTextures[offset];
+        changeNameInput.text = NFT.artName;
+        isShownToggle.isOn = NFT.isShown;
+        isMintedToggle.isOn = NFT.isMinted;
+        authorName.text = NFT.author;
+        ownerId.text = NFT.ownerID.ToString();
+
+        currentViewingNFT = NFT;
     }
     private void displayNFT(int displayIdx)
     {
