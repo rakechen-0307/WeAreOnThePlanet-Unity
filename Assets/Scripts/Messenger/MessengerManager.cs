@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 public class MessengerManager : MonoBehaviour
 {
@@ -16,9 +17,12 @@ public class MessengerManager : MonoBehaviour
     public Button ChatButton;
     public Button AddFriendButton;
     public Button PendingButton;
+    public Button TravelButton;
+
     public GameObject ChatPage;
     public Button SendButton;
     public TMP_InputField TextInput;
+
     public GameObject AddFriendPage;
     public GameObject PlayerView;
     public TMP_Text AddFriendUsername;
@@ -27,6 +31,7 @@ public class MessengerManager : MonoBehaviour
     public TMP_Text AddFriendFriends;
     public TMP_Text AddFriendAuction;
     public Button SendRequestButton;
+
     public GameObject PendingPage;
     public GameObject PendingView;
     public TMP_Text PendingUsername;
@@ -37,9 +42,20 @@ public class MessengerManager : MonoBehaviour
     public Button AcceptButton;
     public Button DenyButton;
 
-    public GameObject playerListObj, chatChannelObj, addFriendChannelObj, pendingChannelObj;
+    public GameObject TravelPage;
+    public GameObject TravelView;
+    public TMP_Text TravelUsername;
+    public TMP_Text TravelLevel;
+    public TMP_Text TravelNFT;
+    public TMP_Text TravelFriends;
+    public TMP_Text TravelAuction;
+    public Button GoButton;
+
+
+    public GameObject playerListObj, chatChannelObj, addFriendChannelObj, pendingChannelObj, travelChannelObj;
     public GameObject myTextObj, comingTextObj, chatRoomObj;
     public LoadedData _loadedData;
+    public MainPlanetTravel mainPlanetTravel;
 
     private bool _messengerIsOpened;
     private string _currentChannel;
@@ -65,6 +81,7 @@ public class MessengerManager : MonoBehaviour
             ChatPage.SetActive(true);
             AddFriendPage.SetActive(false);
             PendingPage.SetActive(false);
+            TravelPage.SetActive(false);
             ShowFriendList(_loadedData.playerId);
         });
 
@@ -74,6 +91,7 @@ public class MessengerManager : MonoBehaviour
             ChatPage.SetActive(false);
             PendingPage.SetActive(false);
             PlayerView.SetActive(false);
+            TravelPage.SetActive(false);
             ShowNotFriendList(_loadedData.playerId);
         });
 
@@ -83,7 +101,18 @@ public class MessengerManager : MonoBehaviour
             ChatPage.SetActive(false);
             AddFriendPage.SetActive(false);
             PendingView.SetActive(false);
+            TravelPage.SetActive(false);
             ShowPendingList(_loadedData.playerId);
+        });
+
+        TravelButton.onClick.AddListener(() =>
+        {
+            PendingPage.SetActive(false);
+            ChatPage.SetActive(false);
+            AddFriendPage.SetActive(false);
+            TravelView.SetActive(false);
+            TravelPage.SetActive(true);
+            ShowTravelList(_loadedData.playerId, _loadedData.mainPlayer.lastPlanetId);
         });
 
         SendButton.onClick.AddListener(() =>
@@ -116,7 +145,7 @@ public class MessengerManager : MonoBehaviour
                 ChatPage.SetActive(true);
                 AddFriendPage.SetActive(false);
                 PendingPage.SetActive(false);
-                Debug.Log(ChatButton.colors);
+                TravelPage.SetActive(false);
                 _messengerIsOpened = true;
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
@@ -138,7 +167,6 @@ public class MessengerManager : MonoBehaviour
         for (int i = 0; i < friends.Count; i++)
         {
             AddFriendToList(friends[i].Username, playerId, friends[i].Id);
-            Debug.Log("add friends");
         }
     }
 
@@ -166,7 +194,6 @@ public class MessengerManager : MonoBehaviour
         for (int i = 0; i < notFriends.Count; i++)
         {
             AddNotFriendToList(notFriends[i].Username, playerId, notFriends[i].Id);
-            Debug.Log("show player");
         }
     }
 
@@ -183,7 +210,30 @@ public class MessengerManager : MonoBehaviour
         for (int i = 0; i < pendings.Count; i++)
         {
             AddPendingToList(pendings[i].Player.Username, playerId, pendings[i].Player.Id, pendings[i].IsSender);
-            Debug.Log("add friends");
+        }
+    }
+
+    private void ShowTravelList(int playerId, int planetId)
+    {
+        _player = new List<PlayerListObject>();
+        foreach (Transform child in travelChannelObj.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        IList<PlayerData> friends = BackendCommunicator.instance.FindAllFriends(playerId);
+
+        if (playerId != planetId)
+        {
+            AddTravelToList("Your Planet", playerId);
+        }
+
+        for (int i = 0; i < friends.Count; i++)
+        {
+            if (friends[i].Id != planetId)
+            {
+                AddTravelToList(friends[i].Username, friends[i].Id);
+            }
         }
     }
 
@@ -226,6 +276,20 @@ public class MessengerManager : MonoBehaviour
         });
 
         newMessagePlayerObj.Username.text = pendingName;
+        _player.Add(newMessagePlayerObj);
+    }
+
+    private void AddTravelToList(string friendName, int friendID)
+    {
+        var newPlayer = Instantiate(playerListObj, travelChannelObj.transform);
+        var newMessagePlayerObj = newPlayer.GetComponent<PlayerListObject>();
+
+        newMessagePlayerObj.SelectButton.onClick.AddListener(() =>
+        {
+            ShowTravelInfo(friendID);
+        });
+
+        newMessagePlayerObj.Username.text = friendName;
         _player.Add(newMessagePlayerObj);
     }
 
@@ -276,6 +340,24 @@ public class MessengerManager : MonoBehaviour
         });
     }
 
+    private void ShowTravelInfo(int friendID)
+    {
+        PlayerData playerData = BackendCommunicator.instance.FindOnePlayerById(friendID);
+        int auctionCount = BackendCommunicator.instance.FindHeldAuctionByPlayerID(friendID).Count;
+
+        TravelUsername.text = playerData.Username;
+        TravelLevel.text = "Planet Level : " + playerData.Exp.ToString();
+        TravelNFT.text = "Owned NFT : " + playerData.NFTs.Count.ToString();
+        TravelFriends.text = "Total Friends : " + playerData.Friends.Count.ToString();
+        TravelAuction.text = "Auctions Hold : " + auctionCount.ToString();
+        TravelView.SetActive(true);
+
+        GoButton.onClick.AddListener(() =>
+        {
+            mainPlanetTravel.TravelPlanet(friendID);
+        });
+    }
+
     public async void SendRequestToPlayer(int from, int to, Button button)
     {
         await BackendCommunicator.instance.AddPendingFriend(from, to);
@@ -299,9 +381,6 @@ public class MessengerManager : MonoBehaviour
 
     public void ChannelMessageReceived(VivoxMessage message)
     {
-        var channelName = message.ChannelName;
-        var senderName = message.SenderDisplayName;
-        var senderId = message.SenderPlayerId;
         var messageText = message.MessageText;
         var fromSelf = message.FromSelf;
 
