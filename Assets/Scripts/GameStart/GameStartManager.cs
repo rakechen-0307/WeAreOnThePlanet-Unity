@@ -12,6 +12,7 @@ using Web3Unity.Scripts.Library.Web3Wallet;
 using System.Text;
 using System;
 using UnityEditor;
+using Unity.Services.Relay;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Vivox;
@@ -271,6 +272,7 @@ public class GameStartManager : Singleton<GameStartManager>
         // validate
         if (account.Length == 42 && expirationTime >= now)
         {
+            PlayerPrefs.SetString("Account", account);
             print("Account: " + account);
             await VivoxSignIn("host");
             StartPage.SetActive(false);
@@ -294,11 +296,30 @@ public class GameStartManager : Singleton<GameStartManager>
         // validate
         if (account.Length == 42 && expirationTime >= now)
         {
+            PlayerPrefs.SetString("Account", account);
+            PlayerPrefs.SetString("Email", email);
             print("Account: " + account);
             
             if (isNew)
             {
+                PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByAccount(account);
+                if (findPlayer != null)
+                {
+                    SignInErrorText.enabled = true;
+                    SignInErrorText.text = "Account has been used";
+                    return;
+                }
                 _playerId = await BackendCommunicator.instance.CreateOnePlayer(email, username, password, account);
+            }
+            else
+            {
+                PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByEmail(email);
+                if(findPlayer.Account != account)
+                {
+                    SignInErrorText.enabled = true;
+                    SignInErrorText.text = "Wrong account";
+                    return;
+                }
             }
             await VivoxSignIn(_playerId.ToString());
             int planetId = BackendManager.instance.loadMainPlayerData(_playerId, _loadedData);

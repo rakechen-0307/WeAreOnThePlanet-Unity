@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class DialogButton : MonoBehaviour
 {
@@ -25,17 +26,28 @@ public class DialogButton : MonoBehaviour
         inputAuctionEndingTime.gameObject.SetActive(false);
     }
 
-    void OnMouseDown()
+    async void OnMouseDown()
     {
         if (UIManager.Instance.State == "mint1")
         {
             // try minting NFT
-            Debug.Log(sushiManager.Mint[sushiManager.viewNumber].Id); // other properties can be found likewise
+            Debug.Log(SushiManager.selected); // other properties can be found likewise
+            NFTStatus result = await sushiManager.CheckBalanceAndMint(SushiManager.selected);
             // Handle errors
-
-
-            // If succeeded
-            UIManager.Instance.UpdateDialog("mint2", "\n\nYour NFT has been successfully minted!");
+            if (result == NFTStatus.Success)
+            {
+                // If succeeded
+                UIManager.Instance.UpdateDialog("mint2", "\n\nYour NFT has been successfully minted!");
+                BackendCommunicator.instance.UpdateNFTStatus(SushiManager.selected, true);
+            }
+            else if (result == NFTStatus.Failure)
+            {
+                UIManager.Instance.UpdateDialog("mint2", "\n\nYou don't have enough tokens!");
+            }
+            else
+            {
+                UIManager.Instance.UpdateDialog("mint2", "\n\nSome errors occurred. Please try again.");
+            }
         }
 
         
@@ -44,24 +56,39 @@ public class DialogButton : MonoBehaviour
             inputTransfer2.gameObject.SetActive(true);
             inputTransfer2.interactable = true;
             inputTransfer2.ActivateInputField();
-            UIManager.Instance.UpdateDialog("transfer2", "Who would you like to transfer this NFT to?\nPlease enter their ID:\n");
+            UIManager.Instance.UpdateDialog("transfer2", "Who would you like to transfer this NFT to?\nPlease enter their email:\n");
         }
         else if (UIManager.Instance.State == "transfer2")
         {
             // try transfering NFT
-            Debug.Log(sushiManager.Transfer[sushiManager.viewNumber].Id);
+            Debug.Log(SushiManager.selected);
             Debug.Log(inputTransfer2.text);
             // Handle errors
-
+            NFTStatus result = await sushiManager.CheckBalanceAndTransfer(inputTransfer2.text, SushiManager.selected);
+            // Handle errors
+            if (result == NFTStatus.Success)
+            {
+                // If succeeded
+                UIManager.Instance.UpdateDialog("transfer3", "\n\nYour NFT has been successfully transferred!");
+                BackendCommunicator.instance.UpdateNFTStatus(SushiManager.selected, true);
+            }
+            else if (result == NFTStatus.Failure)
+            {
+                UIManager.Instance.UpdateDialog("transfer3", "\n\nYou don't have enough tokens!");
+            }
+            else
+            {
+                UIManager.Instance.UpdateDialog("transfer3", "\n\nSome errors occurred. Please try again.");
+            }
 
             // If succeeded            
             deactivateAllInputFields();
-            UIManager.Instance.UpdateDialog("transfer3", "\n\nYour NFT has been successfully transferred!");
         }
 
 
         else if (UIManager.Instance.State == "launch1")
-        {       
+        {
+            deactivateAllInputFields();
             inputAuctionStartingPrice.gameObject.SetActive(true);
             inputAuctionStartingTime.gameObject.SetActive(true);
             inputAuctionEndingTime.gameObject.SetActive(true);
@@ -76,12 +103,37 @@ public class DialogButton : MonoBehaviour
         else if (UIManager.Instance.State == "launch2")
         {
             // try launching NFT
-            // Handle errors
+            string format = "yyyy/MM/dd HH:mm:ss";
+            int price;
+            DateTimeOffset startTime, endTime;
+            try
+            {
+                price = int.Parse(inputAuctionStartingPrice.text);
+                startTime = DateTimeOffset.ParseExact(inputAuctionStartingTime.text, format, null, System.Globalization.DateTimeStyles.AssumeUniversal);
+                endTime = DateTimeOffset.ParseExact(inputAuctionEndingTime.text, format, null, System.Globalization.DateTimeStyles.AssumeUniversal);
+            }
+            catch
+            {
+                UIManager.Instance.UpdateDialog("launch3", "\n\nWrong format!");
+                deactivateAllInputFields();
+                return;
+            }
+
+            NFTInfo nft = BackendCommunicator.instance.FindOneNFTById(SushiManager.selected);
+            int auctionId = await BackendCommunicator.instance.CreateAuction(nft, price, startTime, endTime);
 
 
             // If succeeded            
             deactivateAllInputFields();
-            UIManager.Instance.UpdateDialog("launch3", "\n\nThe auction has been successfully launched!");
+            if(auctionId != -1)
+            {
+                BackendCommunicator.instance.UpdateNFTStatus(SushiManager.selected, true);
+                UIManager.Instance.UpdateDialog("launch3", "\n\nThe auction has been successfully launched!");
+            }
+            else
+            {
+                UIManager.Instance.UpdateDialog("launch3", "\n\nSome error occurred. Please try again later.");
+            }
         }
 
 

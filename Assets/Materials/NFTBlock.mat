@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: NFTFruit
+  m_Name: NFTBlock
   m_Shader: {fileID: -6465566751694194690, guid: 8b9261933daf57c4d9967156906ceb50,
     type: 3}
   m_Parent: {fileID: 0}
@@ -62,7 +62,7 @@ Material:
     - _Smoothness: 0.391
     - _Threshold: 0.211
     m_Colors:
-    - _Color: {r: 0.4575472, g: 0.2648565, b: 0, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Fresnel_Intensity: {r: 4, g: 4, b: 4, a: 1}
     - _Specular_Color: {r: 0.8037735, g: 0.4291847, b: 0.4291847, a: 1}
     - _Value: {r: 0.2, g: 0.2, b: 0.2, a: 0}

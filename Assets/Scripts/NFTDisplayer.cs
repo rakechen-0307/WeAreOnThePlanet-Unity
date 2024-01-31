@@ -50,4 +50,20 @@ public class NFTDisplayer : MonoBehaviour
             newBlock.layer = LayerMask.NameToLayer(layer);
         }
     }
+
+    public void ShowOneNFT(Transform NFTtransform, List<NFTContent> nftContents)
+    {
+        foreach (Transform child in NFTtransform)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (NFTContent content in nftContents)
+        {
+            Vector3 newPosition = new Vector3((float) content.PosX, (float) content.PosY, (float) content.PosZ);
+            Color newColor = new Color((float)content.Color.R, (float)content.Color.G, (float)content.Color.B);
+            GameObject newBlock = Instantiate(blockPrefab, NFTtransform);
+            newBlock.transform.localPosition = newPosition;
+            newBlock.GetComponent<Renderer>().material.color = newColor;
+        }
+    }
 }
