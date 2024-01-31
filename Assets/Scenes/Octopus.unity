@@ -3723,6 +3723,7 @@ MonoBehaviour:
   inputAuctionStartingTime: {fileID: 1533465233}
   inputAuctionEndingTime: {fileID: 1366352218}
   sushiManager: {fileID: 1343729464}
+  loadedData: {fileID: 11400000, guid: 8c7085d898f4aa941b63d8b50e52d4dc, type: 2}
 --- !u!1 &1055281059
 GameObject:
   m_ObjectHideFlags: 0
