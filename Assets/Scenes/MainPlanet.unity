@@ -1230,6 +1230,8 @@ MonoBehaviour:
   AddFriendButton: {fileID: 1798254089}
   PendingButton: {fileID: 1328506165}
   ChatPage: {fileID: 1369894880}
+  SendButton: {fileID: 23932556}
+  TextInput: {fileID: 551628435}
   AddFriendPage: {fileID: 1855337785}
   PlayerView: {fileID: 248901120}
   AddFriendUsername: {fileID: 2099810641}
@@ -12854,3 +12856,4 @@ SceneRoots:
   - {fileID: 117553272}
   - {fileID: 142610241}
   - {fileID: 881332423}
+  - {fileID: 139027468}
