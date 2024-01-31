@@ -134,6 +134,7 @@ public class BackendCommunicator : MonoBehaviour
         NFTInfo nftData = _realm.All<NFTInfo>().Where(nft => nft.Id == NFTId).FirstOrDefault();
         return nftData;
     }
+
     public async Task<bool> UpdateOneNFT(int nftId, string name, bool isShown, bool isPending, List<BlockData> blockData)
     {
         NFTInfo updateNFT = _realm.All<NFTInfo>().Where(nft => nft.Id == nftId).FirstOrDefault();
@@ -202,6 +203,12 @@ public class BackendCommunicator : MonoBehaviour
             auction.EndTime >= now && auction.StartTime < now
         )).ToList();
         return activeAuctions;
+    }
+    public Auction FindAuctionByNFTId(int NFTId)
+    {
+        NFTInfo NFT = _realm.All<NFTInfo>().Where(nft => nft.Id == NFTId).FirstOrDefault();
+        Auction auction = _realm.All<Auction>().Where(auction => auction.NFT == NFT).FirstOrDefault();
+        return auction;
     }
     public async Task<int> CreateAuction(NFTInfo nft, int startPrice, DateTimeOffset startTime, DateTimeOffset endTime)
     {
