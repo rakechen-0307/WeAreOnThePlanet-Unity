@@ -52,6 +52,6 @@ public class AuctionUI : MonoBehaviour
         infoText.text = $"ID: {nftID}\nOwner: {ownerId}\nCreator: {creator}\nCreated Time: {createdTime}";
         highestBid.text = highestPrice;
         highestBidder.text = highestBidderName;
-        remainingTime.text = 
+        // remainingTime.text = 
     }
 }
