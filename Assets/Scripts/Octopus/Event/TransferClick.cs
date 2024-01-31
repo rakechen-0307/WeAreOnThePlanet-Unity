@@ -19,23 +19,9 @@ using UnityEngine.UIElements;
 public class TransferClick : MonoBehaviour
 {
 
-    List<NFTInfo> Test = new List<NFTInfo>
+    List<NFTInfo> Empty = new List<NFTInfo>
     {
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 1, Name="NFT1", Owner = null,
-        },
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 2, Name="NFT2", Owner = null,
-        },
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 3, Name="NFT3", Owner = null,
-        },
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 4, Name="NFT4", Owner = null,
-        },
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 5, Name="NFT5", Owner = null,
-        },
+        
     };
 
     public SushiManager sushiManager;
@@ -49,15 +35,13 @@ public class TransferClick : MonoBehaviour
         bool success = sushiManager.PreviewMintedNFT("transfer"); // set to the result of DB
 
         // Show unminted NFTs
-        if (success)
+        if (!success)
         {
-            sushiManager.SetDisplayed(0, "transfer");
-        }
-        else
-        {
+            sushiManager.SetTransfer(Empty);
             UIManager.Instance.UpdateDialog("none", "You don't have any minted NFTs!");
+            
         }
-
+        sushiManager.SetDisplayed(0, "transfer");
 
     }
 

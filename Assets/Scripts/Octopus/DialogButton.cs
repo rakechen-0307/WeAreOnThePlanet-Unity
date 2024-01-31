@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class DialogButton : MonoBehaviour
 {
@@ -86,7 +87,8 @@ public class DialogButton : MonoBehaviour
 
 
         else if (UIManager.Instance.State == "launch1")
-        {       
+        {
+            deactivateAllInputFields();
             inputAuctionStartingPrice.gameObject.SetActive(true);
             inputAuctionStartingTime.gameObject.SetActive(true);
             inputAuctionEndingTime.gameObject.SetActive(true);
@@ -101,12 +103,37 @@ public class DialogButton : MonoBehaviour
         else if (UIManager.Instance.State == "launch2")
         {
             // try launching NFT
-            // Handle errors
+            string format = "yyyy/MM/dd HH:mm:ss";
+            int price;
+            DateTimeOffset startTime, endTime;
+            try
+            {
+                price = int.Parse(inputAuctionStartingPrice.text);
+                startTime = DateTimeOffset.ParseExact(inputAuctionStartingTime.text, format, null, System.Globalization.DateTimeStyles.AssumeUniversal);
+                endTime = DateTimeOffset.ParseExact(inputAuctionEndingTime.text, format, null, System.Globalization.DateTimeStyles.AssumeUniversal);
+            }
+            catch
+            {
+                UIManager.Instance.UpdateDialog("launch3", "\n\nWrong format!");
+                deactivateAllInputFields();
+                return;
+            }
+
+            NFTInfo nft = BackendCommunicator.instance.FindOneNFTById(SushiManager.selected);
+            int auctionId = await BackendCommunicator.instance.CreateAuction(nft, price, startTime, endTime);
 
 
             // If succeeded            
             deactivateAllInputFields();
-            UIManager.Instance.UpdateDialog("launch3", "\n\nThe auction has been successfully launched!");
+            if(auctionId != -1)
+            {
+                BackendCommunicator.instance.UpdateNFTStatus(SushiManager.selected, true);
+                UIManager.Instance.UpdateDialog("launch3", "\n\nThe auction has been successfully launched!");
+            }
+            else
+            {
+                UIManager.Instance.UpdateDialog("launch3", "\n\nSome error occurred. Please try again later.");
+            }
         }
 
 

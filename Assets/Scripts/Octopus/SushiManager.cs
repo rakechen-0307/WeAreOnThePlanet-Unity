@@ -53,13 +53,14 @@ public class SushiManager : MonoBehaviour
     SysRandom rnd = new SysRandom(Guid.NewGuid().GetHashCode());
     public void SetDisplayed(int num, string mode)
     {
-        if(isLeaving || isComing) return;
+        Debug.Log(num.ToString() + mode);
+        //if(isLeaving || isComing) return;
 
         Displayed.Clear();
-        if(viewMode == "mint") {for(int i=num; i<num+4; i++) if(i<Mint.Count) Displayed.Add(Mint[i]);}
-        else if(viewMode == "transfer") {for(int i=num; i<num+4; i++) if(i<Transfer.Count) Displayed.Add(Transfer[i]);}
-        else if(viewMode == "launch") {for(int i=num; i<num+4; i++) if(i<Launch.Count) Displayed.Add(Launch[i]);}
-        else if(viewMode == "attend") {for(int i=num; i<num+4; i++) if(i<Attend.Count) Displayed.Add(Attend[i]);}
+        if(mode == "mint") {for(int i=num; i<num+4; i++) if(i<Mint.Count) Displayed.Add(Mint[i]);}
+        else if(mode == "transfer") {for(int i=num; i<num+4; i++) if(i<Transfer.Count) Displayed.Add(Transfer[i]);}
+        else if(mode == "launch") {for(int i=num; i<num+4; i++) if(i<Launch.Count) Displayed.Add(Launch[i]);}
+        else if(mode == "attend") {for(int i=num; i<num+4; i++) if(i<Attend.Count) Displayed.Add(Attend[i]);}
 
         viewNumber = num;
         viewMode = mode;
@@ -155,7 +156,7 @@ public class SushiManager : MonoBehaviour
 
 
     private void say(string s){
-        bool debugging = false;
+        bool debugging = true;
         if(debugging)Debug.Log(s);
     }
     
@@ -213,7 +214,20 @@ public class SushiManager : MonoBehaviour
             return false;
         }
     }
-
+    public bool PreviewActiveAuctions()
+    {
+        List<Auction> activeAuctions = BackendCommunicator.instance.FindActiveAuctions();
+        if (activeAuctions.Count() > 0)
+        {
+            SetAttend(activeAuctions.Select(auction => auction.NFT).ToList());
+            return true;
+        }
+        else
+        {
+            Debug.LogError("There are no active auctions!");
+            return false;
+        }
+    }
 
     public async Task<NFTStatus> CheckBalanceAndMint(int _id)
     {
@@ -327,7 +341,7 @@ public class SushiManager : MonoBehaviour
         // log function, delay time, repeat interval        
         // InvokeRepeating("rsay", 0.0f, 1.0f);
         ChainSafeSetup();
-        PlayerPrefs.SetString("Email", "a5566742211@gmail.com");// For test
+        PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
         dialogButton.deactivateAllInputFields();
     }
 

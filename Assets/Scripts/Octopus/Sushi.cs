@@ -28,8 +28,8 @@ public class Sushi : MonoBehaviour
                 "Name: " + Name + "\n" +
                 "ID: " + Id + "\n" +
                 "Author: " + Author + "\n" +
-                "Time of creation: " + CreateTime + "\n" +
-                "This will cost 5 dollars."
+                "Time of creation: " + CreateTime + " (UTF+0)\n" +
+                "This will cost 100 WATP-Ts."
             );
         }
         else if(viewMode == "transfer"){
@@ -37,8 +37,8 @@ public class Sushi : MonoBehaviour
                 "Name: " + Name + "\n" +
                 "ID: " + Id + "\n" +
                 "Author: " + Author + "\n" +
-                "Time of creation: " + CreateTime + "\n" +
-                "This will cost 5 dollars."
+                "Time of creation: " + CreateTime + " (UTF+0)\n" +
+                "This will cost 5 WATP-Ts."
             );
         }
         else if(viewMode == "launch"){
@@ -46,8 +46,8 @@ public class Sushi : MonoBehaviour
                 "Name: " + Name + "\n" +
                 "ID: " + Id + "\n" +
                 "Author: " + Author + "\n" +
-                "Time of creation: " + CreateTime + "\n" +
-                "This will cost 5 dollars."
+                "Time of creation: " + CreateTime + " (UTF+0)\n" +
+                "This will cost 5 WATP-Ts."
             );
         }
         else if(viewMode == "attend"){
@@ -55,7 +55,7 @@ public class Sushi : MonoBehaviour
                 "Name: " + Name + "\n" +
                 "ID: " + Id + "\n" +
                 "Author: " + Author + "\n" +
-                "Time of creation: " + CreateTime + "\n" +
+                "Time of creation: " + CreateTime + " (UTF+0)\n" +
                 "This will cost 5 dollars."
             );
         }

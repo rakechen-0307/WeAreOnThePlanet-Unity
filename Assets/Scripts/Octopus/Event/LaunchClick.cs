@@ -20,21 +20,7 @@ public class LaunchClick : MonoBehaviour
 
     List<NFTInfo> Test = new List<NFTInfo>
     {
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 1, Name="NFT1", Owner = null,
-        },
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 2, Name="NFT2", Owner = null,
-        },
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 3, Name="NFT3", Owner = null,
-        },
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 4, Name="NFT4", Owner = null,
-        },
-        new NFTInfo{
-            Author = "1", CreateTime = DateTimeOffset.Now, IsMinted = false, Id = 5, Name="NFT5", Owner = null,
-        },
+        
     };
 
     public SushiManager sushiManager;
@@ -45,11 +31,15 @@ public class LaunchClick : MonoBehaviour
         UIManager.Instance.DeleteAllInputFields();
 
         // Load NFTs the player have
-        sushiManager.SetLaunch(Test); // set to the result of DB
+        bool success = sushiManager.PreviewMintedNFT("launch"); // set to the result of DB
 
         // Show unminted NFTs
+        if (!success)
+        {
+            sushiManager.SetLaunch(Test);
+            UIManager.Instance.UpdateDialog("none", "You don't have any minted NFTs!");
+        }
         sushiManager.SetDisplayed(0, "launch");
-
     }
 
 }

@@ -17,6 +17,7 @@ using SysRandom = System.Random;
 
 public class AuctionManager : MonoBehaviour
 {
+    public static AuctionManager instance;
     private Realm _realm;
     private App _realmApp;
     private User _realmUser;
@@ -69,14 +70,7 @@ public class AuctionManager : MonoBehaviour
         });
     }
     */
-    private List<Auction> PreviewActiveAuctions()
-    {
-        DateTimeOffset now = System.DateTime.UtcNow;
-        List<Auction> activeAuctions = _realm.All<Auction>().Where(auction => (
-            auction.EndTime >= now
-        )).ToList();
-        return activeAuctions;
-    }    
+        
     private async void AuctionBid(int id, int bidPrice)
     {
         bool result = await CheckBalanceAndBid(bidPrice, id);
@@ -128,7 +122,41 @@ public class AuctionManager : MonoBehaviour
             return true;
         }
     }
+    public async Task<NFTStatus> CheckBalanceAndLaunch()
+    {
+        string method = "balanceOf";
 
+        var provider = new JsonRpcProvider(ContractManager.RPC);
+
+        Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
+        Contract NFTcontract = new Contract(ContractManager.NFTABI, ContractManager.NFTContract, provider);
+        try
+        {
+            var data = await contract.Call(method, new object[]
+            {
+                PlayerPrefs.GetString("Account")
+            });
+
+            BigInteger nonce = rnd.Next();
+            BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
+            BigInteger realFee = (BigInteger)1000000000000000000 * fee;
+            Debug.Log("Balance Of: " + balanceOf);
+            Debug.Log("Fee:" + realFee);
+            if (balanceOf < realFee)
+            {
+                Debug.Log("Your balance is NOT enough!");
+                return NFTStatus.Failure;
+            }
+            else
+            {
+                return NFTStatus.Success;
+            }
+        }
+        catch
+        {
+            return NFTStatus.ContractError;
+        }
+    }
     public async Task<NFTStatus> CheckBalanceAndTransfer(string toEmail, int _id)
     {
         string method = "balanceOf";
