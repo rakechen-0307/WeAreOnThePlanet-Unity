@@ -28,7 +28,7 @@ public class BackendManager : MonoBehaviour
         loadedData.playerId = playerData.Id;
         loadedData.playerName = playerData.Username;
         loadedData.experience = playerData.Exp;
-
+        loadedData.account = playerData.Account;
         loadedData.friendIds = new List<int>();
         for (int i = 0; i < playerData.Friends.Count; i++)
         {

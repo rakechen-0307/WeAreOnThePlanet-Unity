@@ -15,6 +15,7 @@ public class LoadedData : ScriptableObject
     public List<Achievement> achievements;
     public int experience;
     public PlanetData currentPlanet;
+    public string account;
 }
 
 [Serializable]
