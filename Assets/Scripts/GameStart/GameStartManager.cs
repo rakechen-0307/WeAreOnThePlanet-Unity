@@ -178,6 +178,7 @@ public class GameStartManager : Singleton<GameStartManager>
                 PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByEmail(_email);
                 if (findPlayer != null)
                 {
+                    Debug.Log("found");
                     _player = findPlayer;
                     EmailErrorText.enabled = true;
                     EmailErrorText.text = "Waiting For Correct Join...";
@@ -300,25 +301,33 @@ public class GameStartManager : Singleton<GameStartManager>
             
             if (isNew)
             {
+                Debug.Log("isnew");
                 PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByAccount(account);
+                Debug.Log("isnew2");
+                
                 if (findPlayer != null)
                 {
+                    Debug.Log("isnew3");
                     SignInErrorText.enabled = true;
                     SignInErrorText.text = "Account has been used";
                     return;
                 }
                 _playerId = await BackendCommunicator.instance.CreateOnePlayer(email, username, password, account);
+                Debug.Log("playerID = " + _playerId);
             }
             else
             {
+                Debug.Log("isn'tnew");
                 PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByEmail(email);
-                if(findPlayer.Account != account)
+                Debug.Log("isn'tnew2");
+                if (findPlayer.Account != account)
                 {
                     SignInErrorText.enabled = true;
                     SignInErrorText.text = "Wrong account";
                     return;
                 }
             }
+            
             await VivoxSignIn(_playerId.ToString());
             int planetId = BackendManager.instance.loadMainPlayerData(_playerId, _loadedData);
             Debug.Log(planetId);
