@@ -51,6 +51,10 @@ public class SushiManager : MonoBehaviour
     public static int selected = 0;
 
     SysRandom rnd = new SysRandom(Guid.NewGuid().GetHashCode());
+
+    [SerializeField]
+    private NFTDisplayer nftDisplayer;
+
     public void SetDisplayed(int num, string mode)
     {
         Debug.Log(num.ToString() + mode);
@@ -149,6 +153,11 @@ public class SushiManager : MonoBehaviour
             sushiComponent.viewMode = viewMode;
 
             sushiInstances.Add(sushiInstance);
+
+            Transform ballSlot = sushiInstance.transform.Find("ball");
+            ballSlot.GetComponent<Renderer>().enabled = false;
+            ballSlot.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            nftDisplayer.ShowOneNFT(ballSlot, nftInfo.Contents);
         }
         isComing = true;
         moveStartTime = Time.time;
