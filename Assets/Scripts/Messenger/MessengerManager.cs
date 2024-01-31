@@ -364,21 +364,20 @@ public class MessengerManager : MonoBehaviour
         await VivoxService.Instance.SendChannelTextMessageAsync(channelName, message);
     }
 
-    // will be removed when all is finished
     private async Task<bool> VivoxInitialize()
     {
-        await UnityServices.InitializeAsync();
         try
         {
+            await UnityServices.InitializeAsync();
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            await VivoxService.Instance.InitializeAsync();
+            Debug.Log("Vivox Initialized");
         }
         catch (Exception)
         {
-            Debug.Log("already sign in");
+            Debug.Log("Authencation SignIn Has Existed");
         }
 
-        await VivoxService.Instance.InitializeAsync();
-        Debug.Log("Vivox Initialized");
         return true;
     }
 
@@ -389,15 +388,17 @@ public class MessengerManager : MonoBehaviour
             DisplayName = displayName,
             EnableTTS = false
         };
+
         try
         {
             await VivoxService.Instance.LoginAsync(loginOption);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            Debug.Log(ex.Message);
+            Debug.Log(e.Message);
         }
 
+        Debug.Log("Log in");
         return true;
     }
 }

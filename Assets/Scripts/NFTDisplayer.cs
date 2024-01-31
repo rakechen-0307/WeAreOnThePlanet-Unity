@@ -51,7 +51,7 @@ public class NFTDisplayer : MonoBehaviour
         }
     }
 
-    public void ShowOneNFT(Transform NFTtransform, List<NFTContent> nftContents)
+    public void ShowOneNFT(Transform NFTtransform, IList<NFTContent> nftContents)
     {
         foreach (Transform child in NFTtransform)
         {

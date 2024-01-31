@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Games.Core.Singletons;
 using UnityEngine.UI;
@@ -68,7 +66,7 @@ public class GameStartManager : Singleton<GameStartManager>
 
     ProjectConfigScriptableObject projectConfigSO = null;
 
-    private void Awake()
+    private async void Awake()
     {
         StartPage.SetActive(true);
         HostPage.SetActive(false);
@@ -90,7 +88,7 @@ public class GameStartManager : Singleton<GameStartManager>
         }
 
         ChainSafeSetup();  // setup ChainSafe
-        VivoxInitialize();  // Initialize Vivox
+        bool success = await VivoxInitialize();  // initialize Vivox
     }
 
     // Start is called before the first frame update
@@ -353,13 +351,21 @@ public class GameStartManager : Singleton<GameStartManager>
         return key.GetPublicAddress();
     }
 
-    private async void VivoxInitialize()
+    private async Task<bool> VivoxInitialize()
     {
-        await UnityServices.InitializeAsync();
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        try
+        {
+            await UnityServices.InitializeAsync();
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            await VivoxService.Instance.InitializeAsync();
+            Debug.Log("Vivox Initialized");
+        }
+        catch (Exception)
+        {
+            Debug.Log("Authencation SignIn Has Existed");
+        }
 
-        await VivoxService.Instance.InitializeAsync();
-        Debug.Log("Vivox Initialized");
+        return true;
     }
 
     private async Task<bool> VivoxSignIn(string displayName)
@@ -369,7 +375,16 @@ public class GameStartManager : Singleton<GameStartManager>
             DisplayName = displayName,
             EnableTTS = false
         };
-        await VivoxService.Instance.LoginAsync(loginOption);
+
+        try
+        {
+            await VivoxService.Instance.LoginAsync(loginOption);
+        }
+        catch(Exception e)
+        {
+            Debug.Log(e.Message);
+        }
+
         Debug.Log("Log in");
         return true;
     }

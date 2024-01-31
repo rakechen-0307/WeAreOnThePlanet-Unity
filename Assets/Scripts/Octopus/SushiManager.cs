@@ -51,6 +51,10 @@ public class SushiManager : MonoBehaviour
     public static int selected = 0;
 
     SysRandom rnd = new SysRandom(Guid.NewGuid().GetHashCode());
+
+    [SerializeField]
+    private NFTDisplayer nftDisplayer;
+
     public void SetDisplayed(int num, string mode)
     {
         Debug.Log(num.ToString() + mode);
@@ -149,6 +153,11 @@ public class SushiManager : MonoBehaviour
             sushiComponent.viewMode = viewMode;
 
             sushiInstances.Add(sushiInstance);
+
+            Transform ballSlot = sushiInstance.transform.Find("ball");
+            ballSlot.GetComponent<Renderer>().enabled = false;
+            ballSlot.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            nftDisplayer.ShowOneNFT(ballSlot, nftInfo.Contents);
         }
         isComing = true;
         moveStartTime = Time.time;
@@ -336,12 +345,13 @@ public class SushiManager : MonoBehaviour
         PlayerPrefs.SetString("Chain", projectConfigSO.Chain);
         PlayerPrefs.SetString("Network", projectConfigSO.Network);
         PlayerPrefs.SetString("RPC", projectConfigSO.RPC);
+        PlayerPrefs.SetString("Account", "0xC79dbE9296E54e5C503Bd1820eE5dAC6376c98C5");
     }
     void Awake(){
         // log function, delay time, repeat interval        
         // InvokeRepeating("rsay", 0.0f, 1.0f);
         ChainSafeSetup();
-        //PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
+        PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
         dialogButton.deactivateAllInputFields();
     }
 

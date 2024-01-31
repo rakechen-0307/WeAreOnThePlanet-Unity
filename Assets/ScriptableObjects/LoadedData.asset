@@ -47,7 +47,7 @@ MonoBehaviour:
     ownerID: 1
     isMinted: 1
     isShown: 1
-    isPending: 0
+    isPending: 1
     blockDatas:
     - position: {x: -0.5, y: 0.5, z: 0.5}
       color: {r: 1, g: 1, b: 1, a: 1}
@@ -75,7 +75,7 @@ MonoBehaviour:
     ownerID: 1
     isMinted: 0
     isShown: 1
-    isPending: 0
+    isPending: 1
     blockDatas:
     - position: {x: 0.5, y: 0.5, z: -0.5}
       color: {r: 1, g: 1, b: 1, a: 1}
