@@ -324,6 +324,11 @@ public class MessengerManager : MonoBehaviour
         }
         else
         {
+            if (chatRoomObj == null)
+            {
+                return;
+            }
+
             var newMes = Instantiate(comingTextObj, chatRoomObj.transform);
             var newMessageTextObj = newMes.GetComponent<MessageObject>();
 
