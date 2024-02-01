@@ -547,7 +547,7 @@ public class BackendCommunicator : MonoBehaviour
             if (currentTimeSecond - lastSavedSeconds > checkDelaySecond)
             {
                 // TODO: check or save
-                Debug.Log("UPDATE!" + currentTimeSecond.ToString());
+                // Debug.Log("UPDATE!" + currentTimeSecond.ToString());
                 lastSavedSeconds = currentTimeSecond;
                 foreach (Auction auction in FindEndedAuctionsByEmail(PlayerPrefs.GetString("Email")).ToList())
                 {
