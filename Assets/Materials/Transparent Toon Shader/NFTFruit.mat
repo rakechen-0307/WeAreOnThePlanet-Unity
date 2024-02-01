@@ -60,9 +60,9 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Smoothness: 0.9
-    - _Transparency: 0.4
+    - _Transparency: 0.35
     m_Colors:
-    - _Color: {r: 0.9056604, g: 0.4816715, b: 0.102527566, a: 1}
+    - _Color: {r: 2.020648, g: 3.3207548, b: 3.138037, a: 1}
     - _Fresnel_Intensity: {r: 4, g: 4, b: 4, a: 1}
     - _Specular_Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

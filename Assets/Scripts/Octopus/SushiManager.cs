@@ -375,9 +375,25 @@ public class SushiManager : MonoBehaviour
     }
     public async void JoinChannelAsync(string channelName, string message)
     {
-        await VivoxService.Instance.JoinEchoChannelAsync(channelName, ChatCapability.TextOnly);
+        try
+        {
+            await VivoxService.Instance.JoinEchoChannelAsync(channelName, ChatCapability.TextOnly);
+        }
+        catch
+        {
+            Debug.Log("Join error");
+        }
+        
         await VivoxService.Instance.SendChannelTextMessageAsync("hostChannel", message);
-        await VivoxService.Instance.LeaveAllChannelsAsync();
+
+        try
+        {
+            await VivoxService.Instance.LeaveAllChannelsAsync();
+        }
+        catch
+        {
+            Debug.Log("Leave error");
+        }
     }
 }
 

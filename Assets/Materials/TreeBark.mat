@@ -56,14 +56,14 @@ Material:
     m_Ints: []
     m_Floats:
     - _Fresnel_Angle: -1
-    - _Fresnel_Size: 10
+    - _Fresnel_Size: 8.5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Smoothness: 0.391
     - _Threshold: 0.211
     m_Colors:
     - _Color: {r: 0.122641504, g: 0.029383687, b: 0.014462439, a: 1}
-    - _Fresnel_Intensity: {r: 4, g: 4, b: 4, a: 1}
+    - _Fresnel_Intensity: {r: 1, g: 1, b: 1, a: 1}
     - _Specular_Color: {r: 0.8037735, g: 0.4291847, b: 0.4291847, a: 1}
     - _Value: {r: 0.2, g: 0.2, b: 0.2, a: 0}
     - _ValueHigh: {r: 0.5, g: 0.5, b: 0.5, a: 0}
