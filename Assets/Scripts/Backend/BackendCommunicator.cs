@@ -534,6 +534,7 @@ public class BackendCommunicator : MonoBehaviour
             if (currentTimeSecond - lastSavedSeconds > checkDelaySecond)
             {
                 // TODO: check or save
+<<<<<<< Updated upstream
                 Debug.Log("UPDATE!" + currentTimeSecond.ToString());
                 Debug.Log(FindEndedAuctionsByEmail(PlayerPrefs.GetString("Email")).ToList());
                 foreach (Auction auction in FindEndedAuctionsByEmail(PlayerPrefs.GetString("Email")).ToList())
@@ -548,6 +549,10 @@ public class BackendCommunicator : MonoBehaviour
                         await AuctionManager.instance.CheckBalanceAndBusiness(toEmail, auction.NFT.Id);
                     }
                 }
+=======
+                //Debug.Log("UPDATE!" + currentTimeSecond.ToString());
+                //bool success = await AuctionManager.instance.CheckFinishedAuction(PlayerPrefs.GetString("Email"));
+>>>>>>> Stashed changes
                 lastSavedSeconds = currentTimeSecond;
             }
         }
