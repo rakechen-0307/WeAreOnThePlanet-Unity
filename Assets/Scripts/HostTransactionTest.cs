@@ -61,20 +61,26 @@ public class HostTransactionTest : MonoBehaviour
                     await NFTMint(to, Int16.Parse(PreJsonData[2]));
                     await TokenTransfer(to, 4*price, 1*price);
                     //狀態改成isMinted = true
+                    BackendCommunicator.instance.UpdateNFTMintStatus(Int16.Parse(PreJsonData[2]),true);
+                    BackendCommunicator.instance.UpdateNFTStatus(Int16.Parse(PreJsonData[2]),false);
                     //重新check balance，把畫面中的錢包金額改掉
                 }
                 else
                 {
+                    BackendCommunicator.instance.UpdateNFTStatus(Int16.Parse(PreJsonData[2]), false);
                     //驗證不正確，要把pending改回false
                 }
                 break;
             case "transfer":
-                verifiedAddress = SignVerifySignature(messageObj[2], messageObj[0]);
+                verifiedAddress = SignVerifySignature(messageObj[2], messageObj[1]);
                 Debug.Log("verifiedAddress = " + verifiedAddress);
                 string from = BackendCommunicator.instance.FindOnePlayerByEmail(PreJsonData[1]).Account;
+                Debug.Log("from = " + from);
                 to = BackendCommunicator.instance.FindOnePlayerByEmail(PreJsonData[2]).Account;
+                Debug.Log("to = " + to);
                 if (verifiedAddress == from)
                 {
+                    Debug.Log("transfer success!");
                     await NFTTransfer(from, to, Int16.Parse(PreJsonData[3]));
                     await TokenTransfer(from, 4 * price, 1 * price);
                     //transfer成功
@@ -82,9 +88,10 @@ public class HostTransactionTest : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log("transfer fail!");
                     //transfer 失敗
                 }
-
+                BackendCommunicator.instance.UpdateNFTStatus(Int16.Parse(PreJsonData[2]), false);
                 break;
             case "business":
                 verifiedAddress = SignVerifySignature(messageObj[2], messageObj[0]);
