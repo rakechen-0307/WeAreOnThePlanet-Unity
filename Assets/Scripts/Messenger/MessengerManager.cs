@@ -192,7 +192,7 @@ public class MessengerManager : MonoBehaviour
 
     async void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Keypad0)) 
+        if (Input.GetKeyDown(KeyCode.Alpha1)) 
         {
             if (_messengerIsOpened)
             {
