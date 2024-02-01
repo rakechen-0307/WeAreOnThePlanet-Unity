@@ -48,7 +48,7 @@ public class SushiManager : MonoBehaviour
     //private User _realmUser;
     //private string _realmAppID = "weareontheplanet-ouawh";
 
-    public static BigInteger price = 100;
+    public static BigInteger price = 1;
     public static BigInteger fee = 5;
     public static int selected = 0;
 
@@ -257,7 +257,7 @@ public class SushiManager : MonoBehaviour
 
 
             BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
-            BigInteger realPrice = (BigInteger)1000000000000000000 * price;
+            BigInteger realPrice = 5*price;
             Debug.Log("Balance Of: " + balanceOf);
             Debug.Log("Price:" + realPrice);
             if (balanceOf < realPrice)
@@ -355,23 +355,23 @@ public class SushiManager : MonoBehaviour
         // log function, delay time, repeat interval        
         // InvokeRepeating("rsay", 0.0f, 1.0f);
         ChainSafeSetup();
-        //PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
+        // PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
         dialogButton.deactivateAllInputFields();
         VivoxService.Instance.ChannelJoined += OnChannelJoined;
     }
-    public async void OnChannelJoined(string channelName) //¶Ç°T®§µ¹host -> Â÷¶}host channel
+    public async void OnChannelJoined(string channelName) //ï¿½Ç°Tï¿½ï¿½ï¿½ï¿½host -> ï¿½ï¿½ï¿½}host channel
     {
         if (channelName == "hostChannel")
         {
             Debug.Log("nice");
         }
     }
-    public async void MessageLaunch(string message) //¶ihost channel -> OnChannelJoined
+    public async void MessageLaunch(string message) //ï¿½ihost channel -> OnChannelJoined
     {
         await VivoxService.Instance.LeaveAllChannelsAsync();
 
         string channelToJoin = "hostChannel";
-        JoinChannelAsync(channelToJoin, message);//¶ihost channel
+        JoinChannelAsync(channelToJoin, message);//ï¿½ihost channel
 
         Debug.Log(channelToJoin);
     }

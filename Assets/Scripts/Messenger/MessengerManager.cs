@@ -303,7 +303,7 @@ public class MessengerManager : MonoBehaviour
         {
             AddTravelToList("Your Planet", playerId);
         }
-
+        AddTravelToList("NFT Dealer", -3);
         for (int i = 0; i < friends.Count; i++)
         {
             if (friends[i].Id != planetId)
@@ -446,6 +446,12 @@ public class MessengerManager : MonoBehaviour
 
     private void ShowTravelInfo(int friendID)
     {
+        if (friendID == -3)
+        {
+            SceneManager.LoadScene("Octopus");
+            return;
+        }
+
         PlayerData playerData = BackendCommunicator.instance.FindOnePlayerById(friendID);
         int auctionCount = BackendCommunicator.instance.FindHeldAuctionByPlayerID(friendID).Count;
 

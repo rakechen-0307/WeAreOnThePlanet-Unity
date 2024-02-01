@@ -11,16 +11,28 @@ public class AchievementUI : MonoBehaviour
     [SerializeField]
     private Transform achievementContent;
 
+    [SerializeField]
+    private GameObject achievementUI;
+
+    [SerializeField]
+    private GameObject cursorUI;
+
+    [SerializeField]
+    private PlayerMovement playerMovement;
+
     private void Start()
     {
-        gameObject.SetActive(false);
+        achievementUI.SetActive(false);
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            gameObject.SetActive(!gameObject.activeInHierarchy);
+            achievementUI.SetActive(!achievementUI.activeInHierarchy);
+            playerMovement.moveable = !playerMovement.moveable;
+            Cursor.visible = !Cursor.visible;
+            Cursor.lockState = Cursor.lockState == CursorLockMode.Locked ? CursorLockMode.None : CursorLockMode.Locked;
             showAchievements();
         }
     }

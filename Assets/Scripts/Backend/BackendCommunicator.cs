@@ -17,6 +17,9 @@ public class BackendCommunicator : MonoBehaviour
     private User _realmUser;
     private string _realmAppID = "weareontheplanet-wkrim";
 
+    [SerializeField] private float checkDelaySecond = 100f;
+    private float lastSavedSeconds;
+
     private void Awake()
     {
         if (instance == null)
@@ -409,6 +412,57 @@ public class BackendCommunicator : MonoBehaviour
         return heldAuctions;
     }
 
+    public async Task<bool> FlowerAddExp(int playerId, int addedExp)
+    {
+        PlayerData player = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            player.Exp += addedExp;
+        });
+
+        return true;
+    }
+
+    public async Task<int> ProgressUpdate(int playerId, int taskId)
+    {
+        bool _isAwarded = false;
+        PlayerData player = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault();
+
+        if (!player.TaskProgress[taskId].Achieved)
+        {
+            await _realm.WriteAsync(() =>
+            {
+                player.TaskProgress[taskId].Progress += 1;
+            });
+
+            if (player.TaskProgress[taskId].Task.MaxProgress == player.TaskProgress[taskId].Progress)
+            {
+                await _realm.WriteAsync(() =>
+                {
+                    player.TaskProgress[taskId].Achieved = true;
+                });
+            }
+
+            if (player.TaskProgress[taskId].Achieved)
+            {
+                await _realm.WriteAsync(() =>
+                {
+                    player.Exp += player.TaskProgress[taskId].Task.Exp;
+                });
+                _isAwarded = true;
+            }
+        }
+        if (_isAwarded)
+        {
+            return player.TaskProgress[taskId].Task.Prize;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
     private async void RealmSetup()
     {
         if (_realm == null)
@@ -440,5 +494,19 @@ public class BackendCommunicator : MonoBehaviour
 
         var taskQuery = _realm.All<Task>();
         await taskQuery.SubscribeAsync();
+    }
+
+    private void Start()
+    {
+        lastSavedSeconds = Time.time;
+    }
+    
+    private void Update()
+    {
+        float currentTimeSecond = Time.time;
+        if (currentTimeSecond - lastSavedSeconds > checkDelaySecond)
+        {
+            // TODO: check or save
+        }
     }
 }
