@@ -1,3 +1,4 @@
+using System.Numerics;
 using TMPro;
 using UnityEngine;
 using Web3Unity.Scripts.Library.Ethers.Contracts;
@@ -28,12 +29,15 @@ public class WalletChecker : MonoBehaviour
 
         Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
 
+
         var data = await contract.Call(method, new object[]
         {
-            PlayerPrefs.GetString("Account")
+                PlayerPrefs.GetString("Account")
         });
 
-        string gottenMoney = data.ToString();
+
+        BigInteger balanceOf = BigInteger.Parse(data[0].ToString())/1000000000000000000;
+        string gottenMoney = balanceOf.ToString();
         money.text = gottenMoney;
     }
 }
