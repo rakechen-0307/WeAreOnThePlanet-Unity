@@ -226,4 +226,7 @@ public partial class Task : IRealmObject
 
     [MapTo("prize")]
     public int Prize { get; set; }
+
+    [MapTo("exp")]
+    public int Exp { get; set; }
 }
