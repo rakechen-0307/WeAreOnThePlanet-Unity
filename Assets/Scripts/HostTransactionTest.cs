@@ -123,6 +123,10 @@ public class HostTransactionTest : MonoBehaviour
                 }
                 BackendCommunicator.instance.UpdateNFTStatus(Int16.Parse(PreJsonData[3]), false);
                 break;
+            case "reward":
+                to = BackendCommunicator.instance.FindOnePlayerByEmail(PreJsonData[1]).Account;
+                TokenMint(Int16.Parse(PreJsonData[2]));
+                break;
             default:
                 break;
         }
@@ -137,12 +141,12 @@ public class HostTransactionTest : MonoBehaviour
         return key.GetPublicAddress();
     }
 
-    private async void TokenMint()
+    private async void TokenMint(int award)
     {
         var method = "mint";
 
         var to = mintInputField.text;
-        BigInteger amount = 5 * price;
+        BigInteger amount = award * price;
         var provider = new JsonRpcProvider(ContractManager.RPC);
 
         try
@@ -304,7 +308,7 @@ public class HostTransactionTest : MonoBehaviour
         _nonce = rnd.Next();
         VivoxService.Instance.ChannelMessageReceived += OnChannelMessageReceived;
         ChannelSwitch();
-        mint.onClick.AddListener(() => { TokenMint(); });
+        mint.onClick.AddListener(() => { TokenMint(5); });
     }
 
     // Update is called once per frame
