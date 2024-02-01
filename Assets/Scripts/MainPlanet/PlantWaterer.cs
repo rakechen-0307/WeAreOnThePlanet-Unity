@@ -1,5 +1,7 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
+using Unity.Services.Vivox;
+using Newtonsoft.Json;
 
 [RequireComponent(typeof(Collider))]
 public class PlantWaterer : MonoBehaviour
@@ -28,6 +30,7 @@ public class PlantWaterer : MonoBehaviour
 
     private void Start()
     {
+        VivoxService.Instance.ChannelJoined += OnChannelJoined;
         lastWaterTime = Time.time;
 
         rd = GetComponent<Renderer>();
@@ -75,9 +78,55 @@ public class PlantWaterer : MonoBehaviour
             mainPlanetInit.initGarden();
             if (award > 0)
             {
-                // TODO: give money
+                string[] preJsonData = { "reward", PlayerPrefs.GetString("Email"), award.ToString() };
+                string jsonData = JsonConvert.SerializeObject(preJsonData);
+                string signature = "";
+                string[] messageObj = { jsonData, signature };
+                string message = JsonConvert.SerializeObject(messageObj);
+                Debug.Log(message);
+                // SendMessageRequest(message);
+                MessageLaunch(message);
             }
 
+        }
+    }
+
+    public async void OnChannelJoined(string channelName) 
+    {
+        if (channelName == "hostChannel")
+        {
+            Debug.Log("nice");
+        }
+    }
+    public async void MessageLaunch(string message) 
+    {
+        await VivoxService.Instance.LeaveAllChannelsAsync();
+
+        string channelToJoin = "hostChannel";
+        JoinChannelAsync(channelToJoin, message);
+
+        Debug.Log(channelToJoin);
+    }
+    public async void JoinChannelAsync(string channelName, string message)
+    {
+        try
+        {
+            await VivoxService.Instance.JoinEchoChannelAsync(channelName, ChatCapability.TextOnly);
+        }
+        catch
+        {
+            Debug.Log("Join error");
+        }
+
+        await VivoxService.Instance.SendChannelTextMessageAsync("hostChannel", message);
+
+        try
+        {
+            await VivoxService.Instance.LeaveAllChannelsAsync();
+        }
+        catch
+        {
+            Debug.Log("Leave error");
         }
     }
 }
