@@ -20,20 +20,30 @@ public class AchievementUI : MonoBehaviour
     [SerializeField]
     private PlayerMovement playerMovement;
 
+    [SerializeField]
+    private MessengerManager messengerManager;
+
     private void Start()
     {
         achievementUI.SetActive(false);
     }
 
-    private void Update()
+    private async void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            achievementUI.SetActive(!achievementUI.activeInHierarchy);
-            playerMovement.moveable = !playerMovement.moveable;
-            Cursor.visible = Cursor.lockState == CursorLockMode.Locked ? true : false;
-            Cursor.lockState = Cursor.lockState == CursorLockMode.Locked ? CursorLockMode.None : CursorLockMode.Locked;
-            showAchievements();
+            if (achievementUI.activeInHierarchy)
+            {
+                CloseMenu();
+            }
+            else
+            {
+                if (messengerManager.isOpenMessenger)
+                {
+                    bool close = await messengerManager.CloseMessenger();
+                }
+                OpenMenu();
+            }
         }
     }
 
@@ -49,5 +59,21 @@ public class AchievementUI : MonoBehaviour
             newAchievementBar.achievementName.text = achievement.name;
             newAchievementBar.setProgress(achievement.progress, achievement.maxProgress);
         }
+    }
+
+    private void OpenMenu()
+    {
+        achievementUI.SetActive(true);
+        playerMovement.moveable = false;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        showAchievements();
+    }
+    public void CloseMenu()
+    {
+        achievementUI.SetActive(false);
+        playerMovement.moveable = true;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }
