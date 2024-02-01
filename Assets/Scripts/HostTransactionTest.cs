@@ -59,7 +59,7 @@ public class HostTransactionTest : MonoBehaviour
                 {   
                     Debug.Log("MintNFTTo = " + to);
                     await NFTMint(to, Int16.Parse(PreJsonData[2]));
-                    await TokenTransfer(to, 4*price, 1*price);
+                    await TokenTransfer(to, (BigInteger)4*price, (BigInteger)1*price);
                     //狀態改成isMinted = true
                     BackendCommunicator.instance.UpdateNFTMintStatus(Int16.Parse(PreJsonData[2]),true);
                     BackendCommunicator.instance.UpdateNFTStatus(Int16.Parse(PreJsonData[2]),false);
@@ -82,8 +82,10 @@ public class HostTransactionTest : MonoBehaviour
                 {
                     Debug.Log("transfer success!");
                     await NFTTransfer(from, to, Int16.Parse(PreJsonData[3]));
-                    await TokenTransfer(from, 4 * price, 1 * price);
+                    await TokenTransfer(from, (BigInteger)4 * price, (BigInteger)1 * price);
                     //transfer成功
+                    BackendCommunicator.instance.UpdateNFTOwner(Int16.Parse(PreJsonData[3]),PreJsonData[2]);
+
                     //重新check balance，把畫面中的錢包金額改掉
                 }
                 else
@@ -91,7 +93,7 @@ public class HostTransactionTest : MonoBehaviour
                     Debug.Log("transfer fail!");
                     //transfer 失敗
                 }
-                BackendCommunicator.instance.UpdateNFTStatus(Int16.Parse(PreJsonData[2]), false);
+                BackendCommunicator.instance.UpdateNFTStatus(Int16.Parse(PreJsonData[3]), false);
                 break;
             case "business":
                 verifiedAddress = SignVerifySignature(messageObj[2], messageObj[0]);
@@ -103,15 +105,17 @@ public class HostTransactionTest : MonoBehaviour
                     await NFTTransfer(from, to, Int16.Parse(PreJsonData[3]));
                     await TokenTransfer(from, 4 * price, 1 * price);
                     await TokenTransferBussiness(from, to, howMuch * price, 1);
-                    //business成功
+                    //business成功]
+                    BackendCommunicator.instance.UpdateNFTOwner(Int16.Parse(PreJsonData[3]), PreJsonData[2]);
                     //重新check balance，把畫面中的錢包金額改掉
                 }
                 else
                 {
                     //business 失敗
                 }
-
+                BackendCommunicator.instance.UpdateNFTStatus(Int16.Parse(PreJsonData[3]), false);
                 break;
+                
             default:
                 break;
         }
@@ -202,10 +206,12 @@ public class HostTransactionTest : MonoBehaviour
             {
                 from,
                 receiver,
-                value.ToString(),
-                fee.ToString(),
+                value,
+                fee,
                 _nonce.ToString()
             });
+            Debug.Log("value = " + value.ToString());
+            Debug.Log("fee = " + fee.ToString());
             // send transaction
             string response = await Web3Wallet.SendTransaction(PlayerPrefs.GetString("ChainID"), ContractManager.TokenContract, "0", data, "", "");
             // display response in game
@@ -235,8 +241,8 @@ public class HostTransactionTest : MonoBehaviour
             {
                 from,
                 receiver,
-                value.ToString(),
-                fee.ToString(),
+                value,
+                fee,
                 _nonce.ToString()
             });
             // send transaction

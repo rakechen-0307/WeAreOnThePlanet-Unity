@@ -34,7 +34,7 @@ public class MintClick : MonoBehaviour
         if(!success)
         {
             sushiManager.SetMint(Empty);
-            UIManager.Instance.UpdateDialog("none", "You don't have any minted NFTs!");
+            UIManager.Instance.UpdateDialog("none", "You don't have any unminted NFTs!");
         }
         sushiManager.SetDisplayed(0, "mint");
     }
