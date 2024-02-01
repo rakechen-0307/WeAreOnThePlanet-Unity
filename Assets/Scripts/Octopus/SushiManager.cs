@@ -357,19 +357,19 @@ public class SushiManager : MonoBehaviour
         dialogButton.deactivateAllInputFields();
         VivoxService.Instance.ChannelJoined += OnChannelJoined;
     }
-    public async void OnChannelJoined(string channelName) //�ǰT����host -> ���}host channel
+    public async void OnChannelJoined(string channelName) 
     {
         if (channelName == "hostChannel")
         {
             Debug.Log("nice");
         }
     }
-    public async void MessageLaunch(string message) //�ihost channel -> OnChannelJoined
+    public async void MessageLaunch(string message) 
     {
         await VivoxService.Instance.LeaveAllChannelsAsync();
 
         string channelToJoin = "hostChannel";
-        JoinChannelAsync(channelToJoin, message);//�ihost channel
+        JoinChannelAsync(channelToJoin, message);
 
         Debug.Log(channelToJoin);
     }
