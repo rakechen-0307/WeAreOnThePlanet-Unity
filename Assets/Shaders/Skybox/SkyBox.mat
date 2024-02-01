@@ -54,11 +54,11 @@ Material:
     - _Brightness: 0.37
     - _HorizontalBrightness: 200
     - _Horizontal_Blend: 4.5
-    - _Power_Factor: 58
+    - _Power_Factor: 60
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Sky_Blend: 2.5
-    - _Star_Height: 3000
+    - _Star_Height: 5000
     - _Star_Intensity: 1500
     m_Colors:
     - _Horizontal_Color: {r: 0.4104805, g: 0, b: 1, a: 0}
