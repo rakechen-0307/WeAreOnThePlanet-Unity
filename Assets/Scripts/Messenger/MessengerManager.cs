@@ -14,6 +14,7 @@ using UnityEngine.SceneManagement;
 public class MessengerManager : MonoBehaviour
 {
     public GameObject MessengerUI;
+    public TMP_Text HintText;
     public GameObject VoiceChat;
     public Button ChatButton;
     public Button AddFriendButton;
@@ -86,6 +87,8 @@ public class MessengerManager : MonoBehaviour
         Mic.SetActive(false);
         Mute.SetActive(true);
         Aim.SetActive(true);
+        HintText.enabled = true;
+        HintText.gameObject.SetActive(false);
     }
 
     async void Start()
@@ -193,18 +196,22 @@ public class MessengerManager : MonoBehaviour
         {
             if (_messengerIsOpened)
             {
-                Debug.Log("Messenger Closed");
+                HintText.gameObject.SetActive(true);
+
+                HintText.text = "Messenger Closing...";
                 await VivoxService.Instance.LeaveChannelAsync(_loadedData.mainPlayer.lastPlanetId.ToString());
                 MessengerUI.SetActive(false);
                 _messengerIsOpened = false;
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
                 Aim.SetActive(true);
+                HintText.gameObject.SetActive(false);
                 playerMovement.moveable = true;
             }
             else
             {
-                Debug.Log("Messenger Opened");
+                HintText.gameObject.SetActive(true);
+                HintText.text = "Messenger Opening...";
                 await VivoxService.Instance.JoinGroupChannelAsync(_loadedData.mainPlayer.lastPlanetId.ToString(), ChatCapability.AudioOnly);
                 MessengerUI.SetActive(true);
                 VoiceChat.SetActive(true);
@@ -216,6 +223,7 @@ public class MessengerManager : MonoBehaviour
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
                 Aim.SetActive(false);
+                HintText.gameObject.SetActive(false);
                 playerMovement.moveable = false;
                 ShowFriendList(_loadedData.playerId);
             }
