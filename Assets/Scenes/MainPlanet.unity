@@ -22832,7 +22832,7 @@ MonoBehaviour:
   noticeUI: {fileID: 1173690246}
   noticeText: {fileID: 440906376}
   waterDelay: 15
-  mainPlanetInit: {fileID: 0}
+  mainPlanetInit: {fileID: 1554582718}
 --- !u!114 &1421832438
 MonoBehaviour:
   m_ObjectHideFlags: 0
