@@ -349,33 +349,29 @@ public class SushiManager : MonoBehaviour
         PlayerPrefs.SetString("Chain", projectConfigSO.Chain);
         PlayerPrefs.SetString("Network", projectConfigSO.Network);
         PlayerPrefs.SetString("RPC", projectConfigSO.RPC);
-<<<<<<< Updated upstream
         // PlayerPrefs.SetString("Account", "0xC79dbE9296E54e5C503Bd1820eE5dAC6376c98C5");
-=======
-        //PlayerPrefs.SetString("Account", "0xC79dbE9296E54e5C503Bd1820eE5dAC6376c98C5");
->>>>>>> Stashed changes
     }
     void Awake(){
         // log function, delay time, repeat interval        
         // InvokeRepeating("rsay", 0.0f, 1.0f);
         ChainSafeSetup();
-        PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
+        // PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
         dialogButton.deactivateAllInputFields();
         VivoxService.Instance.ChannelJoined += OnChannelJoined;
     }
-    public async void OnChannelJoined(string channelName) //¶Ç°T®§µ¹host -> Â÷¶}host channel
+    public async void OnChannelJoined(string channelName) //ï¿½Ç°Tï¿½ï¿½ï¿½ï¿½host -> ï¿½ï¿½ï¿½}host channel
     {
         if (channelName == "hostChannel")
         {
             Debug.Log("nice");
         }
     }
-    public async void MessageLaunch(string message) //¶ihost channel -> OnChannelJoined
+    public async void MessageLaunch(string message) //ï¿½ihost channel -> OnChannelJoined
     {
         await VivoxService.Instance.LeaveAllChannelsAsync();
 
         string channelToJoin = "hostChannel";
-        JoinChannelAsync(channelToJoin, message);//¶ihost channel
+        JoinChannelAsync(channelToJoin, message);//ï¿½ihost channel
 
         Debug.Log(channelToJoin);
     }

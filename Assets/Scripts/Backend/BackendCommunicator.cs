@@ -17,6 +17,9 @@ public class BackendCommunicator : MonoBehaviour
     private User _realmUser;
     private string _realmAppID = "weareontheplanet-wkrim";
 
+    [SerializeField] private float checkDelaySecond = 100f;
+    private float lastSavedSeconds;
+
     private void Awake()
     {
         if (instance == null)
@@ -452,5 +455,19 @@ public class BackendCommunicator : MonoBehaviour
 
         var taskQuery = _realm.All<Task>();
         await taskQuery.SubscribeAsync();
+    }
+
+    private void Start()
+    {
+        lastSavedSeconds = Time.time;
+    }
+    
+    private void Update()
+    {
+        float currentTimeSecond = Time.time;
+        if (currentTimeSecond - lastSavedSeconds > checkDelaySecond)
+        {
+            // TODO: check or save
+        }
     }
 }
