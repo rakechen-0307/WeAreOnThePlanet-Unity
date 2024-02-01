@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
     private Transform eyes;
     private float verticalRoatation = 0f;
 
+    public bool moveable = true;
+
     void Start()
     {
         // rigidbody settings
@@ -31,10 +33,15 @@ public class PlayerMovement : MonoBehaviour
         // cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        moveable = true;
     }
 
     void Update()
     {
+        if (!moveable)
+        {
+            return;
+        }
         //calculate movement
         moveDirection.Set(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         moveDirection.Normalize();
@@ -49,18 +56,13 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!moveable)
+        {
+            return;
+        }
         if (moveDirection != Vector3.zero)
         {
             rb.AddForce(transform.right * moveDirection.x * speed + transform.forward * moveDirection.z * speed, ForceMode.Impulse);
         }
-    }
-
-    void OnGUI()
-    {
-        // Get the center of the screen
-        Vector2 centerScreen = new Vector2(Screen.width / 2, Screen.height / 2);
-        float scale = 0.08f;
-        // Draw the cursor at the center of the screen
-        GUI.DrawTexture(new Rect(centerScreen.x - (scale * cursorTexture.width / 2), centerScreen.y - (scale * cursorTexture.height / 2), scale * cursorTexture.width, scale * cursorTexture.height), cursorTexture);
     }
 }

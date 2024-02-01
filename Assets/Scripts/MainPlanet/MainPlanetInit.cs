@@ -16,6 +16,9 @@ public class MainPlanetInit : MonoBehaviour
     [SerializeField]
     private GameObject blockPrefab;
 
+    [SerializeField]
+    private List<GardenGrower> gardenGrowers;
+
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -46,9 +49,15 @@ public class MainPlanetInit : MonoBehaviour
         }
         nftDisplayer.ShowNFTList(NFTsToShow);
     }
-    private void initGarden()
+    public void initGarden()
     {
-
+        // TODO: exp to level
+        int level = loadedData.experience / 500;
+        // End TODO
+        foreach (GardenGrower grower in gardenGrowers)
+        {
+            grower.growPlants(level);
+        }
     }
 
     private void ShowNFT(Transform NFTtransform, ArtWork NFT)

@@ -8,6 +8,7 @@ using System;
 using System.Threading.Tasks;
 using MongoDB.Bson.Serialization.Serializers;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class BackendCommunicator : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class BackendCommunicator : MonoBehaviour
     private App _realmApp;
     private User _realmUser;
     private string _realmAppID = "weareontheplanet-wkrim";
+
+    [SerializeField] private float checkDelaySecond = 100f;
+    private float lastSavedSeconds = 0;
 
     private void Awake()
     {
@@ -30,7 +34,7 @@ public class BackendCommunicator : MonoBehaviour
             Destroy(gameObject);
         }
         Debug.Log(_realm);
-        // SceneManager.LoadScene("octopus");// Delete this
+        //SceneManager.LoadScene("octopus");// Delete this
     }
 
     public IList<PlayerData> FindAllPlayers()
@@ -116,6 +120,21 @@ public class BackendCommunicator : MonoBehaviour
         return true;
     }
 
+    public IList<PlayerData> FindPlanetUsers(int planetId)
+    {
+        IList<PlayerData> players = _realm.All<PlayerData>().ToList();
+        IList<PlayerData> planetUsers = new List<PlayerData>();
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].Position.PlanetID == planetId)
+            {
+                planetUsers.Add(players[i]);
+            }
+        }
+        return planetUsers;
+    }
+
     public IList<NFTInfo> GetNFTsById(int playerId)
     {
         try
@@ -183,6 +202,24 @@ public class BackendCommunicator : MonoBehaviour
             updateNFT.IsPending = status;
         });
     }
+    public async void UpdateNFTMintStatus(int nftId, bool status)
+    {
+        NFTInfo updateNFT = _realm.All<NFTInfo>().Where(nft => nft.Id == nftId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            updateNFT.IsMinted = status;
+        });
+    }
+    public async void UpdateNFTOwner(int nftId, string email)
+    {
+        NFTInfo updateNFT = _realm.All<NFTInfo>().Where(nft => nft.Id == nftId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            updateNFT.Owner = FindOnePlayerByEmail(email);
+        });
+    }
 
     public IList<PlayerData> FindAllFriends(int playerId)
     {
@@ -193,7 +230,19 @@ public class BackendCommunicator : MonoBehaviour
 
     public IList<Auction> FindEndedAuctionsByEmail(string email)
     {
-        IList<Auction> auctions = _realm.All<Auction>().Where(auction => auction.Owner.Email == email && auction.EndTime < DateTimeOffset.UtcNow && auction.NFT.Owner.Email == email).ToList();
+        PlayerData player = FindOnePlayerByEmail(email);
+        IList<NFTInfo> NFTs = player.NFTs;
+        List<Auction> auctions = new List<Auction>();
+        foreach (NFTInfo nft in NFTs)
+        {
+            Auction auction = _realm.All<Auction>().Where(auction => auction.Owner == player && auction.EndTime < DateTimeOffset.UtcNow && auction.NFT == nft).FirstOrDefault();
+            if(auction != null)
+            {
+                auctions.Add(auction);
+            }
+        }
+        //IList<Auction> auctions = _realm.All<Auction>().Where(auction => auction.Owner.Email == email && auction.EndTime < DateTimeOffset.UtcNow && auction.NFT.Owner.Email == email).ToList();
+
         return auctions;
     }
     public List<Auction> FindActiveAuctions()
@@ -239,12 +288,13 @@ public class BackendCommunicator : MonoBehaviour
     }
     public async void Bid(int id, int bidPrice)
     {
-        Auction auction = _realm.All<Auction>().Where(auction => auction.Id == id).FirstOrDefault();
+        Auction auction = FindAuctionByNFTId(id);
         PlayerData player = _realm.All<PlayerData>().Where(user => user.Email == PlayerPrefs.GetString("Email")).FirstOrDefault();
         await _realm.WriteAsync(() =>
         {
             auction.BidPlayer = player;
             auction.BidPrice = bidPrice;
+            Debug.Log(player + bidPrice.ToString());
         });
     }
     public IList<PendingFreiendInfo> FindAllPendingFriends(int playerId)
@@ -387,11 +437,68 @@ public class BackendCommunicator : MonoBehaviour
         return NFTsCount + 1;
     }
 
+    public void ChangeNFTOwner(string initOwnerEmail, string newOwnerEmail, int NFTId)
+    {
+        FindOnePlayerByEmail(newOwnerEmail).NFTs.Add(FindOneNFTById(NFTId));
+        FindOnePlayerByEmail(newOwnerEmail).NFTs.Remove(FindOneNFTById(NFTId));
+    }
+
     public IList<Auction> FindHeldAuctionByPlayerID(int playerId)
     {
         PlayerData player = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault();
         IList<Auction> heldAuctions = _realm.All<Auction>().Where(auction => auction.Owner == player).ToList();
         return heldAuctions;
+    }
+
+    public async Task<bool> FlowerAddExp(int playerId, int addedExp)
+    {
+        PlayerData player = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            player.Exp += addedExp;
+        });
+
+        return true;
+    }
+
+    public async Task<int> ProgressUpdate(int playerId, int taskId)
+    {
+        bool _isAwarded = false;
+        PlayerData player = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault();
+
+        if (!player.TaskProgress[taskId].Achieved)
+        {
+            await _realm.WriteAsync(() =>
+            {
+                player.TaskProgress[taskId].Progress += 1;
+            });
+
+            if (player.TaskProgress[taskId].Task.MaxProgress == player.TaskProgress[taskId].Progress)
+            {
+                await _realm.WriteAsync(() =>
+                {
+                    player.TaskProgress[taskId].Achieved = true;
+                });
+            }
+
+            if (player.TaskProgress[taskId].Achieved)
+            {
+                await _realm.WriteAsync(() =>
+                {
+                    player.Exp += player.TaskProgress[taskId].Task.Exp;
+                });
+                _isAwarded = true;
+            }
+        }
+        if (_isAwarded)
+        {
+            return player.TaskProgress[taskId].Task.Prize;
+        }
+        else
+        {
+            return -1;
+        }
     }
 
     private async void RealmSetup()
@@ -425,5 +532,41 @@ public class BackendCommunicator : MonoBehaviour
 
         var taskQuery = _realm.All<Task>();
         await taskQuery.SubscribeAsync();
+    }
+
+    private void Start()
+    {
+        lastSavedSeconds = Time.time;
+    }
+    
+    private async void Update()
+    {
+        if(PlayerPrefs.HasKey("Email"))
+        {
+            float currentTimeSecond = Time.time;
+            if (currentTimeSecond - lastSavedSeconds > checkDelaySecond)
+            {
+                // TODO: check or save
+                Debug.Log("UPDATE!" + currentTimeSecond.ToString());
+                Debug.Log(FindEndedAuctionsByEmail(PlayerPrefs.GetString("Email")).ToList());
+                foreach (Auction auction in FindEndedAuctionsByEmail(PlayerPrefs.GetString("Email")).ToList())
+                {
+                    if (auction.BidPrice == auction.StartPrice)
+                    {
+                        BackendCommunicator.instance.UpdateNFTStatus(auction.NFT.Id, false);
+                    }
+                    else
+                    {
+                        string toEmail = auction.BidPlayer.Email;
+                        Debug.Log("1");
+                        Debug.Log(AuctionManager.instance);
+                        Debug.Log(auction);
+                        Debug.Log(auction.NFT);
+                        await AuctionManager.instance.CheckBalanceAndBusiness(toEmail, auction.NFT.Id);
+                    }
+                }
+                lastSavedSeconds = currentTimeSecond;
+            }
+        }
     }
 }

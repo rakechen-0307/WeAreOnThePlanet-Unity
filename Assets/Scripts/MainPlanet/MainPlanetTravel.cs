@@ -17,21 +17,21 @@ public class MainPlanetTravel : MonoBehaviour
         }
 
         string sceneName = "MainPlanet";
-        if (planetId == -1) // NFT workshop
+        if (planetId == -1)  // NFT workshop
         {
             sceneName = "CreateNFT";
             loadedData.mainPlayer.lastPosition = mainPlayer.transform.position;
             loadedData.mainPlayer.lastEuler = mainPlayer.transform.eulerAngles;
         }
-        else if (planetId == -2)
+        else if (planetId == -2)  // Octopus
         {
-            sceneName = "Sushi";
+            sceneName = "Octopus";
             loadedData.mainPlayer.lastPosition = mainPlayer.transform.position;
             loadedData.mainPlayer.lastEuler = mainPlayer.transform.eulerAngles;
         }
         else
         {
-            loadedData.mainPlayer.lastPosition = new Vector3(0f, 50.7f, 0f);
+            loadedData.mainPlayer.lastPosition = new Vector3(0f, 52f, 0f);
             loadedData.mainPlayer.lastEuler = new Vector3(0, 0, 0);
         }
         loadedData.mainPlayer.lastPlanetId = planetId;

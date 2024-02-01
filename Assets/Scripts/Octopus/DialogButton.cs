@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using UnityEngine.SceneManagement;
 
 public class DialogButton : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class DialogButton : MonoBehaviour
     public TMP_InputField inputAuctionEndingTime;
     
     public SushiManager sushiManager;
+
+    [SerializeField]
+    private LoadedData loadedData;
 
     void Awake()
     {
@@ -142,15 +146,16 @@ public class DialogButton : MonoBehaviour
             // try entering auction
             // Handle errors
             int NFTId = SushiManager.selected;
-            Auction auction = BackendCommunicator.instance.FindAuctionByNFTId(NFTId);
-            Debug.Log(auction.StartPrice.ToString());
-            Debug.Log(auction.StartTime.ToString("yyyy/MM/dd, h:mm tt", new System.Globalization.CultureInfo("en-US")) + " (UTF+0)");
-            Debug.Log(auction.EndTime.ToString("yyyy/MM/dd, h:mm tt", new System.Globalization.CultureInfo("en-US")) + " (UTF+0)");
+            loadedData.attendingAuctionNFTId = NFTId;
+            SceneManager.LoadScene("Auction");
         }
 
 
         else 
         {
+            // somehow works, don't change it (clear the screen)
+            sushiManager.SetMint(sushiManager.Empty);
+            sushiManager.SetDisplayed(0, "mint");
             UIManager.Instance.UpdateDialog("none", "");
         }
     }

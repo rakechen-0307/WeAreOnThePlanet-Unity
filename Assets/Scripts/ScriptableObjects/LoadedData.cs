@@ -16,6 +16,7 @@ public class LoadedData : ScriptableObject
     public int experience;
     public PlanetData currentPlanet;
     public string account;
+    public int attendingAuctionNFTId;
 }
 
 [Serializable]

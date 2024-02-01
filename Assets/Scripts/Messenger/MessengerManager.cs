@@ -9,16 +9,22 @@ using UnityEngine.UI;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 public class MessengerManager : MonoBehaviour
 {
     public GameObject MessengerUI;
+    public TMP_Text HintText;
+    public GameObject VoiceChat;
     public Button ChatButton;
     public Button AddFriendButton;
     public Button PendingButton;
+    public Button TravelButton;
+
     public GameObject ChatPage;
     public Button SendButton;
     public TMP_InputField TextInput;
+
     public GameObject AddFriendPage;
     public GameObject PlayerView;
     public TMP_Text AddFriendUsername;
@@ -27,6 +33,7 @@ public class MessengerManager : MonoBehaviour
     public TMP_Text AddFriendFriends;
     public TMP_Text AddFriendAuction;
     public Button SendRequestButton;
+
     public GameObject PendingPage;
     public GameObject PendingView;
     public TMP_Text PendingUsername;
@@ -37,34 +44,73 @@ public class MessengerManager : MonoBehaviour
     public Button AcceptButton;
     public Button DenyButton;
 
-    public GameObject playerListObj, chatChannelObj, addFriendChannelObj, pendingChannelObj;
+    public GameObject TravelPage;
+    public GameObject TravelView;
+    public TMP_Text TravelUsername;
+    public TMP_Text TravelLevel;
+    public TMP_Text TravelNFT;
+    public TMP_Text TravelFriends;
+    public TMP_Text TravelAuction;
+    public Button GoButton;
+
+    public Button SoundButton;
+    public Button MicButton;
+    public GameObject Sound;
+    public GameObject NoSound;
+    public GameObject Mic;
+    public GameObject Mute;
+
+    public GameObject Aim;
+    public PlayerMovement playerMovement;
+    public GameObject playerListObj, chatChannelObj, addFriendChannelObj, pendingChannelObj, travelChannelObj, voiceChatChannelObj;
     public GameObject myTextObj, comingTextObj, chatRoomObj;
     public LoadedData _loadedData;
+    public MainPlanetTravel mainPlanetTravel;
+    public AchievementUI achievementUI;
 
-    private bool _messengerIsOpened;
-    private string _currentChannel;
+    public bool _messengerIsOpened;
+    private bool _soundOn;
+    private bool _micOn;
+    private string _currentChannel = null;
 
     private IList<PlayerListObject> _player = new List<PlayerListObject>();
+    private List<PlayerListObject> _planetUser = new List<PlayerListObject>();
     private IList<MessageObject> _message = new List<MessageObject>();
 
-    private async void Awake()
+    private void Awake()
     {
         MessengerUI.SetActive(false);
         _messengerIsOpened = false;
-
-        await VivoxInitialize();
-        await VivoxSignIn(_loadedData.playerId.ToString());
+        _soundOn = false;
+        _micOn = false;
+        Sound.SetActive(false);
+        NoSound.SetActive(true);
+        Mic.SetActive(false);
+        Mute.SetActive(true);
+        Aim.SetActive(true);
+        HintText.enabled = true;
+        HintText.gameObject.SetActive(false);
     }
 
-    void Start()
+    async void Start()
     {
+        await VivoxInitialize();
+        await VivoxSignIn(_loadedData.playerId.ToString());
+        await VivoxService.Instance.LeaveAllChannelsAsync();
+        VivoxService.Instance.EnableAcousticEchoCancellation();
+
+        VivoxService.Instance.MuteOutputDevice();
+        VivoxService.Instance.MuteInputDevice();
+
         VivoxService.Instance.ChannelMessageReceived += ChannelMessageReceived;
+        ShowPlanetUserList(_loadedData.mainPlayer.lastPlanetId);
 
         ChatButton.onClick.AddListener(() =>
         {
             ChatPage.SetActive(true);
             AddFriendPage.SetActive(false);
             PendingPage.SetActive(false);
+            TravelPage.SetActive(false);
             ShowFriendList(_loadedData.playerId);
         });
 
@@ -74,6 +120,7 @@ public class MessengerManager : MonoBehaviour
             ChatPage.SetActive(false);
             PendingPage.SetActive(false);
             PlayerView.SetActive(false);
+            TravelPage.SetActive(false);
             ShowNotFriendList(_loadedData.playerId);
         });
 
@@ -83,7 +130,18 @@ public class MessengerManager : MonoBehaviour
             ChatPage.SetActive(false);
             AddFriendPage.SetActive(false);
             PendingView.SetActive(false);
+            TravelPage.SetActive(false);
             ShowPendingList(_loadedData.playerId);
+        });
+
+        TravelButton.onClick.AddListener(() =>
+        {
+            PendingPage.SetActive(false);
+            ChatPage.SetActive(false);
+            AddFriendPage.SetActive(false);
+            TravelView.SetActive(false);
+            TravelPage.SetActive(true);
+            ShowTravelList(_loadedData.playerId, _loadedData.mainPlayer.lastPlanetId);
         });
 
         SendButton.onClick.AddListener(() =>
@@ -95,34 +153,97 @@ public class MessengerManager : MonoBehaviour
                 TextInput.text = string.Empty;
             }
         });
-    }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Keypad0)) 
+        SoundButton.onClick.AddListener(() =>
         {
-            if (_messengerIsOpened)
+            if (_soundOn)
             {
-                Debug.Log("Messenger Closed");
-                MessengerUI.SetActive(false);
-                _messengerIsOpened = false;
-                Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
+                VivoxService.Instance.MuteOutputDevice();
+                Sound.SetActive(false);
+                NoSound.SetActive(true);
+                _soundOn = false;
             }
             else
             {
-                Debug.Log("Messenger Opened");
-                MessengerUI.SetActive(true);
-                ChatPage.SetActive(true);
-                AddFriendPage.SetActive(false);
-                PendingPage.SetActive(false);
-                Debug.Log(ChatButton.colors);
-                _messengerIsOpened = true;
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-                ShowFriendList(_loadedData.playerId);
+                VivoxService.Instance.UnmuteOutputDevice();
+                Sound.SetActive(true);
+                NoSound.SetActive(false);
+                _soundOn = true;
+            }
+        });
+
+        MicButton.onClick.AddListener(() =>
+        {
+            if (_micOn)
+            {
+                VivoxService.Instance.MuteInputDevice();
+                Mic.SetActive(false);
+                Mute.SetActive(true);
+                _micOn = false;
+            }
+            else
+            {
+                VivoxService.Instance.UnmuteInputDevice();
+                Mic.SetActive(true);
+                Mute.SetActive(false);
+                _micOn = true;
+            }
+        });
+    }
+
+    async void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1)) 
+        {
+            if (_messengerIsOpened)
+            {
+                await CloseMessenger();
+            }
+            else
+            {
+                achievementUI.CloseMenu();
+                await OpenMessenger();
             }
         }
+    }
+
+    public async Task<bool> OpenMessenger()
+    {
+        HintText.gameObject.SetActive(true);
+        HintText.text = "Messenger Opening...";
+        await VivoxService.Instance.JoinGroupChannelAsync(_loadedData.mainPlayer.lastPlanetId.ToString(), ChatCapability.AudioOnly);
+        MessengerUI.SetActive(true);
+        VoiceChat.SetActive(true);
+        ChatPage.SetActive(true);
+        AddFriendPage.SetActive(false);
+        PendingPage.SetActive(false);
+        TravelPage.SetActive(false);
+        _messengerIsOpened = true;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        Aim.SetActive(false);
+        HintText.gameObject.SetActive(false);
+        playerMovement.moveable = false;
+        ShowFriendList(_loadedData.playerId);
+
+        return true;
+    }
+
+    public async Task<bool> CloseMessenger()
+    {
+        HintText.gameObject.SetActive(true);
+
+        HintText.text = "Messenger Closing...";
+        await VivoxService.Instance.LeaveChannelAsync(_loadedData.mainPlayer.lastPlanetId.ToString());
+        MessengerUI.SetActive(false);
+        _messengerIsOpened = false;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Aim.SetActive(true);
+        HintText.gameObject.SetActive(false);
+        playerMovement.moveable = true;
+
+        return true;
     }
 
     private void ShowFriendList(int playerId)
@@ -138,7 +259,6 @@ public class MessengerManager : MonoBehaviour
         for (int i = 0; i < friends.Count; i++)
         {
             AddFriendToList(friends[i].Username, playerId, friends[i].Id);
-            Debug.Log("add friends");
         }
     }
 
@@ -166,7 +286,6 @@ public class MessengerManager : MonoBehaviour
         for (int i = 0; i < notFriends.Count; i++)
         {
             AddNotFriendToList(notFriends[i].Username, playerId, notFriends[i].Id);
-            Debug.Log("show player");
         }
     }
 
@@ -183,7 +302,49 @@ public class MessengerManager : MonoBehaviour
         for (int i = 0; i < pendings.Count; i++)
         {
             AddPendingToList(pendings[i].Player.Username, playerId, pendings[i].Player.Id, pendings[i].IsSender);
-            Debug.Log("add friends");
+        }
+    }
+
+    private void ShowTravelList(int playerId, int planetId)
+    {
+        _player = new List<PlayerListObject>();
+        foreach (Transform child in travelChannelObj.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        IList<PlayerData> friends = BackendCommunicator.instance.FindAllFriends(playerId);
+
+        if (playerId != planetId)
+        {
+            AddTravelToList("Your Planet", playerId);
+        }
+        AddTravelToList("NFT Dealer", -3);
+        for (int i = 0; i < friends.Count; i++)
+        {
+            if (friends[i].Id != planetId)
+            {
+                AddTravelToList(friends[i].Username, friends[i].Id);
+            }
+        }
+    }
+
+    private void ShowPlanetUserList(int planetId)
+    {
+        _planetUser = new List<PlayerListObject>();
+        foreach (Transform child in voiceChatChannelObj.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        IList<PlayerData> planetUsers = BackendCommunicator.instance.FindPlanetUsers(planetId);
+
+        for (int i = 0; i < planetUsers.Count; i++)
+        {
+            if (planetUsers[i].Id != _loadedData.playerId)
+            {
+                AddPlanetUserToList(planetUsers[i].Username);
+            }
         }
     }
 
@@ -227,6 +388,29 @@ public class MessengerManager : MonoBehaviour
 
         newMessagePlayerObj.Username.text = pendingName;
         _player.Add(newMessagePlayerObj);
+    }
+
+    private void AddTravelToList(string friendName, int friendID)
+    {
+        var newPlayer = Instantiate(playerListObj, travelChannelObj.transform);
+        var newMessagePlayerObj = newPlayer.GetComponent<PlayerListObject>();
+
+        newMessagePlayerObj.SelectButton.onClick.AddListener(() =>
+        {
+            ShowTravelInfo(friendID);
+        });
+
+        newMessagePlayerObj.Username.text = friendName;
+        _player.Add(newMessagePlayerObj);
+    }
+
+    private void AddPlanetUserToList(string friendName)
+    {
+        var newPlayer = Instantiate(playerListObj, voiceChatChannelObj.transform);
+        var newMessagePlayerObj = newPlayer.GetComponent<PlayerListObject>();
+
+        newMessagePlayerObj.Username.text = friendName;
+        _planetUser.Add(newMessagePlayerObj);
     }
 
     public void ShowPlayerInfo(int currentUserID, int playerID, Button button)
@@ -276,6 +460,30 @@ public class MessengerManager : MonoBehaviour
         });
     }
 
+    private void ShowTravelInfo(int friendID)
+    {
+        if (friendID == -3)
+        {
+            SceneManager.LoadScene("Octopus");
+            return;
+        }
+
+        PlayerData playerData = BackendCommunicator.instance.FindOnePlayerById(friendID);
+        int auctionCount = BackendCommunicator.instance.FindHeldAuctionByPlayerID(friendID).Count;
+
+        TravelUsername.text = playerData.Username;
+        TravelLevel.text = "Planet Level : " + playerData.Exp.ToString();
+        TravelNFT.text = "Owned NFT : " + playerData.NFTs.Count.ToString();
+        TravelFriends.text = "Total Friends : " + playerData.Friends.Count.ToString();
+        TravelAuction.text = "Auctions Hold : " + auctionCount.ToString();
+        TravelView.SetActive(true);
+
+        GoButton.onClick.AddListener(() =>
+        {
+            mainPlanetTravel.TravelPlanet(friendID);
+        });
+    }
+
     public async void SendRequestToPlayer(int from, int to, Button button)
     {
         await BackendCommunicator.instance.AddPendingFriend(from, to);
@@ -299,9 +507,6 @@ public class MessengerManager : MonoBehaviour
 
     public void ChannelMessageReceived(VivoxMessage message)
     {
-        var channelName = message.ChannelName;
-        var senderName = message.SenderDisplayName;
-        var senderId = message.SenderPlayerId;
         var messageText = message.MessageText;
         var fromSelf = message.FromSelf;
 
@@ -343,7 +548,10 @@ public class MessengerManager : MonoBehaviour
         string channelToJoin = (from < to) ? (from.ToString() + "_" + to.ToString()) : (to.ToString() + "_" + from.ToString());
         if (channelToJoin != _currentChannel)
         {
-            await VivoxService.Instance.LeaveAllChannelsAsync();
+            if (_currentChannel != null)
+            {
+                await VivoxService.Instance.LeaveChannelAsync(_currentChannel);
+            }
 
             _message = new List<MessageObject>();
             foreach (Transform child in chatRoomObj.transform)

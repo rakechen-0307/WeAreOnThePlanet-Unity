@@ -20,6 +20,7 @@ using Web3Unity.Scripts.Library.Ethers.Contracts;
 using SysRandom = System.Random;
 using Unity.VisualScripting.Antlr3.Runtime;
 using Unity.VisualScripting;
+using Unity.Services.Vivox;
 
 public class SushiManager : MonoBehaviour
 {
@@ -37,6 +38,7 @@ public class SushiManager : MonoBehaviour
     public List<NFTInfo> Transfer = new List<NFTInfo>();
     public List<NFTInfo> Launch = new List<NFTInfo>();
     public List<NFTInfo> Attend = new List<NFTInfo>();
+    public List<NFTInfo> Empty = new List<NFTInfo>() { };
 
     private List<GameObject> sushiInstances = new List<GameObject>();
     private float moveStartTime;
@@ -46,8 +48,7 @@ public class SushiManager : MonoBehaviour
     //private User _realmUser;
     //private string _realmAppID = "weareontheplanet-ouawh";
 
-    public static BigInteger price = 100;
-    public static BigInteger fee = 5;
+    private BigInteger price = 1000000000000000000;
     public static int selected = 0;
 
     SysRandom rnd = new SysRandom(Guid.NewGuid().GetHashCode());
@@ -255,7 +256,7 @@ public class SushiManager : MonoBehaviour
 
 
             BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
-            BigInteger realPrice = (BigInteger)1000000000000000000 * price;
+            BigInteger realPrice = 5*price;
             Debug.Log("Balance Of: " + balanceOf);
             Debug.Log("Price:" + realPrice);
             if (balanceOf < realPrice)
@@ -272,6 +273,7 @@ public class SushiManager : MonoBehaviour
                 string message = JsonConvert.SerializeObject(messageObj);
                 Debug.Log(message);
                 // SendMessageRequest(message);
+                MessageLaunch(message);
                 return NFTStatus.Success;
             }
         }
@@ -299,7 +301,7 @@ public class SushiManager : MonoBehaviour
 
             BigInteger nonce = rnd.Next();
             BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
-            BigInteger realFee = (BigInteger)1000000000000000000 * fee;
+            BigInteger realFee = 5 * price;
             Debug.Log("Balance Of: " + balanceOf);
             Debug.Log("Fee:" + realFee);
             if (balanceOf < realFee)
@@ -326,6 +328,7 @@ public class SushiManager : MonoBehaviour
                 string message = JsonConvert.SerializeObject(messageObj);
                 Debug.Log(message);
                 // SendMessageRequest(message);
+                MessageLaunch(message);
                 return NFTStatus.Success;
             }
         }
@@ -345,7 +348,6 @@ public class SushiManager : MonoBehaviour
         PlayerPrefs.SetString("Chain", projectConfigSO.Chain);
         PlayerPrefs.SetString("Network", projectConfigSO.Network);
         PlayerPrefs.SetString("RPC", projectConfigSO.RPC);
-        PlayerPrefs.SetString("Account", "0xC79dbE9296E54e5C503Bd1820eE5dAC6376c98C5");
     }
     void Awake(){
         // log function, delay time, repeat interval        
@@ -353,9 +355,48 @@ public class SushiManager : MonoBehaviour
         ChainSafeSetup();
         // PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
         dialogButton.deactivateAllInputFields();
+        VivoxService.Instance.ChannelJoined += OnChannelJoined;
     }
+    public async void OnChannelJoined(string channelName) 
+    {
+        if (channelName == "hostChannel")
+        {
+            Debug.Log("nice");
+        }
+    }
+    public async void MessageLaunch(string message) 
+    {
+        await VivoxService.Instance.LeaveAllChannelsAsync();
 
+        string channelToJoin = "hostChannel";
+        JoinChannelAsync(channelToJoin, message);
+
+        Debug.Log(channelToJoin);
+    }
+    public async void JoinChannelAsync(string channelName, string message)
+    {
+        try
+        {
+            await VivoxService.Instance.JoinEchoChannelAsync(channelName, ChatCapability.TextOnly);
+        }
+        catch
+        {
+            Debug.Log("Join error");
+        }
+        
+        await VivoxService.Instance.SendChannelTextMessageAsync("hostChannel", message);
+
+        try
+        {
+            await VivoxService.Instance.LeaveAllChannelsAsync();
+        }
+        catch
+        {
+            Debug.Log("Leave error");
+        }
+    }
 }
+
 public enum NFTStatus
 {
     Success,

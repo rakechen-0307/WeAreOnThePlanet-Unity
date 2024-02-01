@@ -62,7 +62,7 @@ Material:
     - _Smoothness: 0.391
     - _Threshold: 0.211
     m_Colors:
-    - _Color: {r: 8.543818, g: 8.574187, b: 5.500422, a: 1}
+    - _Color: {r: 10.590403, g: 10.907665, b: 20.410595, a: 1}
     - _Fresnel_Intensity: {r: 4, g: 4, b: 4, a: 1}
     - _Specular_Color: {r: 0.8037735, g: 0.4291847, b: 0.4291847, a: 1}
     - _Value: {r: 0.2, g: 0.2, b: 0.2, a: 0}

@@ -44,7 +44,7 @@ public class PlacementSystem : MonoBehaviour
                 break;
             }
         }
-        if (!blockTaken) 
+        if (!blockTaken && position.y < 10) 
         {
             // visualize
             GameObject newBlock = Instantiate(blockPrefab, position, Quaternion.identity, transform);

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -336,7 +336,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: YYYY/MM/DD/HH/MM/SS
+  m_text: YYYY/MM/DD HH:MM:SS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -849,7 +849,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: User ID
+  m_text: User Email
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2491,7 +2491,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: YYYY/MM/DD/HH/MM/SS
+  m_text: YYYY/MM/DD HH:MM:SS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2950,7 +2950,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 837141110}
   m_TextViewport: {fileID: 28220236}
   m_TextComponent: {fileID: 1721688913}
-  m_Placeholder: {fileID: 0}
+  m_Placeholder: {fileID: 277661793}
   m_VerticalScrollbar: {fileID: 0}
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
@@ -3305,7 +3305,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 948880209}
   m_TextViewport: {fileID: 1159110668}
   m_TextComponent: {fileID: 1768465383}
-  m_Placeholder: {fileID: 0}
+  m_Placeholder: {fileID: 519771360}
   m_VerticalScrollbar: {fileID: 0}
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
@@ -3723,6 +3723,7 @@ MonoBehaviour:
   inputAuctionStartingTime: {fileID: 1533465233}
   inputAuctionEndingTime: {fileID: 1366352218}
   sushiManager: {fileID: 1343729464}
+  loadedData: {fileID: 11400000, guid: 8c7085d898f4aa941b63d8b50e52d4dc, type: 2}
 --- !u!1 &1055281059
 GameObject:
   m_ObjectHideFlags: 0
@@ -5174,7 +5175,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1366352219}
   m_TextViewport: {fileID: 117806776}
   m_TextComponent: {fileID: 2029257068}
-  m_Placeholder: {fileID: 0}
+  m_Placeholder: {fileID: 97865623}
   m_VerticalScrollbar: {fileID: 0}
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
@@ -5446,7 +5447,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1533465234}
   m_TextViewport: {fileID: 222988384}
   m_TextComponent: {fileID: 165107023}
-  m_Placeholder: {fileID: 0}
+  m_Placeholder: {fileID: 642843151}
   m_VerticalScrollbar: {fileID: 0}
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
