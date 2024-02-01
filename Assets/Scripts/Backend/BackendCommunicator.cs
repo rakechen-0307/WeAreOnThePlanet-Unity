@@ -409,6 +409,18 @@ public class BackendCommunicator : MonoBehaviour
         return heldAuctions;
     }
 
+    public async Task<bool> AddExp(int playerId, int addedExp)
+    {
+        PlayerData player = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            player.Exp += addedExp;
+        });
+
+        return true;
+    }
+
     private async void RealmSetup()
     {
         if (_realm == null)
