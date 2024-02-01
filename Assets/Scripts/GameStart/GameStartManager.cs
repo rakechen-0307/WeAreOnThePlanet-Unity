@@ -86,7 +86,8 @@ public class GameStartManager : Singleton<GameStartManager>
             StartGameButton.gameObject.SetActive(true);
             StartHostButton.gameObject.SetActive(false);
         }
-
+        PlayerPrefs.DeleteKey("Account");
+        PlayerPrefs.DeleteKey("Email");
         ChainSafeSetup();  // setup ChainSafe
         await VivoxInitialize();  // initialize Vivox
     }

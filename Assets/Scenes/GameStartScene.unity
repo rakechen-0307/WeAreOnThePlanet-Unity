@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.018957552, g: 0.002860594, b: 0.080408685, a: 1}
+  m_IndirectSpecularColor: {r: 0.99999905, g: 0, b: 0.99999905, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2614,6 +2614,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 547347735}
   m_CullTransparentMesh: 1
+--- !u!1 &553396930
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 553396932}
+  - component: {fileID: 553396931}
+  m_Layer: 0
+  m_Name: AuctionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &553396931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 553396930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c48258c29936749b16b101fe35d6a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &553396932
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 553396930}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.47832, y: 2.5275874, z: -5.762382}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &580781421
 GameObject:
   m_ObjectHideFlags: 0
@@ -3276,7 +3320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601ebd74f6d0b1548bfb57bcaba0c539, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isHost: 1
+  isHost: 0
   StartPage: {fileID: 1795392867}
   StartHostButton: {fileID: 1660266976}
   StartGameButton: {fileID: 415898583}
@@ -6919,6 +6963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1625d7d85c0f3b42b2bfdae164c1897, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  checkDelaySecond: 100
 --- !u!4 &1947647874
 Transform:
   m_ObjectHideFlags: 0
@@ -7814,3 +7859,4 @@ SceneRoots:
   - {fileID: 1526355319}
   - {fileID: 1947647874}
   - {fileID: 536296496}
+  - {fileID: 553396932}

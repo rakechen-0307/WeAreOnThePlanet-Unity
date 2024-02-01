@@ -30,8 +30,6 @@ public class AuctionUI : MonoBehaviour
     [SerializeField]
     private Button backButton;
 
-    [SerializeField]
-    private AuctionManager auctionManager;
 
     private void Start()
     {
@@ -72,7 +70,7 @@ public class AuctionUI : MonoBehaviour
             bidInput.text = (highestPrice + 1).ToString();
             return;
         }
-        bool result = await auctionManager.AuctionBid(loadedData.attendingAuctionNFTId, bidPrice);
+        bool result = await AuctionManager.instance.AuctionBid(loadedData.attendingAuctionNFTId, bidPrice);
         if(result)
         {
             getAuctionInfo();
