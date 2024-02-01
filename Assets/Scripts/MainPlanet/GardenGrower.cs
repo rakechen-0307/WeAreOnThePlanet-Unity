@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class GardenGrower : MonoBehaviour
@@ -5,11 +6,9 @@ public class GardenGrower : MonoBehaviour
     [SerializeField]
     private GameObject[] plantPrefabs = new GameObject[4];
 
-    public int testLevel = 0;
-
     private void Start()
     {
-        growPlants(testLevel);
+        growPlants(0);
     }
 
     public void growPlants(int level)
