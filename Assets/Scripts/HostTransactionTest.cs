@@ -15,7 +15,7 @@ using Nethereum.Util;
 using System.Text;
 using Unity.Collections;
 using Unity.Services.Vivox;
-
+using System.Threading.Tasks;
 
 public class HostTransactionTest : MonoBehaviour
 {
@@ -42,7 +42,7 @@ public class HostTransactionTest : MonoBehaviour
     }
 
 
-    void OnChannelMessageReceived(VivoxMessage message) 
+    public async void OnChannelMessageReceived(VivoxMessage message) 
     {
         Debug.Log(message.MessageText);
         string[] messageObj = JsonConvert.DeserializeObject<string[]>(message.MessageText);
@@ -57,9 +57,10 @@ public class HostTransactionTest : MonoBehaviour
                 if (verifiedAddress == to)
                 {   
                     Debug.Log("MintNFTTo = " + to);
-                    NFTMint(to, Int16.Parse(PreJsonData[2]));
-                    TokenTransfer(to, 4, 1);
+                    await NFTMint(to, Int16.Parse(PreJsonData[2]));
+                    await TokenTransfer(to, 4, 1);
                     //狀態改成isMinted = true
+                    //重新check balance，把畫面中的錢包金額改掉
                 }
                 else
                 {
@@ -67,6 +68,7 @@ public class HostTransactionTest : MonoBehaviour
                 }
                 break;
             case "transfer":
+
                 break;
             default:
                 break;
@@ -108,9 +110,10 @@ public class HostTransactionTest : MonoBehaviour
         {
             print("Error with the transaction");
         }
+
     }
 
-    private async void NFTMint(string to, int id)
+    private async Task<bool> NFTMint(string to, int id)
     {
         var method = "safeMint";
 
@@ -137,9 +140,10 @@ public class HostTransactionTest : MonoBehaviour
         {
             print("Error with the transaction");
         }
+        return true;
     }
 
-    private async void TokenTransfer(string from, BigInteger value, BigInteger fee)
+    private async Task<bool> TokenTransfer(string from, BigInteger value, BigInteger fee)
     {
         // Send { from, to, value, fee, nonce, hash, signature } to host 
         var method = "transferPreSigned";
@@ -171,6 +175,7 @@ public class HostTransactionTest : MonoBehaviour
             print("Error with the transaction");
         }
         _nonce = rnd.Next();
+        return true;
     }
 
     void Start()
