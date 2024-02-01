@@ -201,6 +201,15 @@ public class BackendCommunicator : MonoBehaviour
             updateNFT.IsPending = status;
         });
     }
+    public async void UpdateNFTMintStatus(int nftId, bool status)
+    {
+        NFTInfo updateNFT = _realm.All<NFTInfo>().Where(nft => nft.Id == nftId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            updateNFT.IsMinted = status;
+        });
+    }
 
     public IList<PlayerData> FindAllFriends(int playerId)
     {
@@ -257,7 +266,7 @@ public class BackendCommunicator : MonoBehaviour
     }
     public async void Bid(int id, int bidPrice)
     {
-        Auction auction = _realm.All<Auction>().Where(auction => auction.Id == id).FirstOrDefault();
+        Auction auction = FindAuctionByNFTId(id);
         PlayerData player = _realm.All<PlayerData>().Where(user => user.Email == PlayerPrefs.GetString("Email")).FirstOrDefault();
         await _realm.WriteAsync(() =>
         {
