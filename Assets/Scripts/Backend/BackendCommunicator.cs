@@ -210,6 +210,15 @@ public class BackendCommunicator : MonoBehaviour
             updateNFT.IsMinted = status;
         });
     }
+    public async void UpdateNFTOwner(int nftId, string email)
+    {
+        NFTInfo updateNFT = _realm.All<NFTInfo>().Where(nft => nft.Id == nftId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            updateNFT.Owner = FindOnePlayerByEmail(email);
+        });
+    }
 
     public IList<PlayerData> FindAllFriends(int playerId)
     {
@@ -413,6 +422,11 @@ public class BackendCommunicator : MonoBehaviour
         });
 
         return NFTsCount + 1;
+    }
+
+    public void ChangeNFTOwner()
+    {
+
     }
 
     public IList<Auction> FindHeldAuctionByPlayerID(int playerId)
