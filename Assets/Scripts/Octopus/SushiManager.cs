@@ -48,7 +48,7 @@ public class SushiManager : MonoBehaviour
     //private User _realmUser;
     //private string _realmAppID = "weareontheplanet-ouawh";
 
-    public static BigInteger price = 100;
+    public static BigInteger price = 1;
     public static BigInteger fee = 5;
     public static int selected = 0;
 
@@ -257,7 +257,7 @@ public class SushiManager : MonoBehaviour
 
 
             BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
-            BigInteger realPrice = (BigInteger)1000000000000000000 * price;
+            BigInteger realPrice = 5*price;
             Debug.Log("Balance Of: " + balanceOf);
             Debug.Log("Price:" + realPrice);
             if (balanceOf < realPrice)
@@ -349,7 +349,11 @@ public class SushiManager : MonoBehaviour
         PlayerPrefs.SetString("Chain", projectConfigSO.Chain);
         PlayerPrefs.SetString("Network", projectConfigSO.Network);
         PlayerPrefs.SetString("RPC", projectConfigSO.RPC);
+<<<<<<< Updated upstream
         // PlayerPrefs.SetString("Account", "0xC79dbE9296E54e5C503Bd1820eE5dAC6376c98C5");
+=======
+        //PlayerPrefs.SetString("Account", "0xC79dbE9296E54e5C503Bd1820eE5dAC6376c98C5");
+>>>>>>> Stashed changes
     }
     void Awake(){
         // log function, delay time, repeat interval        
