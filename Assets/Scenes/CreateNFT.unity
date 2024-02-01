@@ -4945,7 +4945,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 757323329}
-  - component: {fileID: 757323328}
   - component: {fileID: 757323327}
   m_Layer: 0
   m_Name: Backend
@@ -4966,19 +4965,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98ffa55f3cbf99e4cab045ae2909b0ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &757323328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 757323326}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1625d7d85c0f3b42b2bfdae164c1897, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  checkDelaySecond: 100
 --- !u!4 &757323329
 Transform:
   m_ObjectHideFlags: 0

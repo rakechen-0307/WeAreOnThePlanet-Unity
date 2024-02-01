@@ -8,6 +8,7 @@ using System;
 using System.Threading.Tasks;
 using MongoDB.Bson.Serialization.Serializers;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class BackendCommunicator : MonoBehaviour
 {
@@ -229,7 +230,19 @@ public class BackendCommunicator : MonoBehaviour
 
     public IList<Auction> FindEndedAuctionsByEmail(string email)
     {
-        IList<Auction> auctions = _realm.All<Auction>().Where(auction => auction.Owner.Email == email && auction.EndTime < DateTimeOffset.UtcNow && auction.NFT.Owner.Email == email).ToList();
+        PlayerData player = FindOnePlayerByEmail(email);
+        IList<NFTInfo> NFTs = player.NFTs;
+        List<Auction> auctions = new List<Auction>();
+        foreach (NFTInfo nft in NFTs)
+        {
+            Auction auction = _realm.All<Auction>().Where(auction => auction.Owner == player && auction.EndTime < DateTimeOffset.UtcNow && auction.NFT == nft).FirstOrDefault();
+            if(auction != null)
+            {
+                auctions.Add(auction);
+            }
+        }
+        //IList<Auction> auctions = _realm.All<Auction>().Where(auction => auction.Owner.Email == email && auction.EndTime < DateTimeOffset.UtcNow && auction.NFT.Owner.Email == email).ToList();
+
         return auctions;
     }
     public List<Auction> FindActiveAuctions()
@@ -545,6 +558,10 @@ public class BackendCommunicator : MonoBehaviour
                     else
                     {
                         string toEmail = auction.BidPlayer.Email;
+                        Debug.Log("1");
+                        Debug.Log(AuctionManager.instance);
+                        Debug.Log(auction);
+                        Debug.Log(auction.NFT);
                         await AuctionManager.instance.CheckBalanceAndBusiness(toEmail, auction.NFT.Id);
                     }
                 }

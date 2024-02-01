@@ -27,8 +27,19 @@ public class AuctionManager : MonoBehaviour
     {
         VivoxService.Instance.ChannelJoined += OnChannelJoined;
     }
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
-    
     /*
     private async void CreateAuction(NFTInfo nft, int startPrice, DateTimeOffset startTime, DateTimeOffset endTime)
     {
@@ -49,7 +60,7 @@ public class AuctionManager : MonoBehaviour
         });
     }
     */
-        
+
     public async Task<bool> AuctionBid(int id, int bidPrice)
     {
         BigInteger balance = await CheckBalance();
@@ -130,11 +141,11 @@ public class AuctionManager : MonoBehaviour
     public async Task<NFTStatus> CheckBalanceAndBusiness(string toEmail, int _id)
     {
         string method = "balanceOf";
-
         var provider = new JsonRpcProvider(ContractManager.RPC);
-
         Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
+
         Contract NFTcontract = new Contract(ContractManager.NFTABI, ContractManager.NFTContract, provider);
+
         try
         {
             var data = await contract.Call(method, new object[]
