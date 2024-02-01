@@ -535,7 +535,19 @@ public class BackendCommunicator : MonoBehaviour
             {
                 // TODO: check or save
                 Debug.Log("UPDATE!" + currentTimeSecond.ToString());
-                bool success = await AuctionManager.instance.CheckFinishedAuction(PlayerPrefs.GetString("Email"));
+                Debug.Log(FindEndedAuctionsByEmail(PlayerPrefs.GetString("Email")).ToList());
+                foreach (Auction auction in FindEndedAuctionsByEmail(PlayerPrefs.GetString("Email")).ToList())
+                {
+                    if (auction.BidPrice == auction.StartPrice)
+                    {
+                        BackendCommunicator.instance.UpdateNFTStatus(auction.NFT.Id, false);
+                    }
+                    else
+                    {
+                        string toEmail = auction.BidPlayer.Email;
+                        await AuctionManager.instance.CheckBalanceAndBusiness(toEmail, auction.NFT.Id);
+                    }
+                }
                 lastSavedSeconds = currentTimeSecond;
             }
         }

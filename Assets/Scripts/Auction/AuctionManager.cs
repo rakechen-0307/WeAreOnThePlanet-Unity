@@ -19,39 +19,16 @@ using Unity.Services.Vivox;
 public class AuctionManager : MonoBehaviour
 {
     public static AuctionManager instance;
-    private Realm _realm;
-    private App _realmApp;
-    private User _realmUser;
-    private string _realmAppID = "weareontheplanet-ouawh";
     SysRandom rnd = new SysRandom(Guid.NewGuid().GetHashCode());
     private BigInteger price = 1000000000000000000;
 
     // Start is called before the first frame update
     void Start()
     {
-        RealmSetup();
         VivoxService.Instance.ChannelJoined += OnChannelJoined;
     }
 
-    private async void RealmSetup()
-    {
-        if (_realm == null)
-        {
-            _realmApp = App.Create(new AppConfiguration(_realmAppID));
-            if (_realmApp.CurrentUser == null)
-            {
-                _realmUser = await _realmApp.LogInAsync(Credentials.Anonymous());
-                Debug.Log("user created");
-                _realm = await Realm.GetInstanceAsync(new FlexibleSyncConfiguration(_realmUser));
-            }
-            else
-            {
-                _realmUser = _realmApp.CurrentUser;
-                Debug.Log("user remain");
-                _realm = Realm.GetInstance(new FlexibleSyncConfiguration(_realmUser));
-            }
-        }
-    }
+    
     /*
     private async void CreateAuction(NFTInfo nft, int startPrice, DateTimeOffset startTime, DateTimeOffset endTime)
     {
