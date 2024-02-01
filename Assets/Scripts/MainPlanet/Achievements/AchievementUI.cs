@@ -38,7 +38,7 @@ public class AchievementUI : MonoBehaviour
             }
             else
             {
-                if (messengerManager.isOpenMessenger)
+                if (messengerManager._messengerIsOpened)
                 {
                     bool close = await messengerManager.CloseMessenger();
                 }
