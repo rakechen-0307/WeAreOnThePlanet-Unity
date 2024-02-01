@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.015981669, g: 0.00000095209117, b: 0.05821784, a: 1}
+  m_IndirectSpecularColor: {r: 0.016551897, g: 0.00046483133, b: 0.07944034, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2189,10 +2189,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 891043546}
-    - targetCorrespondingSourceObject: {fileID: -3437975674848237809, guid: f511bde298aee954bb30e1b66957a286,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1453174334}
     - targetCorrespondingSourceObject: {fileID: 1655866410534262484, guid: f511bde298aee954bb30e1b66957a286,
         type: 3}
       insertIndex: -1
@@ -3346,34 +3342,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1286103423}
   m_CullTransparentMesh: 1
---- !u!1 &1453174330 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: -3437975674848237809, guid: f511bde298aee954bb30e1b66957a286,
-    type: 3}
-  m_PrefabInstance: {fileID: 891043531}
-  m_PrefabAsset: {fileID: 0}
---- !u!64 &1453174334
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1453174330}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5784050870868435768, guid: f511bde298aee954bb30e1b66957a286, type: 3}
 --- !u!1 &1480007363 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -805453084032398023, guid: f511bde298aee954bb30e1b66957a286,
@@ -3517,6 +3485,7 @@ GameObject:
   - component: {fileID: 1565044942}
   - component: {fileID: 1565044946}
   - component: {fileID: 1565044947}
+  - component: {fileID: 1565044948}
   m_Layer: 5
   m_Name: Auction Text
   m_TagString: Untagged
@@ -3642,6 +3611,18 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1565044941}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c48258c29936749b16b101fe35d6a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1565044948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565044941}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7c48258c29936749b16b101fe35d6a0, type: 3}
   m_Name: 

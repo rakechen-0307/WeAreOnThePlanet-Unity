@@ -254,7 +254,7 @@ public class BackendCommunicator : MonoBehaviour
     }
     public async void Bid(int id, int bidPrice)
     {
-        Auction auction = _realm.All<Auction>().Where(auction => auction.Id == id).FirstOrDefault();
+        Auction auction = FindAuctionByNFTId(id);
         PlayerData player = _realm.All<PlayerData>().Where(user => user.Email == PlayerPrefs.GetString("Email")).FirstOrDefault();
         await _realm.WriteAsync(() =>
         {

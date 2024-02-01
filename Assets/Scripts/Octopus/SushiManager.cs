@@ -355,7 +355,7 @@ public class SushiManager : MonoBehaviour
         // log function, delay time, repeat interval        
         // InvokeRepeating("rsay", 0.0f, 1.0f);
         ChainSafeSetup();
-        PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
+        //PlayerPrefs.SetString("Email", "rakechen168@gmail.com");// For test
         dialogButton.deactivateAllInputFields();
         VivoxService.Instance.ChannelJoined += OnChannelJoined;
     }
