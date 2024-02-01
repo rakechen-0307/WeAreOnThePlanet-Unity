@@ -412,7 +412,7 @@ public class BackendCommunicator : MonoBehaviour
         return heldAuctions;
     }
 
-    public async Task<bool> AddExp(int playerId, int addedExp)
+    public async Task<bool> FlowerAddExp(int playerId, int addedExp)
     {
         PlayerData player = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault();
 
@@ -422,6 +422,45 @@ public class BackendCommunicator : MonoBehaviour
         });
 
         return true;
+    }
+
+    public async Task<int> ProgressUpdate(int playerId, int taskId)
+    {
+        bool _isAwarded = false;
+        PlayerData player = _realm.All<PlayerData>().Where(user => user.Id == playerId).FirstOrDefault();
+
+        if (!player.TaskProgress[taskId].Achieved)
+        {
+            await _realm.WriteAsync(() =>
+            {
+                player.TaskProgress[taskId].Progress += 1;
+            });
+
+            if (player.TaskProgress[taskId].Task.MaxProgress == player.TaskProgress[taskId].Progress)
+            {
+                await _realm.WriteAsync(() =>
+                {
+                    player.TaskProgress[taskId].Achieved = true;
+                });
+            }
+
+            if (player.TaskProgress[taskId].Achieved)
+            {
+                await _realm.WriteAsync(() =>
+                {
+                    player.Exp += player.TaskProgress[taskId].Task.Exp;
+                });
+                _isAwarded = true;
+            }
+        }
+        if (_isAwarded)
+        {
+            return player.TaskProgress[taskId].Task.Prize;
+        }
+        else
+        {
+            return -1;
+        }
     }
 
     private async void RealmSetup()
