@@ -5,6 +5,9 @@ using UnityEngine;
 public class PlantWaterer : MonoBehaviour
 {
     [SerializeField]
+    private LoadedData loadedData;
+
+    [SerializeField]
     private bool visible = false;
 
     [SerializeField]
@@ -15,6 +18,9 @@ public class PlantWaterer : MonoBehaviour
 
     [SerializeField]
     private float waterDelay = 100f;
+
+    [SerializeField]
+    private MainPlanetInit mainPlanetInit;
 
     private Renderer rd;
     private bool triggerActive = false;
@@ -57,13 +63,21 @@ public class PlantWaterer : MonoBehaviour
         triggerActive = false;
     }
 
-    private void Update()
+    private async void Update()
     {
         if (triggerActive && Input.GetKeyDown(KeyCode.Return))
         {
             lastWaterTime = Time.time;
             triggerActive = false;
-            // TODO: earnExp
+            bool done = await BackendCommunicator.instance.FlowerAddExp(loadedData.playerId, 1);
+            loadedData.experience += 1;
+            int award = await BackendCommunicator.instance.ProgressUpdate(loadedData.playerId, 5);
+            mainPlanetInit.initGarden();
+            if (award > 0)
+            {
+                // TODO: give money
+            }
+
         }
     }
 }

@@ -49,10 +49,10 @@ public class MainPlanetInit : MonoBehaviour
         }
         nftDisplayer.ShowNFTList(NFTsToShow);
     }
-    private void initGarden()
+    public void initGarden()
     {
         // TODO: exp to level
-        int level = 0;
+        int level = loadedData.experience / 500;
         // End TODO
         foreach (GardenGrower grower in gardenGrowers)
         {
