@@ -114,34 +114,55 @@ MonoBehaviour:
   friendIds: 
   pendingIds: 
   bidAuctions: []
-  achievements: []
+  achievements:
+  - id: 1
+    name: test
+    progress: 3
+    maxProgress: 6
+    isCompleted: 0
   experience: 0
   currentPlanet:
     NFTs:
-    - id: 15
-      artName: hello
-      author: rake
+    - id: 1
+      artName: NFT!!
+      author: uhua
       ownerID: 1
       isMinted: 0
       isShown: 0
-      isPending: 1
-      blockDatas: []
-    - id: 16
-      artName: hello
-      author: rake
-      ownerID: 1
-      isMinted: 0
-      isShown: 0
-      isPending: 1
-      blockDatas: []
-    - id: 17
-      artName: test
-      author: rake
-      ownerID: 1
-      isMinted: 0
-      isShown: 0
-      isPending: 1
-      blockDatas: []
+      isPending: 0
+      blockDatas:
+      - position: {x: -2.5, y: 0.5, z: 1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -2.5, y: 0.5, z: 0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -2.5, y: 0.5, z: -0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -2.5, y: 0.5, z: -2.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -2.5, y: 0.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -0.5, y: 0.5, z: 1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 0.5, y: 0.5, z: 1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 1.5, y: 0.5, z: 1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 1.5, y: 0.5, z: 0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 1.5, y: 0.5, z: -0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 0.5, y: 0.5, z: -0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -0.5, y: 0.5, z: -0.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -0.5, y: 0.5, z: -1.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: -0.5, y: 0.5, z: -2.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 0.5, y: 0.5, z: -2.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
+      - position: {x: 1.5, y: 0.5, z: -2.5}
+        color: {r: 1, g: 1, b: 1, a: 1}
     experience: 0
   account: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
   attendingAuctionNFTId: 4

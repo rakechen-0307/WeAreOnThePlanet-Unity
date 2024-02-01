@@ -11,16 +11,19 @@ public class AchievementUI : MonoBehaviour
     [SerializeField]
     private Transform achievementContent;
 
+    [SerializeField]
+    private GameObject achievementUI;
+
     private void Start()
     {
-        gameObject.SetActive(false);
+        achievementUI.SetActive(false);
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            gameObject.SetActive(!gameObject.activeInHierarchy);
+            achievementUI.SetActive(!achievementUI.activeInHierarchy);
             showAchievements();
         }
     }
