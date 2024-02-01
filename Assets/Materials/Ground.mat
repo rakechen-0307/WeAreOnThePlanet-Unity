@@ -43,7 +43,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Fresnel_Angle: -1
-    - _Fresnel_Size: 8.9
+    - _Fresnel_Size: 50
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Smoothness: 0.808

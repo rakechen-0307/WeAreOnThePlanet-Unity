@@ -31,7 +31,7 @@ public class AchievementUI : MonoBehaviour
         {
             achievementUI.SetActive(!achievementUI.activeInHierarchy);
             playerMovement.moveable = !playerMovement.moveable;
-            Cursor.visible = !Cursor.visible;
+            Cursor.visible = Cursor.lockState == CursorLockMode.Locked ? true : false;
             Cursor.lockState = Cursor.lockState == CursorLockMode.Locked ? CursorLockMode.None : CursorLockMode.Locked;
             showAchievements();
         }
