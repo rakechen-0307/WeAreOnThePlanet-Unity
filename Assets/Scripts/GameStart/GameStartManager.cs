@@ -88,7 +88,7 @@ public class GameStartManager : Singleton<GameStartManager>
         }
 
         ChainSafeSetup();  // setup ChainSafe
-        bool success = await VivoxInitialize();  // initialize Vivox
+        await VivoxInitialize();  // initialize Vivox
     }
 
     // Start is called before the first frame update
@@ -96,6 +96,8 @@ public class GameStartManager : Singleton<GameStartManager>
     {
         StartHostButton.onClick.AddListener(async () =>
         {
+            StartErrorText.enabled = true;
+            StartErrorText.text = "Connecting...";
             if (RelayManager.Instance.isRelayEnabled)
             {
                 RelayHostData HostData = await RelayManager.Instance.SetupRelay();
@@ -178,13 +180,12 @@ public class GameStartManager : Singleton<GameStartManager>
                 PlayerData findPlayer = BackendCommunicator.instance.FindOnePlayerByEmail(_email);
                 if (findPlayer != null)
                 {
-                    Debug.Log("found");
                     _player = findPlayer;
                     EmailErrorText.enabled = true;
                     EmailErrorText.text = "Waiting For Correct Join...";
                     if (RelayManager.Instance.isRelayEnabled)
                     {
-                        RelayJoinData JoinData = await RelayManager.Instance.JoinRelay(_joinCode.Substring(0, 6));
+                        RelayJoinData JoinData = await RelayManager.Instance.JoinRelay(_joinCode);
                     }
 
                     EmailErrorText.text = "";
@@ -218,6 +219,8 @@ public class GameStartManager : Singleton<GameStartManager>
             }
             else
             {
+                CreateAccountErrorText.enabled = true;
+                CreateAccountErrorText.text = "Connecting...";
                 PlayerConnect(true, _email, _username, _password);
             }
         });
@@ -240,6 +243,8 @@ public class GameStartManager : Singleton<GameStartManager>
                 else
                 {
                     _playerId = _player.Id;
+                    SignInErrorText.enabled = true;
+                    SignInErrorText.text = "Connecting...";
                     PlayerConnect(false, _email, _username, _password);
                 }
             }
@@ -372,7 +377,7 @@ public class GameStartManager : Singleton<GameStartManager>
         }
         catch (Exception)
         {
-            Debug.Log("Authencation SignIn Has Existed");
+            Debug.Log("Vivox Already Initialized");
         }
 
         return true;
@@ -386,12 +391,17 @@ public class GameStartManager : Singleton<GameStartManager>
             EnableTTS = false
         };
 
-        try
-        {
-            await VivoxService.Instance.LoginAsync(loginOption);
+        // log out
+        try {
+            await VivoxService.Instance.LogoutAsync();
+        } catch (Exception e) {
+            Debug.Log(e.Message);
         }
-        catch(Exception e)
-        {
+
+        // log in
+        try {
+            await VivoxService.Instance.LoginAsync(loginOption);
+        } catch(Exception e) {
             Debug.Log(e.Message);
         }
 
