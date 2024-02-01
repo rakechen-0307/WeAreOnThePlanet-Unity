@@ -102,7 +102,7 @@ public class HostTransactionTest : MonoBehaviour
                 BackendCommunicator.instance.UpdateNFTStatus(Int16.Parse(PreJsonData[3]), false);
                 break;
             case "business":
-                verifiedAddress = SignVerifySignature(messageObj[2], messageObj[0]);
+                verifiedAddress = SignVerifySignature(messageObj[2], messageObj[1]);
                 from = BackendCommunicator.instance.FindOnePlayerByEmail(PreJsonData[1]).Account;
                 to = BackendCommunicator.instance.FindOnePlayerByEmail(PreJsonData[2]).Account;
                 int howMuch = BackendCommunicator.instance.FindAuctionByNFTId(Int16.Parse(PreJsonData[3])).BidPrice;
@@ -110,7 +110,7 @@ public class HostTransactionTest : MonoBehaviour
                 {
                     await NFTTransfer(from, to, Int16.Parse(PreJsonData[3]));
                     await TokenTransfer(from, 4 * price, 1 * price);
-                    await TokenTransferBussiness(from, to, howMuch * price, 1);
+                    await TokenTransferBussiness(to, from, howMuch * price, 1);
                     //business成功]
                     BackendCommunicator.instance.UpdateNFTOwner(Int16.Parse(PreJsonData[3]), PreJsonData[2]);
                     BackendCommunicator.instance.ChangeNFTOwner(PreJsonData[1], PreJsonData[2], Int16.Parse(PreJsonData[3]));
