@@ -125,7 +125,7 @@ public class HostTransactionTest : MonoBehaviour
                 break;
             case "reward":
                 to = BackendCommunicator.instance.FindOnePlayerByEmail(PreJsonData[1]).Account;
-                TokenMint(Int16.Parse(PreJsonData[2]));
+                TokenMint(to, Int16.Parse(PreJsonData[2]));
                 break;
             default:
                 break;
@@ -141,11 +141,10 @@ public class HostTransactionTest : MonoBehaviour
         return key.GetPublicAddress();
     }
 
-    private async void TokenMint(int award)
+    private async void TokenMint(string to, int award)
     {
         var method = "mint";
 
-        var to = mintInputField.text;
         BigInteger amount = award * price;
         var provider = new JsonRpcProvider(ContractManager.RPC);
 
@@ -155,7 +154,7 @@ public class HostTransactionTest : MonoBehaviour
             string data = contract.Calldata(method, new object[]
             {
                     to,
-                    amount.ToString()
+                    amount
             });
             // send transaction
             string response = await Web3Wallet.SendTransaction(PlayerPrefs.GetString("ChainID"), ContractManager.TokenContract, "0", data, "", "");
@@ -308,7 +307,7 @@ public class HostTransactionTest : MonoBehaviour
         _nonce = rnd.Next();
         VivoxService.Instance.ChannelMessageReceived += OnChannelMessageReceived;
         ChannelSwitch();
-        mint.onClick.AddListener(() => { TokenMint(5); });
+        //mint.onClick.AddListener(() => { TokenMint(5); });
     }
 
     // Update is called once per frame
