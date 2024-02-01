@@ -424,9 +424,10 @@ public class BackendCommunicator : MonoBehaviour
         return NFTsCount + 1;
     }
 
-    public void ChangeNFTOwner()
+    public void ChangeNFTOwner(string initOwnerEmail, string newOwnerEmail, int NFTId)
     {
-
+        FindOnePlayerByEmail(newOwnerEmail).NFTs.Add(FindOneNFTById(NFTId));
+        FindOnePlayerByEmail(newOwnerEmail).NFTs.Remove(FindOneNFTById(NFTId));
     }
 
     public IList<Auction> FindHeldAuctionByPlayerID(int playerId)

@@ -85,7 +85,7 @@ public class HostTransactionTest : MonoBehaviour
                     await TokenTransfer(from, (BigInteger)4 * price, (BigInteger)1 * price);
                     //transfer成功
                     BackendCommunicator.instance.UpdateNFTOwner(Int16.Parse(PreJsonData[3]),PreJsonData[2]);
-
+                    BackendCommunicator.instance.ChangeNFTOwner(PreJsonData[1], PreJsonData[2], Int16.Parse(PreJsonData[3]));
                     //重新check balance，把畫面中的錢包金額改掉
                 }
                 else
@@ -107,11 +107,13 @@ public class HostTransactionTest : MonoBehaviour
                     await TokenTransferBussiness(from, to, howMuch * price, 1);
                     //business成功]
                     BackendCommunicator.instance.UpdateNFTOwner(Int16.Parse(PreJsonData[3]), PreJsonData[2]);
+                    BackendCommunicator.instance.ChangeNFTOwner(PreJsonData[1], PreJsonData[2], Int16.Parse(PreJsonData[3]));
                     //重新check balance，把畫面中的錢包金額改掉
                 }
                 else
                 {
                     //business 失敗
+                    Debug.Log("business fail!");
                 }
                 BackendCommunicator.instance.UpdateNFTStatus(Int16.Parse(PreJsonData[3]), false);
                 break;
