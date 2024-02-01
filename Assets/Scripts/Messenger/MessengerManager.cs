@@ -66,8 +66,9 @@ public class MessengerManager : MonoBehaviour
     public GameObject myTextObj, comingTextObj, chatRoomObj;
     public LoadedData _loadedData;
     public MainPlanetTravel mainPlanetTravel;
+    public AchievementUI achievementUI;
 
-    private bool _messengerIsOpened;
+    public bool _messengerIsOpened;
     private bool _soundOn;
     private bool _micOn;
     private string _currentChannel = null;
@@ -196,38 +197,53 @@ public class MessengerManager : MonoBehaviour
         {
             if (_messengerIsOpened)
             {
-                HintText.gameObject.SetActive(true);
-
-                HintText.text = "Messenger Closing...";
-                await VivoxService.Instance.LeaveChannelAsync(_loadedData.mainPlayer.lastPlanetId.ToString());
-                MessengerUI.SetActive(false);
-                _messengerIsOpened = false;
-                Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
-                Aim.SetActive(true);
-                HintText.gameObject.SetActive(false);
-                playerMovement.moveable = true;
+                await CloseMessenger();
             }
             else
             {
-                HintText.gameObject.SetActive(true);
-                HintText.text = "Messenger Opening...";
-                await VivoxService.Instance.JoinGroupChannelAsync(_loadedData.mainPlayer.lastPlanetId.ToString(), ChatCapability.AudioOnly);
-                MessengerUI.SetActive(true);
-                VoiceChat.SetActive(true);
-                ChatPage.SetActive(true);
-                AddFriendPage.SetActive(false);
-                PendingPage.SetActive(false);
-                TravelPage.SetActive(false);
-                _messengerIsOpened = true;
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-                Aim.SetActive(false);
-                HintText.gameObject.SetActive(false);
-                playerMovement.moveable = false;
-                ShowFriendList(_loadedData.playerId);
+                achievementUI.CloseMenu();
+                await OpenMessenger();
             }
         }
+    }
+
+    public async Task<bool> OpenMessenger()
+    {
+        HintText.gameObject.SetActive(true);
+        HintText.text = "Messenger Opening...";
+        await VivoxService.Instance.JoinGroupChannelAsync(_loadedData.mainPlayer.lastPlanetId.ToString(), ChatCapability.AudioOnly);
+        MessengerUI.SetActive(true);
+        VoiceChat.SetActive(true);
+        ChatPage.SetActive(true);
+        AddFriendPage.SetActive(false);
+        PendingPage.SetActive(false);
+        TravelPage.SetActive(false);
+        _messengerIsOpened = true;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        Aim.SetActive(false);
+        HintText.gameObject.SetActive(false);
+        playerMovement.moveable = false;
+        ShowFriendList(_loadedData.playerId);
+
+        return true;
+    }
+
+    public async Task<bool> CloseMessenger()
+    {
+        HintText.gameObject.SetActive(true);
+
+        HintText.text = "Messenger Closing...";
+        await VivoxService.Instance.LeaveChannelAsync(_loadedData.mainPlayer.lastPlanetId.ToString());
+        MessengerUI.SetActive(false);
+        _messengerIsOpened = false;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Aim.SetActive(true);
+        HintText.gameObject.SetActive(false);
+        playerMovement.moveable = true;
+
+        return true;
     }
 
     private void ShowFriendList(int playerId)
