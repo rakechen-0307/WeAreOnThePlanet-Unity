@@ -89,7 +89,6 @@ public class HostTransactionTest : MonoBehaviour
             case "business":
 
                 break;
-            case 
             default:
                 break;
         }
