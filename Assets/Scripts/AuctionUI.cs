@@ -76,7 +76,7 @@ public class AuctionUI : MonoBehaviour
         if(result)
         {
             getAuctionInfo();
-            highestBid.text = bidInput.text;
+            highestBid.text = bidPrice.ToString();
             highestBidder.text = BackendCommunicator.instance.FindOnePlayerByEmail(PlayerPrefs.GetString("Email")).Username;
         }
     }
