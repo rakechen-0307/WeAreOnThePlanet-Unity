@@ -201,6 +201,15 @@ public class BackendCommunicator : MonoBehaviour
             updateNFT.IsPending = status;
         });
     }
+    public async void UpdateNFTMintStatus(int nftId, bool status)
+    {
+        NFTInfo updateNFT = _realm.All<NFTInfo>().Where(nft => nft.Id == nftId).FirstOrDefault();
+
+        await _realm.WriteAsync(() =>
+        {
+            updateNFT.IsMinted = status;
+        });
+    }
 
     public IList<PlayerData> FindAllFriends(int playerId)
     {
