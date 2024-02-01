@@ -82,7 +82,7 @@ public class AuctionManager : MonoBehaviour
         }
         return true;
     }
-    public async void CheckFinishedAuction(string email)
+    public async Task<bool> CheckFinishedAuction(string email)
     {
         foreach(Auction auction in BackendCommunicator.instance.FindEndedAuctionsByEmail(email).ToList())
         {
@@ -95,7 +95,8 @@ public class AuctionManager : MonoBehaviour
                 string toEmail = auction.BidPlayer.Email;
                 await CheckBalanceAndBusiness(toEmail, auction.NFT.Id);
             }
-        } 
+        }
+        return true;
     }
     private async Task<BigInteger> CheckBalance()
     {

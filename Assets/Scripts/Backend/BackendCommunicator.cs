@@ -18,7 +18,7 @@ public class BackendCommunicator : MonoBehaviour
     private string _realmAppID = "weareontheplanet-wkrim";
 
     [SerializeField] private float checkDelaySecond = 100f;
-    private float lastSavedSeconds;
+    private float lastSavedSeconds = 0;
 
     private void Awake()
     {
@@ -525,12 +525,18 @@ public class BackendCommunicator : MonoBehaviour
         lastSavedSeconds = Time.time;
     }
     
-    private void Update()
+    private async void Update()
     {
-        float currentTimeSecond = Time.time;
-        if (currentTimeSecond - lastSavedSeconds > checkDelaySecond)
+        if(PlayerPrefs.HasKey("Email"))
         {
-            // TODO: check or save
+            float currentTimeSecond = Time.time;
+            if (currentTimeSecond - lastSavedSeconds > checkDelaySecond)
+            {
+                // TODO: check or save
+                Debug.Log("UPDATE!" + currentTimeSecond.ToString());
+                bool success = await AuctionManager.instance.CheckFinishedAuction(PlayerPrefs.GetString("Email"));
+                lastSavedSeconds = currentTimeSecond;
+            }
         }
     }
 }
