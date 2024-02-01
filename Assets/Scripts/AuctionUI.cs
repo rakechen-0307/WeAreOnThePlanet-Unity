@@ -62,17 +62,23 @@ public class AuctionUI : MonoBehaviour
         bidInput.text = (highestPriceNumber + 1).ToString();
     }
     
-    private void bidButtonOnClick()
+    private async void bidButtonOnClick()
     {
         bool legit = int.TryParse(bidInput.text, out int bidPrice);
+        Debug.Log("bidprice: " + bidPrice.ToString());
         int highestPrice = int.Parse(highestBid.text);
         if (!legit || bidPrice < highestPrice + 1)
         {
             bidInput.text = (highestPrice + 1).ToString();
             return;
         }
-        auctionManager.AuctionBid(loadedData.attendingAuctionNFTId, bidPrice);
-        getAuctionInfo();
+        bool result = await auctionManager.AuctionBid(loadedData.attendingAuctionNFTId, bidPrice);
+        if(result)
+        {
+            getAuctionInfo();
+            highestBid.text = bidInput.text;
+            highestBidder.text = BackendCommunicator.instance.FindOnePlayerByEmail(PlayerPrefs.GetString("Email")).Username;
+        }
     }
 
     private void backButtonOnClick()

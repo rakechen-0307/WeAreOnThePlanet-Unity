@@ -73,13 +73,14 @@ public class AuctionManager : MonoBehaviour
     }
     */
         
-    public async void AuctionBid(int id, int bidPrice)
+    public async Task<bool> AuctionBid(int id, int bidPrice)
     {
         BigInteger balance = await CheckBalance();
-        if(bidPrice >= balance)
+        if(bidPrice <= balance)
         {
             BackendCommunicator.instance.Bid(id, bidPrice);
         }
+        return true;
     }
     public async void CheckFinishedAuction(string email)
     {

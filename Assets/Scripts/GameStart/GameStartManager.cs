@@ -346,8 +346,8 @@ public class GameStartManager : Singleton<GameStartManager>
             }
             else
             {
-                SceneManager.LoadScene("Octopus");
-                //SceneManager.LoadScene("MainPlanet");
+                //SceneManager.LoadScene("Octopus");
+                SceneManager.LoadScene("MainPlanet");
             }
         }
         else

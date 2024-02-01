@@ -263,6 +263,7 @@ public class BackendCommunicator : MonoBehaviour
         {
             auction.BidPlayer = player;
             auction.BidPrice = bidPrice;
+            Debug.Log(player + bidPrice.ToString());
         });
     }
     public IList<PendingFreiendInfo> FindAllPendingFriends(int playerId)
