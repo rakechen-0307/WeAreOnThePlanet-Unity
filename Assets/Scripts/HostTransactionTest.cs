@@ -76,7 +76,7 @@ public class HostTransactionTest : MonoBehaviour
                 if (verifiedAddress == from)
                 {
                     await NFTTransfer(from, to, Int16.Parse(PreJsonData[3]));
-                    await TokenTransfer(to, 4 * price, 1 * price);
+                    await TokenTransfer(from, 4 * price, 1 * price);
                     //transfer成功
                     //重新check balance，把畫面中的錢包金額改掉
                 }
@@ -87,6 +87,22 @@ public class HostTransactionTest : MonoBehaviour
 
                 break;
             case "business":
+                verifiedAddress = SignVerifySignature(messageObj[2], messageObj[0]);
+                from = BackendCommunicator.instance.FindOnePlayerByEmail(PreJsonData[1]).Account;
+                to = BackendCommunicator.instance.FindOnePlayerByEmail(PreJsonData[2]).Account;
+                int howMuch = BackendCommunicator.instance.FindAuctionByNFTId(Int16.Parse(PreJsonData[3])).BidPrice;
+                if (verifiedAddress == from)
+                {
+                    await NFTTransfer(from, to, Int16.Parse(PreJsonData[3]));
+                    await TokenTransfer(from, 4 * price, 1 * price);
+                    await TokenTransferBussiness(from, to, howMuch * price, 1);
+                    //business成功
+                    //重新check balance，把畫面中的錢包金額改掉
+                }
+                else
+                {
+                    //business 失敗
+                }
 
                 break;
             default:
@@ -168,6 +184,39 @@ public class HostTransactionTest : MonoBehaviour
         var method = "transferPreSigned";
 
         string receiver = ContractManager.HostAddress;
+
+        var provider = new JsonRpcProvider(ContractManager.RPC);
+
+        try
+        {
+            Contract contract = new Contract(ContractManager.TokenABI, ContractManager.TokenContract, provider);
+
+            var data = contract.Calldata(method, new object[]
+            {
+                from,
+                receiver,
+                value.ToString(),
+                fee.ToString(),
+                _nonce.ToString()
+            });
+            // send transaction
+            string response = await Web3Wallet.SendTransaction(PlayerPrefs.GetString("ChainID"), ContractManager.TokenContract, "0", data, "", "");
+            // display response in game
+            print(response);
+            print("Transaction successful!");
+        }
+        catch
+        {
+            print("Error with the transaction");
+        }
+        _nonce = rnd.Next();
+        return true;
+    }
+
+    private async Task<bool> TokenTransferBussiness(string from, string receiver, BigInteger value, BigInteger fee)
+    {
+        // Send { from, to, value, fee, nonce, hash, signature } to host 
+        var method = "transferPreSigned";
 
         var provider = new JsonRpcProvider(ContractManager.RPC);
 
