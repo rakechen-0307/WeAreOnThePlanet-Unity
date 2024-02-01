@@ -59,7 +59,11 @@ public class HostTransactionTest : MonoBehaviour
                 {   
                     Debug.Log("MintNFTTo = " + to);
                     await NFTMint(to, Int16.Parse(PreJsonData[2]));
+
                     await TokenTransfer(to, (BigInteger)4*price, (BigInteger)1*price);
+
+                    await TokenTransfer(to, 4*price, 1*price);
+
                     //狀態改成isMinted = true
                     BackendCommunicator.instance.UpdateNFTMintStatus(Int16.Parse(PreJsonData[2]),true);
                     BackendCommunicator.instance.UpdateNFTStatus(Int16.Parse(PreJsonData[2]),false);
@@ -72,6 +76,7 @@ public class HostTransactionTest : MonoBehaviour
                 }
                 break;
             case "transfer":
+
                 verifiedAddress = SignVerifySignature(messageObj[2], messageObj[1]);
                 Debug.Log("verifiedAddress = " + verifiedAddress);
                 string from = BackendCommunicator.instance.FindOnePlayerByEmail(PreJsonData[1]).Account;
@@ -84,12 +89,13 @@ public class HostTransactionTest : MonoBehaviour
                     await NFTTransfer(from, to, Int16.Parse(PreJsonData[3]));
                     await TokenTransfer(from, (BigInteger)4 * price, (BigInteger)1 * price);
                     //transfer成功
-                    BackendCommunicator.instance.UpdateNFTOwner(Int16.Parse(PreJsonData[3]),PreJsonData[2]);
+                    BackendCommunicator.instance.UpdateNFTOwner(Int16.Parse(PreJsonData[3]), PreJsonData[2]);
                     BackendCommunicator.instance.ChangeNFTOwner(PreJsonData[1], PreJsonData[2], Int16.Parse(PreJsonData[3]));
-                    //重新check balance，把畫面中的錢包金額改掉
+
                 }
                 else
                 {
+
                     Debug.Log("transfer fail!");
                     //transfer 失敗
                 }
@@ -117,7 +123,6 @@ public class HostTransactionTest : MonoBehaviour
                 }
                 BackendCommunicator.instance.UpdateNFTStatus(Int16.Parse(PreJsonData[3]), false);
                 break;
-                
             default:
                 break;
         }
