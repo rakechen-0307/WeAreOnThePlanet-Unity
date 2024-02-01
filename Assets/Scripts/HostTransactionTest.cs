@@ -22,6 +22,7 @@ public class HostTransactionTest : MonoBehaviour
     //測試按鈕
     public Button mint;
     public TMP_InputField mintInputField;
+    public BigInteger price = 1000000000000000000;
 
 
 
@@ -47,7 +48,7 @@ public class HostTransactionTest : MonoBehaviour
         Debug.Log(message.MessageText);
         string[] messageObj = JsonConvert.DeserializeObject<string[]>(message.MessageText);
         string[] PreJsonData = JsonConvert.DeserializeObject<string[]>(messageObj[0]);
-        Debug.Log("originalMessage = " + messageObj[0] + " , signatureString = " + messageObj[1] + " , function = " + PreJsonData[0]);
+        Debug.Log("originalMessage = " + messageObj[0] + " , function = " + PreJsonData[0]);
         switch (PreJsonData[0])
         {
             case "mint":
@@ -58,7 +59,7 @@ public class HostTransactionTest : MonoBehaviour
                 {   
                     Debug.Log("MintNFTTo = " + to);
                     await NFTMint(to, Int16.Parse(PreJsonData[2]));
-                    await TokenTransfer(to, 4, 1);
+                    await TokenTransfer(to, 4*price, 1*price);
                     //狀態改成isMinted = true
                     //重新check balance，把畫面中的錢包金額改掉
                 }
@@ -68,8 +69,27 @@ public class HostTransactionTest : MonoBehaviour
                 }
                 break;
             case "transfer":
+                verifiedAddress = SignVerifySignature(messageObj[2], messageObj[0]);
+                Debug.Log("verifiedAddress = " + verifiedAddress);
+                string from = BackendCommunicator.instance.FindOnePlayerByEmail(PreJsonData[1]).Account;
+                to = BackendCommunicator.instance.FindOnePlayerByEmail(PreJsonData[2]).Account;
+                if (verifiedAddress == from)
+                {
+                    await NFTTransfer(from, to, Int16.Parse(PreJsonData[3]));
+                    await TokenTransfer(to, 4 * price, 1 * price);
+                    //transfer成功
+                    //重新check balance，把畫面中的錢包金額改掉
+                }
+                else
+                {
+                    //transfer 失敗
+                }
 
                 break;
+            case "business":
+
+                break;
+            case 
             default:
                 break;
         }
@@ -89,7 +109,7 @@ public class HostTransactionTest : MonoBehaviour
         var method = "mint";
 
         var to = mintInputField.text;
-        string amount = "5000000000000000000000000";
+        BigInteger amount = 5 * price;
         var provider = new JsonRpcProvider(ContractManager.RPC);
 
         try
@@ -178,6 +198,39 @@ public class HostTransactionTest : MonoBehaviour
         return true;
     }
 
+    private async Task<bool> NFTTransfer(string from, string receiver, int tokenId)
+    {
+        // Send { from, to, tokenId, nonce, hash, signature } to host 
+        var method = "transferPreSigned";
+        var provider = new JsonRpcProvider(ContractManager.RPC);
+
+        try
+        {
+            Contract contract = new Contract(ContractManager.NFTABI, ContractManager.NFTContract, provider);
+
+            //Check hash (information is correct)
+
+            var data = contract.Calldata(method, new object[]
+            {
+                from,
+                receiver,
+                tokenId.ToString(),
+                _nonce.ToString(),
+            });
+            // send transaction
+            string response = await Web3Wallet.SendTransaction(PlayerPrefs.GetString("ChainID"), ContractManager.NFTContract, "0", data, "", "");
+            // display response in game
+            print(response);
+            print("Transaction successful!");
+        }
+        catch
+        {
+            print("Error with the transaction");
+        }
+
+        _nonce = rnd.Next();
+        return true;
+    }
     void Start()
     {
         _nonce = rnd.Next();
