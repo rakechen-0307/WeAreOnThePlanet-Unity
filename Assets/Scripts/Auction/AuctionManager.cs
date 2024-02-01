@@ -14,6 +14,7 @@ using UnityEngine.Rendering.Universal;
 using Web3Unity.Scripts.Library.Ethers.Providers;
 using Web3Unity.Scripts.Library.Ethers.Contracts;
 using SysRandom = System.Random;
+using Unity.Services.Vivox;
 
 public class AuctionManager : MonoBehaviour
 {
@@ -23,12 +24,13 @@ public class AuctionManager : MonoBehaviour
     private User _realmUser;
     private string _realmAppID = "weareontheplanet-ouawh";
     SysRandom rnd = new SysRandom(Guid.NewGuid().GetHashCode());
-    private int fee = 5;
+    private BigInteger price = 1000000000000000000;
 
     // Start is called before the first frame update
     void Start()
     {
         RealmSetup();
+        VivoxService.Instance.ChannelJoined += OnChannelJoined;
     }
 
     private async void RealmSetup()
@@ -73,8 +75,8 @@ public class AuctionManager : MonoBehaviour
         
     public async void AuctionBid(int id, int bidPrice)
     {
-        bool result = await CheckBalanceAndBid(bidPrice, id);
-        if(result)
+        BigInteger balance = await CheckBalance();
+        if(bidPrice >= balance)
         {
             BackendCommunicator.instance.Bid(id, bidPrice);
         }
@@ -90,11 +92,11 @@ public class AuctionManager : MonoBehaviour
             else
             {
                 string toEmail = auction.BidPlayer.Email;
-                await CheckBalanceAndTransfer(toEmail, auction.NFT.Id);
+                await CheckBalanceAndBusiness(toEmail, auction.NFT.Id);
             }
         } 
     }
-    private async Task<bool> CheckBalanceAndBid(int price, int auction)
+    private async Task<BigInteger> CheckBalance()
     {
         string method = "balanceOf";
 
@@ -109,18 +111,7 @@ public class AuctionManager : MonoBehaviour
 
 
         BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
-        BigInteger realPrice = (BigInteger)1000000000000000000 * price;
-        Debug.Log("Balance Of: " + balanceOf);
-        Debug.Log("Price:" + realPrice);
-        if (balanceOf < realPrice)
-        {
-            Debug.Log("Your balance is NOT enough!");
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return balanceOf;
     }
     public async Task<NFTStatus> CheckBalanceAndLaunch()
     {
@@ -139,7 +130,7 @@ public class AuctionManager : MonoBehaviour
 
             BigInteger nonce = rnd.Next();
             BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
-            BigInteger realFee = (BigInteger)1000000000000000000 * fee;
+            BigInteger realFee = 5 * price;
             Debug.Log("Balance Of: " + balanceOf);
             Debug.Log("Fee:" + realFee);
             if (balanceOf < realFee)
@@ -157,7 +148,7 @@ public class AuctionManager : MonoBehaviour
             return NFTStatus.ContractError;
         }
     }
-    public async Task<NFTStatus> CheckBalanceAndTransfer(string toEmail, int _id)
+    public async Task<NFTStatus> CheckBalanceAndBusiness(string toEmail, int _id)
     {
         string method = "balanceOf";
 
@@ -174,7 +165,7 @@ public class AuctionManager : MonoBehaviour
 
             BigInteger nonce = rnd.Next();
             BigInteger balanceOf = BigInteger.Parse(data[0].ToString());
-            BigInteger realFee = (BigInteger)1000000000000000000 * fee;
+            BigInteger realFee = 5*price;
             Debug.Log("Balance Of: " + balanceOf);
             Debug.Log("Fee:" + realFee);
             if (balanceOf < realFee)
@@ -186,7 +177,7 @@ public class AuctionManager : MonoBehaviour
             {
                 method = "getTransferPreSignedHash";
                 string toAccount = BackendCommunicator.instance.FindOnePlayerByEmail(toEmail).Account;
-                string[] preJsonData = { "transfer", PlayerPrefs.GetString("Email"), toEmail, _id.ToString(), nonce.ToString() };
+                string[] preJsonData = { "business", PlayerPrefs.GetString("Email"), toEmail, _id.ToString(), nonce.ToString() };
                 string jsonData = JsonConvert.SerializeObject(preJsonData);
                 data = await NFTcontract.Call(method, new object[]
                 {
@@ -201,6 +192,7 @@ public class AuctionManager : MonoBehaviour
                 string message = JsonConvert.SerializeObject(messageObj);
                 Debug.Log(message);
                 // SendMessageRequest(message);
+                MessageLaunch(message);
                 return NFTStatus.Success;
             }
         }
@@ -208,5 +200,27 @@ public class AuctionManager : MonoBehaviour
         {
             return NFTStatus.ContractError;
         }
+    }
+    public async void OnChannelJoined(string channelName) //傳訊息給host -> 離開host channel
+    {
+        if (channelName == "hostChannel")
+        {
+            Debug.Log("nice");
+        }
+    }
+    public async void MessageLaunch(string message) //進host channel -> OnChannelJoined
+    {
+        await VivoxService.Instance.LeaveAllChannelsAsync();
+
+        string channelToJoin = "hostChannel";
+        JoinChannelAsync(channelToJoin, message);//進host channel
+
+        Debug.Log(channelToJoin);
+    }
+    public async void JoinChannelAsync(string channelName, string message)
+    {
+        await VivoxService.Instance.JoinEchoChannelAsync(channelName, ChatCapability.TextOnly);
+        await VivoxService.Instance.SendChannelTextMessageAsync("hostChannel", message);
+        await VivoxService.Instance.LeaveAllChannelsAsync();
     }
 }
