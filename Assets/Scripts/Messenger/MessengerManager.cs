@@ -94,8 +94,6 @@ public class MessengerManager : MonoBehaviour
 
     async void Start()
     {
-        await VivoxInitialize();
-        await VivoxSignIn(_loadedData.playerId.ToString());
         await VivoxService.Instance.LeaveAllChannelsAsync();
         VivoxService.Instance.EnableAcousticEchoCancellation();
 
@@ -585,53 +583,6 @@ public class MessengerManager : MonoBehaviour
     public async void ChannelSendMessageAsync(string channelName, string message)
     {
         await VivoxService.Instance.SendChannelTextMessageAsync(channelName, message);
-    }
-
-    private async Task<bool> VivoxInitialize()
-    {
-        try
-        {
-            await UnityServices.InitializeAsync();
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            await VivoxService.Instance.InitializeAsync();
-            Debug.Log("Vivox Initialized");
-        }
-        catch (Exception)
-        {
-            Debug.Log("Authencation SignIn Has Existed");
-        }
-
-        return true;
-    }
-
-    private async Task<bool> VivoxSignIn(string displayName)
-    {
-        var loginOption = new LoginOptions
-        {
-            DisplayName = displayName,
-            EnableTTS = false
-        };
-
-        try
-        {
-            await VivoxService.Instance.LogoutAsync();
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-
-        try
-        {
-            await VivoxService.Instance.LoginAsync(loginOption);
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-
-        Debug.Log("Log in");
-        return true;
     }
 }
 
