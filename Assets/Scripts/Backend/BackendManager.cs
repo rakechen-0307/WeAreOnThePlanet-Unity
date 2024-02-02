@@ -36,7 +36,7 @@ public class BackendManager : MonoBehaviour
         }
 
         loadedData.pendingIds = new List<int>();
-        for (int i = 0; i < playerData.Friends.Count; i++)
+        for (int i = 0; i < playerData.PendingFriends.Count; i++)
         {
             loadedData.pendingIds.Add(playerData.PendingFriends[i].Player.Id);
         }

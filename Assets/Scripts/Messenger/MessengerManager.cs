@@ -223,6 +223,7 @@ public class MessengerManager : MonoBehaviour
         HintText.gameObject.SetActive(false);
         playerMovement.moveable = false;
         ShowFriendList(_loadedData.playerId);
+        ShowPlanetUserList(_loadedData.mainPlayer.lastPlanetId);
 
         return true;
     }
@@ -329,6 +330,7 @@ public class MessengerManager : MonoBehaviour
 
     private void ShowPlanetUserList(int planetId)
     {
+        Debug.Log("hi");
         _planetUser = new List<PlayerListObject>();
         foreach (Transform child in voiceChatChannelObj.transform)
         {
@@ -337,8 +339,10 @@ public class MessengerManager : MonoBehaviour
 
         IList<PlayerData> planetUsers = BackendCommunicator.instance.FindPlanetUsers(planetId);
 
+        Debug.Log(planetUsers.Count);
         for (int i = 0; i < planetUsers.Count; i++)
         {
+            Debug.Log(planetUsers[i]);
             if (planetUsers[i].Id != _loadedData.playerId)
             {
                 AddPlanetUserToList(planetUsers[i].Username);
@@ -417,7 +421,7 @@ public class MessengerManager : MonoBehaviour
         int auctionCount = BackendCommunicator.instance.FindHeldAuctionByPlayerID(playerID).Count;
 
         AddFriendUsername.text = playerData.Username;
-        AddFriendLevel.text = "Planet Level : " + playerData.Exp.ToString();
+        AddFriendLevel.text = "Planet Level : " + (playerData.Exp / 500).ToString();
         AddFriendNFT.text = "Owned NFT : " + playerData.NFTs.Count.ToString();
         AddFriendFriends.text = "Total Friends : " + playerData.Friends.Count.ToString();
         AddFriendAuction.text = "Auctions Hold : " + auctionCount.ToString();
@@ -435,7 +439,7 @@ public class MessengerManager : MonoBehaviour
         int auctionCount = BackendCommunicator.instance.FindHeldAuctionByPlayerID(playerID).Count;
 
         PendingUsername.text = playerData.Username;
-        PendingLevel.text = "Planet Level : " + playerData.Exp.ToString();
+        PendingLevel.text = "Planet Level : " + (playerData.Exp / 500).ToString();
         PendingNFT.text = "Owned NFT : " + playerData.NFTs.Count.ToString();
         PendingFriends.text = "Total Friends : " + playerData.Friends.Count.ToString();
         PendingAuction.text = "Auctions Hold : " + auctionCount.ToString();
@@ -470,7 +474,7 @@ public class MessengerManager : MonoBehaviour
         int auctionCount = BackendCommunicator.instance.FindHeldAuctionByPlayerID(friendID).Count;
 
         TravelUsername.text = playerData.Username;
-        TravelLevel.text = "Planet Level : " + playerData.Exp.ToString();
+        TravelLevel.text = "Planet Level : " + (playerData.Exp / 500).ToString();
         TravelNFT.text = "Owned NFT : " + playerData.NFTs.Count.ToString();
         TravelFriends.text = "Total Friends : " + playerData.Friends.Count.ToString();
         TravelAuction.text = "Auctions Hold : " + auctionCount.ToString();

@@ -9,7 +9,7 @@ public class MainPlanetTravel : MonoBehaviour
     [SerializeField]
     private Transform mainPlayer;
 
-    public void TravelPlanet(int planetId)
+    public async void TravelPlanet(int planetId)
     {
         if (loadedData.mainPlayer.lastPlanetId == planetId)
         {
@@ -33,6 +33,7 @@ public class MainPlanetTravel : MonoBehaviour
         {
             loadedData.mainPlayer.lastPosition = new Vector3(0f, 52f, 0f);
             loadedData.mainPlayer.lastEuler = new Vector3(0, 0, 0);
+            await BackendCommunicator.instance.UpdatePlayerPosition(loadedData.playerId, planetId, loadedData.mainPlayer.lastPosition, loadedData.mainPlayer.lastEuler);
         }
         loadedData.mainPlayer.lastPlanetId = planetId;
         
