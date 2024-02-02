@@ -208,8 +208,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3320,7 +3320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601ebd74f6d0b1548bfb57bcaba0c539, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isHost: 1
+  isHost: 0
   StartPage: {fileID: 1795392867}
   StartHostButton: {fileID: 1660266976}
   StartGameButton: {fileID: 415898583}
@@ -4353,8 +4353,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 24
+  m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
