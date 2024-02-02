@@ -3320,7 +3320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601ebd74f6d0b1548bfb57bcaba0c539, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isHost: 0
+  isHost: 1
   StartPage: {fileID: 1795392867}
   StartHostButton: {fileID: 1660266976}
   StartGameButton: {fileID: 415898583}

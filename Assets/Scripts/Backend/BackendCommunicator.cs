@@ -437,9 +437,9 @@ public class BackendCommunicator : MonoBehaviour
         return NFTsCount + 1;
     }
 
-    public void ChangeNFTOwner(string initOwnerEmail, string newOwnerEmail, int NFTId)
+    public async void ChangeNFTOwner(string initOwnerEmail, string newOwnerEmail, int NFTId)
     {
-          await _realm.WriteAsync(() =>
+        await _realm.WriteAsync(() =>
         {
             FindOnePlayerByEmail(newOwnerEmail).NFTs.Add(FindOneNFTById(NFTId));
             FindOnePlayerByEmail(initOwnerEmail).NFTs.Remove(FindOneNFTById(NFTId));
