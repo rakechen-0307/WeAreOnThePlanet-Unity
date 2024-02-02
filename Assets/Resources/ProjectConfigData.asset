@@ -16,4 +16,4 @@ MonoBehaviour:
   chainID: 462
   chain: areon
   network: Areon Network Testnet
-  rpc: https://testnet-rpc.areon.network
+  rpc: https://testnet-rpc.areon.network/

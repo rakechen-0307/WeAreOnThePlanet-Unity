@@ -74,7 +74,8 @@ public class PlantWaterer : MonoBehaviour
             triggerActive = false;
             bool done = await BackendCommunicator.instance.FlowerAddExp(loadedData.playerId, 1);
             loadedData.experience += 1;
-            int award = await BackendCommunicator.instance.ProgressUpdate(loadedData.playerId, 5);
+            int award = await BackendCommunicator.instance.ProgressUpdate(loadedData.playerId, 1);
+            loadedData.achievements[5].progress += 1;
             mainPlanetInit.initGarden();
             if (award > 0)
             {
