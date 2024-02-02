@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ProjectConfigData
   m_EditorClassIdentifier: 
   projectID: 934df7b1-af34-41c3-9141-75637179dfac
-  chainID: 80001
-  chain: polygon
-  network: mumbai
-  rpc: https://polygon-mumbai-pokt.nodies.app
+  chainID: 462
+  chain: areon
+  network: Areon Network Testnet
+  rpc: https://testnet-rpc.areon.network
